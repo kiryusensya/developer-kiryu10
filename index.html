@@ -24,13 +24,13 @@
         }
 
         body {
-            /* 多言語対応フォントスタック */
             font-family: "HarmonyOS Sans", "Outfit", "Noto Sans JP", "Microsoft YaHei", "Malgun Gothic", sans-serif;
             margin: 0; padding: 0; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
             color: var(--text-main);
             background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
             background-size: cover; background-position: center; background-attachment: fixed;
+            overflow-x: hidden; /* 横スクロール防止 */
         }
 
         body::before {
@@ -56,7 +56,6 @@
             padding: 5px 10px; border-radius: 20px; outline: none; cursor: pointer;
             font-family: inherit;
         }
-        /* select optionは黒背景にする（OS依存回避） */
         .lang-select option { background-color: #333; color: white; }
 
         .profile-img {
@@ -89,12 +88,31 @@
             background: var(--primary-color); color: white; text-decoration: none; font-weight: bold; font-size: 15px;
             border: none; cursor: pointer; transition: background 0.2s, transform 0.2s;
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-            font-family: inherit;
+            font-family: inherit; justify-content: center;
         }
         .btn-action:hover { background: #2563eb; transform: scale(1.05); }
 
         footer { padding: 20px; font-size: 13px; color: var(--text-muted); text-align: center; width: 100%; }
         .footer-link { color: white; text-decoration: none; border-bottom: 1px dotted white; }
+
+        /* --- ★言語選択オーバーレイ (新規追加)★ --- */
+        #langSelectionOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px);
+            z-index: 9999; /* 最前面 */
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .lang-modal {
+            width: 90%; max-width: 500px; padding: 40px; text-align: center; border-radius: 24px;
+        }
+        .lang-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 30px;
+        }
+        /* ロシア語などボタンが5つの場合の調整 */
+        .lang-grid button:last-child:nth-child(odd) {
+            grid-column: span 2; /* 最後の1個は中央寄せ */
+        }
 
         /* --- モーダル基本設定 --- */
         .modal-overlay {
@@ -178,6 +196,8 @@
             .success-right { padding: 30px 20px; align-items: center; text-align: center; }
             .success-info-box { text-align: left; }
             .success-right { align-items: stretch; }
+            .lang-grid { grid-template-columns: 1fr; } /* スマホは1列 */
+            .lang-grid button:last-child:nth-child(odd) { grid-column: span 1; }
         }
 
         #statusContainer { margin-top: 15px; font-size: 14px; }
@@ -206,6 +226,24 @@
     </style>
 </head>
 <body>
+
+    <div id="langSelectionOverlay">
+        <div class="glass-panel lang-modal">
+            <div class="logo" style="justify-content:center; margin-bottom:20px;">
+                <i data-lucide="globe" size="32" style="color: #60a5fa;"></i>
+            </div>
+            <h2 style="font-size: 24px; margin-bottom: 10px;">Select Language</h2>
+            <p style="color:rgba(255,255,255,0.7); font-size:14px;">言語を選択してください</p>
+            
+            <div class="lang-grid">
+                <button class="btn-action" onclick="setInitialLanguage('ja')">🇯🇵 日本語</button>
+                <button class="btn-action" onclick="setInitialLanguage('en')">🇺🇸 English</button>
+                <button class="btn-action" onclick="setInitialLanguage('zh')">🇨🇳 中文</button>
+                <button class="btn-action" onclick="setInitialLanguage('ko')">🇰🇷 한국어</button>
+                <button class="btn-action" onclick="setInitialLanguage('ru')">🇷🇺 Русский</button>
+            </div>
+        </div>
+    </div>
 
     <header>
         <div class="logo"><i data-lucide="box" style="color: #60a5fa;"></i>_.k__yu.10</div>
@@ -372,25 +410,17 @@
         }
     };
 
-    // DOM要素
-    const modal = document.getElementById('authModal');
-    const modalContainer = document.getElementById('modalContainer');
-    const openBtn = document.getElementById('btnOpenModal');
-    const closeBtn = document.getElementById('modalCloseBtn');
-    const closeSubBtn = document.getElementById('modalCloseSub');
-    
-    const inputPhase = document.getElementById('inputPhase');
-    const successPhase = document.getElementById('successPhase');
-    
-    const codeInput = document.getElementById('activationCode');
-    const confirmBtn = document.getElementById('btnConfirm');
-    const statusContainer = document.getElementById('statusContainer');
-    
-    const successTitle = document.getElementById('successTitle');
-    const successExtraInfo = document.getElementById('successExtraInfo');
-    const successDownloadBtn = document.getElementById('successDownloadBtn');
-    const successLeftCol = document.getElementById('successLeftCol');
-    const successImage = document.getElementById('successImage');
+    // --- 初期言語設定 ---
+    function setInitialLanguage(lang) {
+        updateLanguage(lang);
+        // ヘッダーのセレクトボックスも同期させる
+        document.getElementById('languageSwitcher').value = lang;
+        
+        // オーバーレイを非表示にする
+        const overlay = document.getElementById('langSelectionOverlay');
+        overlay.style.opacity = '0';
+        overlay.style.visibility = 'hidden';
+    }
 
     // --- 言語切り替えロジック ---
     function updateLanguage(lang) {
@@ -413,6 +443,26 @@
     document.getElementById('languageSwitcher').addEventListener('change', (e) => {
         updateLanguage(e.target.value);
     });
+
+    // DOM要素
+    const modal = document.getElementById('authModal');
+    const modalContainer = document.getElementById('modalContainer');
+    const openBtn = document.getElementById('btnOpenModal');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    const closeSubBtn = document.getElementById('modalCloseSub');
+    
+    const inputPhase = document.getElementById('inputPhase');
+    const successPhase = document.getElementById('successPhase');
+    
+    const codeInput = document.getElementById('activationCode');
+    const confirmBtn = document.getElementById('btnConfirm');
+    const statusContainer = document.getElementById('statusContainer');
+    
+    const successTitle = document.getElementById('successTitle');
+    const successExtraInfo = document.getElementById('successExtraInfo');
+    const successDownloadBtn = document.getElementById('successDownloadBtn');
+    const successLeftCol = document.getElementById('successLeftCol');
+    const successImage = document.getElementById('successImage');
 
     // モーダル操作
     function openModal() { modal.classList.add('active'); resetModal(); codeInput.focus(); }
@@ -473,7 +523,7 @@
             
             codeInput.disabled = false; 
             confirmBtn.disabled = false; 
-            confirmBtn.textContent = t.modal_btn_auth; // ボタン名を元に戻す
+            confirmBtn.textContent = t.modal_btn_auth; 
 
             if (data.success) {
                 modalContainer.classList.add('wide-mode');
