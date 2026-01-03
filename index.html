@@ -235,15 +235,15 @@
             <p style="color:rgba(255,255,255,0.7); font-size:14px;">言語を選択してください</p>
             
             <div class="lang-grid">
-                <button class="btn-action" onclick="setInitialLanguage('ja')">🇯🇵 日本語</button>
-                <button class="btn-action" onclick="setInitialLanguage('en')">🇺🇸 English</button>
-                <button class="btn-action" onclick="setInitialLanguage('zh')">🇨🇳 中文</button>
-                <button class="btn-action" onclick="setInitialLanguage('ko')">🇰🇷 한국어</button>
-                <button class="btn-action" onclick="setInitialLanguage('ru')">🇷🇺 Русский</button>
+                <button class="btn-action" onclick="setInitialLanguage('ja')">日本語</button>
+                <button class="btn-action" onclick="setInitialLanguage('en')">English</button>
+                <button class="btn-action" onclick="setInitialLanguage('zh')">中文</button>
+                <button class="btn-action" onclick="setInitialLanguage('ko')">한국어</button>
+                <button class="btn-action" onclick="setInitialLanguage('ru')">Русский</button>
             </div>
 
             <div style="margin-top: 30px; font-size: 12px; color: rgba(255,255,255,0.5); opacity:0.8;">
-                Administer: kiryu-sensya
+                Enforcement Administer:kiryu-sensya
             </div>
         </div>
     </div>
@@ -252,11 +252,11 @@
         <div class="logo"><i data-lucide="box" style="color: #60a5fa;"></i>_.k__yu.10</div>
         <div class="header-right">
             <select id="languageSwitcher" class="lang-select glass-panel">
-                <option value="ja" selected>JP (日本語)</option>
-                <option value="en">EN (English)</option>
-                <option value="zh">ZH (中文)</option>
-                <option value="ko">KO (한국어)</option>
-                <option value="ru">RU (Русский)</option>
+                <option value="ja" selected>日本語</option>
+                <option value="en">English</option>
+                <option value="zh">中文</option>
+                <option value="ko">한국어</option>
+                <option value="ru">Русский</option>
             </select>
             <div class="profile-img"></div>
         </div>
@@ -368,14 +368,14 @@
             success_label_name: "コンテンツ名称", btn_close: "閉じる", btn_download: "ダウンロード"
         },
         en: {
-            card1_title: "Activation", card1_desc: "Enter code to unlock<br>exclusive content", card1_btn: "Enter Code",
+            card1_title: "Access Unlock", card1_desc: "Enter code to unlock<br>exclusive content", card1_btn: "Enter Code",
             card2_title: "News", card2_desc: "Latest updates regarding<br>the project", card2_btn: "Check Now",
             card3_title: "Support", card3_desc: "Contact us if your code<br>is invalid or missing", card3_btn: "Contact Us",
-            modal_title: "Activation", modal_sub: "Please enter your activation code below",
-            modal_placeholder: "Enter Code", modal_btn_auth: "Authenticate",
-            msg_verifying: "Verifying",
+            modal_title: "Access Unlock", modal_sub: "Please enter your activation code below",
+            modal_placeholder: "Enter Code", modal_btn_auth: "CHECK",
+            msg_verifying: "Checking",
             msg_invalid: "Invalid or used code", msg_error: "Connection error occurred",
-            success_badge: "Access Granted", success_main_title: "Available Content",
+            success_badge: "Your access has been authorised.", success_main_title: "List of Available Content",
             success_label_name: "Content Name", btn_close: "Close", btn_download: "Download"
         },
         zh: {
@@ -383,8 +383,8 @@
             card2_title: "新闻", card2_desc: "关于项目的<br>最新更新信息", card2_btn: "查看",
             card3_title: "支持", card3_desc: "如果代码无效<br>请联系我们", card3_btn: "联系我们",
             modal_title: "访问解锁", modal_sub: "请输入您的激活码",
-            modal_placeholder: "输入代码", modal_btn_auth: "认证",
-            msg_verifying: "确认中",
+            modal_placeholder: "输入代码", modal_btn_auth: "检查",
+            msg_verifying: "正在检查",
             msg_invalid: "代码无效或已使用", msg_error: "发生通信错误",
             success_badge: "访问已批准", success_main_title: "可用内容列表",
             success_label_name: "内容名称", btn_close: "关闭", btn_download: "下载"
