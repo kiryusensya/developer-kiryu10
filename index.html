@@ -178,20 +178,13 @@
         }
         .modal-overlay.active .modal-container { transform: scale(1); }
         
-        /* 成功時のモーダル（緑の発光ボーダー） */
-        @keyframes success-pulse {
-            0% {
-                border-color: var(--success-green-light);
-                box-shadow: 0 0 25px rgba(9, 156, 22, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            }
-            50% {
-                border-color: var(--success-green-dark);
-                box-shadow: 0 0 15px rgba(4, 112, 22, 0.4), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            }
-            100% {
-                border-color: var(--success-green-light);
-                box-shadow: 0 0 25px rgba(9, 156, 22, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            }
+        /* ★ Siri Glow Effect (Apple Intelligence Style) ★ 
+         紫・青・緑・シアンが混ざり合って回転するグラデーションアニメーション
+        */
+        @keyframes siri-glow-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .modal-container.wide-mode {
@@ -199,10 +192,51 @@
             padding: 0;
             display: flex;
             flex-direction: row;
-            overflow: hidden;
-            border: 2px solid var(--success-green-light);
-            /* 5秒かけてゆっくり点滅 */
-            animation: success-pulse 5s infinite ease-in-out;
+            /* Glowを外側に見せるため visible に */
+            overflow: visible !important; 
+            /* 既存のボーダーと背景を消して擬似要素に任せる */
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 外側のGlowレイヤー（ぼかし発光） */
+        .modal-container.wide-mode::before {
+            content: '';
+            position: absolute;
+            /* ボーダーの太さ分マイナスに設定 */
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 26px; /* コンテナより少し大きく */
+            background: linear-gradient(
+                60deg,
+                #8407de, /* Purple */
+                #3b82f6, /* Blue */
+                #00f7ff, /* Cyan */
+                #099c16, /* Green */
+                #8407de, /* Purple Loop */
+                #3b82f6  /* Blue Loop */
+            );
+            background-size: 300% 300%;
+            animation: siri-glow-flow 3s ease infinite;
+            z-index: -2;
+            filter: blur(10px); /* 光を拡散させる */
+            opacity: 0.9;
+        }
+
+        /* 内側の背景レイヤー（文字が見えるように暗くする） */
+        .modal-container.wide-mode::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 24px;
+            background: rgba(20, 20, 20, 0.85); /* ダークな半透明背景 */
+            backdrop-filter: blur(20px);
+            z-index: -1;
+            /* 内側にうっすら境界線を入れて締まりを出す */
+            border: 1px solid rgba(255,255,255,0.15); 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
         .modal-close {
@@ -271,7 +305,17 @@
         }
         
         #successPhase { display: none; width: 100%; height: 100%; }
-        .success-layout { display: flex; width: 100%; min-height: 500px; }
+        
+        .success-layout { 
+            display: flex; width: 100%; min-height: 500px; 
+            /* 重要: 親コンテナ(.wide-mode)はoverflow:visibleだが、
+               中身は角丸で切り抜かないと画像が飛び出すためここで制御 */
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            z-index: 2; /* 擬似要素より上に表示 */
+        }
+
         .success-left { flex: 1; background-color: rgba(0,0,0,0.3); position: relative; display: none; }
         .success-left img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
         .success-right { flex: 1.2; padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
@@ -324,8 +368,8 @@
             .container { padding: 0 15px; }
             .grid-menu { gap: 20px; }
 
-            .modal-container.wide-mode { flex-direction: column; max-width: 100%; overflow-y: auto; height: auto; }
-            .success-layout { flex-direction: column; }
+            .modal-container.wide-mode { flex-direction: column; max-width: 100%; overflow-y: visible; height: auto; }
+            .success-layout { flex-direction: column; overflow: hidden; } /* モバイルでも内部クリッピング */
             .success-left { width: 100%; min-height: 200px; display: block; position: relative; }
             .success-left img { position: relative; height: 200px; }
             .success-right { padding: 30px 20px; align-items: center; text-align: center; width: 100%; }
