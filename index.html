@@ -113,6 +113,12 @@
             50% { box-shadow: 0 0 35px rgba(59, 130, 246, 1.0), 0 0 20px rgba(59, 130, 246, 0.7); }
             100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4); }
         }
+        /* ★緑色の発光アニメーション（ダウンロードボタン用） */
+        @keyframes pulse-green-btn {
+            0% { box-shadow: 0 0 10px rgba(9, 156, 22, 0.5), 0 0 5px rgba(9, 156, 22, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(9, 156, 22, 0.8), 0 0 15px rgba(9, 156, 22, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(9, 156, 22, 0.5), 0 0 5px rgba(9, 156, 22, 0.3); }
+        }
 
         .btn-action {
             display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; border-radius: 50px;
@@ -172,7 +178,7 @@
         }
         .modal-overlay.active .modal-container { transform: scale(1); }
         
-        /* ★成功時のモーダル外枠アニメーション定義 */
+        /* 成功時のモーダル（緑の発光ボーダー） */
         @keyframes success-pulse {
             0% {
                 border-color: var(--success-green-light);
@@ -195,7 +201,7 @@
             flex-direction: row;
             overflow: hidden;
             border: 2px solid var(--success-green-light);
-            /* ★5秒かけてゆっくり点滅 */
+            /* 5秒かけてゆっくり点滅 */
             animation: success-pulse 5s infinite ease-in-out;
         }
 
@@ -242,7 +248,7 @@
             box-shadow: none;
         }
 
-        /* --- ★エラー時の赤発光クラス（ボタン用：中身も赤く） --- */
+        /* --- エラー時の赤発光クラス（ボタン用：中身も赤く） --- */
         .btn-confirm.error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
@@ -251,11 +257,10 @@
             color: white !important; 
         }
 
-        /* --- ★エラー時の赤発光クラス（入力欄用：外枠のみ赤く） --- */
+        /* --- エラー時の赤発光クラス（入力欄用：外枠のみ赤く） --- */
         .code-input.error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
-            /* 背景色は変えない */
         }
 
         /* --- エラー時のモーダル外枠発光クラス --- */
@@ -287,7 +292,21 @@
         .success-extra { font-size: 14px; margin-top: 10px; color: #ddd; white-space: pre-wrap; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;}
 
         .btn-group { display: flex; gap: 15px; width: 100%; flex-wrap: wrap; }
-        #successDownloadBtn { flex: 2; text-decoration: none; text-align: center; min-width: 140px; }
+        
+        /* ★成功時のダウンロードボタン（緑色） */
+        #successDownloadBtn { 
+            flex: 2; text-decoration: none; text-align: center; min-width: 140px;
+            background: #099c16 !important;
+            border: 1px solid #099c16 !important;
+            animation: pulse-green-btn 2s infinite ease-in-out !important;
+        }
+        #successDownloadBtn:hover {
+            background: var(--hover-blue) !important;
+            border-color: rgba(59, 130, 246, 0.8) !important;
+            animation: pulse-blue 1.0s infinite ease-in-out !important;
+            transform: translateY(-2px);
+        }
+
         #modalCloseSub {
             flex: 1; background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white;
             padding: 16px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
