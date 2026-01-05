@@ -15,19 +15,26 @@
     <style>
         /* --- デザイン設定 --- */
         :root {
+            /* メインカラー：紫 */
             --primary-color: #8407de; 
+            /* ホバー時の青 */
             --hover-blue: #3b82f6; 
+            
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.7);
             --neon-cyan: #00f7ff;
             --neon-green: #00ff9d;
+            /* エラー時の赤 */
             --neon-red: #ff2a2a; 
+            
+            /* 成功時の緑2色 */
             --success-green-light: #099c16;
             --success-green-dark: #047016;
         }
 
+        /* 全要素に対して余白計算を統一 */
         *, *::before, *::after {
             box-sizing: border-box;
         }
@@ -54,6 +61,7 @@
             border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
+        /* --- ヘッダー --- */
         header {
             width: 100%; max-width: 1200px; padding: 20px;
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
@@ -74,6 +82,7 @@
             flex-shrink: 0;
         }
 
+        /* --- メインコンテンツ --- */
         .container {
             width: 100%; max-width: 1000px; padding: 0 20px;
             flex: 1; display: flex; flex-direction: column; justify-content: center;
@@ -93,16 +102,22 @@
         .card-title { font-size: 22px; font-weight: bold; margin: 0 0 10px 0; }
         .card-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 25px 0; line-height: 1.6; }
         
-        /* 通常ボタンのアニメーション */
+        /* ★ボタンの発光アニメーション定義★ */
         @keyframes pulse-primary {
-            0% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5); }
-            50% { box-shadow: 0 0 25px rgba(132, 7, 222, 0.8); }
-            100% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5); }
+            0% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5), 0 0 5px rgba(132, 7, 222, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(132, 7, 222, 0.8), 0 0 15px rgba(132, 7, 222, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5), 0 0 5px rgba(132, 7, 222, 0.3); }
         }
         @keyframes pulse-blue {
-            0% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
-            50% { box-shadow: 0 0 35px rgba(59, 130, 246, 1.0); }
-            100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+            0% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(59, 130, 246, 1.0), 0 0 20px rgba(59, 130, 246, 0.7); }
+            100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+        /* ★緑色の発光アニメーション（ダウンロードボタン用） */
+        @keyframes pulse-green-btn {
+            0% { box-shadow: 0 0 10px rgba(9, 156, 22, 0.5), 0 0 5px rgba(9, 156, 22, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(9, 156, 22, 0.8), 0 0 15px rgba(9, 156, 22, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(9, 156, 22, 0.5), 0 0 5px rgba(9, 156, 22, 0.3); }
         }
 
         .btn-action {
@@ -115,9 +130,11 @@
             max-width: 100%;
             animation: pulse-primary 2s infinite ease-in-out;
         }
+        
         .btn-action:hover { 
             background: var(--hover-blue); 
             transform: scale(1.05); 
+            border-color: rgba(59, 130, 246, 0.8);
             animation: pulse-blue 1.0s infinite ease-in-out; 
         }
 
@@ -143,15 +160,13 @@
             grid-column: span 2;
         }
 
-        /* --- モーダル共通設定 --- */
+        /* --- モーダル --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
             display: flex; justify-content: center; align-items: center; z-index: 2000;
             opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease;
-            padding: 20px;
-            /* 重要: モバイルで中身が長い場合にスクロール可能にする */
-            overflow-y: auto; 
+            padding: 10px;
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
 
@@ -160,64 +175,35 @@
             position: relative; transform: scale(0.9); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-height: 90vh; overflow-y: auto;
             display: flex; flex-direction: column;
-            margin: auto; /* スクロール時の配置用 */
         }
         .modal-overlay.active .modal-container { transform: scale(1); }
         
-        /* ★ Siri Glow アニメーション定義 ★ */
-        @keyframes siri-glow-flow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* 成功時のモーダル（緑の発光ボーダー） */
+        @keyframes success-pulse {
+            0% {
+                border-color: var(--success-green-light);
+                box-shadow: 0 0 25px rgba(9, 156, 22, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            }
+            50% {
+                border-color: var(--success-green-dark);
+                box-shadow: 0 0 15px rgba(4, 112, 22, 0.4), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            }
+            100% {
+                border-color: var(--success-green-light);
+                box-shadow: 0 0 25px rgba(9, 156, 22, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            }
         }
 
-        /* ★ 成功時のワイドモーダル（背景黒＋外枠発光） ★ */
         .modal-container.wide-mode {
             max-width: 900px;
             padding: 0;
             display: flex;
             flex-direction: row;
-            
-            /* 重要：中身の背景色を「完全な黒」に指定 */
-            background: #141414 !important; 
-            border: none !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
-            
-            /* 光をはみ出させるためvisible */
-            overflow: visible !important; 
-            max-height: none !important;
-            height: auto;
-            border-radius: 24px;
-            
-            /* スタッキングコンテキストを確立 */
-            position: relative;
-            z-index: 1;
+            overflow: hidden;
+            border: 2px solid var(--success-green-light);
+            /* 5秒かけてゆっくり点滅 */
+            animation: success-pulse 5s infinite ease-in-out;
         }
-
-        /* ワイドモードの外枠発光（裏側に配置） */
-        .modal-container.wide-mode::before {
-            content: '';
-            position: absolute;
-            /* 枠を外側にはみ出させる（マイナス値） */
-            inset: -3px; 
-            border-radius: 26px; 
-            
-            /* 4色の流体グラデーション */
-            background: linear-gradient(
-                60deg,
-                #8407de, #3b82f6, #099c16, #047016, #8407de
-            );
-            background-size: 300% 300%;
-            animation: siri-glow-flow 4s ease infinite;
-            
-            /* 本体(#141414)の後ろに配置 */
-            z-index: -1; 
-            filter: blur(6px);
-            opacity: 1;
-        }
-
-        /* 以前の ::after は不要なので削除または無効化 */
-        .modal-container.wide-mode::after { display: none; }
 
         .modal-close {
             position: absolute; top: 20px; right: 20px; cursor: pointer; color: rgba(255,255,255,0.6); transition: color 0.2s; z-index: 100;
@@ -248,18 +234,21 @@
             border: 1px solid rgba(255,255,255,0.2);
             animation: pulse-primary 2s infinite ease-in-out;
         }
+        
         .btn-confirm:hover { 
             background: var(--hover-blue); 
             transform: translateY(-2px); 
+            border-color: rgba(59, 130, 246, 0.8);
             animation: pulse-blue 1.0s infinite ease-in-out;
         }
+        
         .btn-confirm:disabled { 
             background: var(--primary-color); opacity: 0.8; cursor: wait; transform: none; 
             animation: none; 
             box-shadow: none;
         }
 
-        /* --- エラー時の赤発光クラス --- */
+        /* --- エラー時の赤発光クラス（ボタン用：中身も赤く） --- */
         .btn-confirm.error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
@@ -267,10 +256,14 @@
             background-color: rgba(255, 42, 42, 0.7) !important; 
             color: white !important; 
         }
+
+        /* --- エラー時の赤発光クラス（入力欄用：外枠のみ赤く） --- */
         .code-input.error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
         }
+
+        /* --- エラー時のモーダル外枠発光クラス --- */
         .modal-error-border {
             border: 2px solid var(--neon-red) !important;
             box-shadow: 0 0 30px rgba(255, 42, 42, 0.8) !important;
@@ -278,53 +271,20 @@
         }
         
         #successPhase { display: none; width: 100%; height: 100%; }
-        
-        /* 成功時のレイアウト */
-        .success-layout { 
-            display: flex; width: 100%; min-height: 500px; 
-            /* 中身の角丸マスク */
-            border-radius: 24px;
-            overflow: hidden; 
-            position: relative;
-            z-index: 2; 
-        }
-
+        .success-layout { display: flex; width: 100%; min-height: 500px; }
         .success-left { flex: 1; background-color: rgba(0,0,0,0.3); position: relative; display: none; }
         .success-left img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
-        /* 右側コンテナは透明にして、親の黒背景を見せる */
-        .success-right { 
-            flex: 1.2; padding: 40px; 
-            display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; 
-            background: transparent !important;
-        }
+        .success-right { flex: 1.2; padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
 
-        /* ★「アクセスが承認されました」バッジの発光設定 (修正版) ★ */
         .success-tag {
-            position: relative;
-            /* 中身の背景色を黒に固定 */
-            background: #141414 !important; 
-            color: var(--neon-green);
+            background: rgba(0, 255, 157, 0.1); border: 1px solid var(--neon-green); color: var(--neon-green);
             padding: 8px 16px; border-radius: 30px; font-size: 14px; font-weight: bold; margin-bottom: 20px; 
             display: inline-flex; align-items: center; gap: 8px;
-            font-family: inherit; white-space: nowrap;
-            border: none !important;
-            /* 発光を外に見せる */
-            overflow: visible !important; 
-            z-index: 1;
-        }
-        /* バッジの外枠Glow (裏側) */
-        .success-tag::before {
-            content: ''; position: absolute;
-            inset: -2px; 
-            border-radius: 30px;
-            background: linear-gradient(60deg, #8407de, #3b82f6, #099c16, #047016, #8407de);
-            background-size: 300% 300%;
-            animation: siri-glow-flow 4s ease infinite;
-            z-index: -1; 
-            filter: blur(3px); 
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.4), inset 0 0 10px rgba(0, 255, 157, 0.1);
+            text-shadow: 0 0 8px rgba(0, 255, 157, 0.6); font-family: inherit;
+            white-space: nowrap;
         }
         .success-tag svg { filter: drop-shadow(0 0 5px rgba(0, 255, 157, 0.8)); flex-shrink: 0; }
-
         .success-title-main { font-size: 28px; font-weight: bold; margin-bottom: 20px; line-height: 1.3; }
         .success-info-box { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; width: 100%; box-sizing: border-box; margin-bottom: 25px; }
         .success-label { font-size: 12px; color: var(--text-muted); }
@@ -333,39 +293,18 @@
 
         .btn-group { display: flex; gap: 15px; width: 100%; flex-wrap: wrap; }
         
-        /* ★成功時のダウンロードボタンの発光設定 (修正版) ★ */
+        /* ★成功時のダウンロードボタン（緑色） */
         #successDownloadBtn { 
             flex: 2; text-decoration: none; text-align: center; min-width: 140px;
-            position: relative;
-            /* 中身の背景色を黒に固定 */
-            background: #141414 !important; 
-            color: white !important;
-            border: none !important;
-            border-radius: 12px;
-            overflow: visible !important;
-            z-index: 1;
-            animation: none !important; 
-            display: flex; justify-content: center; align-items: center;
-        }
-        /* ボタンの外枠Glow (裏側) */
-        #successDownloadBtn::before {
-            content: ''; position: absolute;
-            inset: -3px; 
-            border-radius: 14px; 
-            background: linear-gradient(60deg, #8407de, #3b82f6, #099c16, #047016, #8407de);
-            background-size: 300% 300%;
-            animation: siri-glow-flow 4s ease infinite;
-            z-index: -1;
-            filter: blur(4px);
-            opacity: 1;
-            transition: opacity 0.3s;
+            background: #099c16 !important;
+            border: 1px solid #099c16 !important;
+            animation: pulse-green-btn 2s infinite ease-in-out !important;
         }
         #successDownloadBtn:hover {
+            background: var(--hover-blue) !important;
+            border-color: rgba(59, 130, 246, 0.8) !important;
+            animation: pulse-blue 1.0s infinite ease-in-out !important;
             transform: translateY(-2px);
-            background: #222 !important; /* ホバー時は少し明るい黒 */
-        }
-        #successDownloadBtn:hover::before {
-            filter: blur(6px); /* ホバー時に発光を強く */
         }
 
         #modalCloseSub {
@@ -377,7 +316,7 @@
         }
         #modalCloseSub:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
 
-        /* --- モバイル専用調整（スクロール対応） --- */
+        /* --- モバイル専用調整 --- */
         @media (max-width: 768px) {
             header { padding: 15px; margin-bottom: 20px; }
             .logo { font-size: 20px; }
@@ -385,22 +324,11 @@
             .container { padding: 0 15px; }
             .grid-menu { gap: 20px; }
 
-            /* モーダルのスクロール対応 */
-            .modal-overlay {
-                display: block; /* Flex中央揃えをやめる */
-                padding: 20px 10px; /* 上下に余白を持たせる */
-            }
-            .modal-container.wide-mode { 
-                flex-direction: column; 
-                max-width: 100%; 
-                height: auto;
-                margin-bottom: 40px; /* 一番下までスクロールしやすくする */
-            }
-            
-            .success-layout { flex-direction: column; overflow: hidden; height: auto; } 
-            .success-left { width: 100%; height: 200px; display: block; position: relative; flex: none; }
-            .success-left img { position: relative; height: 100%; }
-            .success-right { padding: 30px 20px; align-items: center; text-align: center; width: 100%; flex: none; }
+            .modal-container.wide-mode { flex-direction: column; max-width: 100%; overflow-y: auto; height: auto; }
+            .success-layout { flex-direction: column; }
+            .success-left { width: 100%; min-height: 200px; display: block; position: relative; }
+            .success-left img { position: relative; height: 200px; }
+            .success-right { padding: 30px 20px; align-items: center; text-align: center; width: 100%; }
             .success-info-box { text-align: left; }
             .success-right { align-items: stretch; }
             .lang-grid { grid-template-columns: 1fr; }
