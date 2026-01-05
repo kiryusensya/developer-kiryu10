@@ -28,7 +28,7 @@
             --neon-green: #00ff9d;
             /* エラー時の赤 */
             --neon-red: #ff2a2a; 
-            /* ★成功時の緑 */
+            /* 成功時の緑 */
             --success-green-border: #099c16;
         }
 
@@ -120,11 +120,9 @@
             cursor: pointer; transition: background 0.3s, transform 0.2s;
             font-family: inherit; justify-content: center;
             max-width: 100%;
-            /* 常時発光（紫） */
             animation: pulse-primary 2s infinite ease-in-out;
         }
         
-        /* ホバー時発光（青） */
         .btn-action:hover { 
             background: var(--hover-blue); 
             transform: scale(1.05); 
@@ -172,7 +170,7 @@
         }
         .modal-overlay.active .modal-container { transform: scale(1); }
         
-        /* ★変更: 成功時のモーダル（wide-mode）に緑の発光ボーダーを追加 */
+        /* 成功時のモーダル（緑の発光ボーダー） */
         .modal-container.wide-mode {
             max-width: 900px;
             padding: 0;
@@ -202,7 +200,6 @@
             outline: none; transition: all 0.3s;
             text-transform: uppercase;
         }
-        /* 入力フォーカス時も紫に発光 */
         .code-input:focus { border-color: var(--primary-color); box-shadow: 0 0 20px rgba(132, 7, 222, 0.5); }
         
         .btn-confirm {
@@ -211,11 +208,9 @@
             transition: all 0.2s; display: flex; justify-content: center; align-items: center;
             min-height: 56px; box-sizing: border-box; font-family: inherit;
             border: 1px solid rgba(255,255,255,0.2);
-            /* 常時発光（紫） */
             animation: pulse-primary 2s infinite ease-in-out;
         }
         
-        /* ホバー時発光（青） */
         .btn-confirm:hover { 
             background: var(--hover-blue); 
             transform: translateY(-2px); 
@@ -225,17 +220,25 @@
         
         .btn-confirm:disabled { 
             background: var(--primary-color); opacity: 0.8; cursor: wait; transform: none; 
-            animation: none; /* 無効時は光らせない */
+            animation: none; 
             box-shadow: none;
         }
 
-        /* --- エラー時の赤発光クラス --- */
+        /* --- ★エラー時の赤発光クラス（ボタン・入力欄用） --- */
         .error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
-            animation: none !important; /* 呼吸アニメーション停止 */
-            background-color: rgba(255, 42, 42, 0.1) !important; /* 背景も薄い赤に */
-            color: #ffcccc !important; /* 文字も少し赤みがかった白に */
+            animation: none !important; 
+            /* 背景を濃い赤に変更 */
+            background-color: rgba(255, 42, 42, 0.7) !important; 
+            color: white !important; 
+        }
+
+        /* --- ★エラー時のモーダル外枠発光クラス --- */
+        .modal-error-border {
+            border: 2px solid var(--neon-red) !important;
+            box-shadow: 0 0 30px rgba(255, 42, 42, 0.8) !important;
+            transition: all 0.3s;
         }
         
         #successPhase { display: none; width: 100%; height: 100%; }
@@ -289,7 +292,6 @@
             .lang-grid button:last-child:nth-child(odd) { grid-column: span 1; }
         }
 
-        /* さらに小さい画面（iPhone SEなど）向けの微調整 */
         @media (max-width: 480px) {
             .lang-modal { padding: 30px 20px; }
             .modal-container { padding: 30px 20px; }
@@ -320,7 +322,6 @@
             animation: pulse-core 1.5s ease-in-out infinite alternate;
         }
 
-        /* 外側の高速回転リング */
         .cyber-spinner::before {
             content: '';
             position: absolute;
@@ -334,7 +335,6 @@
             filter: drop-shadow(0 0 4px var(--neon-cyan));
         }
 
-        /* 内側のゆっくり逆回転リング */
         .cyber-spinner::after {
             content: '';
             position: absolute;
@@ -656,6 +656,7 @@
         confirmBtn.disabled = false;
         
         // クラス初期化
+        modalContainer.classList.remove('modal-error-border');
         codeInput.classList.remove('error-glow');
         confirmBtn.classList.remove('error-glow');
         
@@ -717,6 +718,7 @@
         statusContainer.innerHTML = "";
         
         // エラーグローは一旦消す
+        modalContainer.classList.remove('modal-error-border');
         codeInput.classList.remove('error-glow');
         confirmBtn.classList.remove('error-glow');
 
@@ -762,10 +764,13 @@
                 lucide.createIcons();
                 shakeModal();
                 
-                // 赤く光らせる (3秒)
+                // ★赤く光らせる (3秒)
+                modalContainer.classList.add('modal-error-border');
                 codeInput.classList.add('error-glow');
                 confirmBtn.classList.add('error-glow');
+                
                 setTimeout(() => {
+                    modalContainer.classList.remove('modal-error-border');
                     codeInput.classList.remove('error-glow');
                     confirmBtn.classList.remove('error-glow');
                 }, 3000);
@@ -777,10 +782,13 @@
             confirmBtn.textContent = t.modal_btn_auth;
             statusContainer.innerHTML = `<span class="error-msg">${t.msg_error}</span>`;
             
-            // 通信エラー時も赤く光らせる
+            // ★通信エラー時も赤く光らせる
+            modalContainer.classList.add('modal-error-border');
             codeInput.classList.add('error-glow');
             confirmBtn.classList.add('error-glow');
+            
             setTimeout(() => {
+                modalContainer.classList.remove('modal-error-border');
                 codeInput.classList.remove('error-glow');
                 confirmBtn.classList.remove('error-glow');
             }, 3000);
