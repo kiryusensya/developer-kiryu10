@@ -15,9 +15,9 @@
     <style>
         /* --- デザイン設定 --- */
         :root {
-            /* 通常時の緑 */
-            --primary-color: #099c16; 
-            /* ホバー時の青 */
+            /* ★変更: メインカラーを紫(#8407de)に設定 */
+            --primary-color: #8407de; 
+            /* ホバー時の青（維持） */
             --hover-blue: #3b82f6; 
             
             --glass-bg: rgba(255, 255, 255, 0.1);
@@ -97,11 +97,13 @@
         .card-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 25px 0; line-height: 1.6; }
         
         /* ★ボタンの発光アニメーション定義★ */
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 10px rgba(9, 156, 22, 0.5), 0 0 5px rgba(9, 156, 22, 0.3); }
-            50% { box-shadow: 0 0 25px rgba(9, 156, 22, 0.8), 0 0 15px rgba(9, 156, 22, 0.5); }
-            100% { box-shadow: 0 0 10px rgba(9, 156, 22, 0.5), 0 0 5px rgba(9, 156, 22, 0.3); }
+        /* 紫色の呼吸アニメーション */
+        @keyframes pulse-primary {
+            0% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5), 0 0 5px rgba(132, 7, 222, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(132, 7, 222, 0.8), 0 0 15px rgba(132, 7, 222, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5), 0 0 5px rgba(132, 7, 222, 0.3); }
         }
+        /* 青色の呼吸アニメーション */
         @keyframes pulse-blue {
             0% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4); }
             50% { box-shadow: 0 0 35px rgba(59, 130, 246, 1.0), 0 0 20px rgba(59, 130, 246, 0.7); }
@@ -112,12 +114,12 @@
             display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; border-radius: 50px;
             background: var(--primary-color);
             color: white; text-decoration: none; font-weight: bold; font-size: 15px;
-            border: 1px solid rgba(255,255,255,0.2); /* 光を際立たせる薄い境界線 */
+            border: 1px solid rgba(255,255,255,0.2); 
             cursor: pointer; transition: background 0.3s, transform 0.2s;
             font-family: inherit; justify-content: center;
             max-width: 100%;
-            /* ★常時発光（緑） */
-            animation: pulse-green 2s infinite ease-in-out;
+            /* ★常時発光（紫） */
+            animation: pulse-primary 2s infinite ease-in-out;
         }
         
         /* ★ホバー時発光（青） */
@@ -125,7 +127,7 @@
             background: var(--hover-blue); 
             transform: scale(1.05); 
             border-color: rgba(59, 130, 246, 0.8);
-            animation: pulse-blue 1.0s infinite ease-in-out; /* 点滅を少し速く */
+            animation: pulse-blue 1.0s infinite ease-in-out; 
         }
 
         footer { padding: 20px; font-size: 13px; color: var(--text-muted); text-align: center; width: 100%; }
@@ -188,8 +190,8 @@
             outline: none; transition: border-color 0.3s, box-shadow 0.3s;
             text-transform: uppercase;
         }
-        /* 入力フォーカス時も緑に発光 */
-        .code-input:focus { border-color: var(--primary-color); box-shadow: 0 0 20px rgba(9, 156, 22, 0.5); }
+        /* 入力フォーカス時も紫に発光 */
+        .code-input:focus { border-color: var(--primary-color); box-shadow: 0 0 20px rgba(132, 7, 222, 0.5); }
         
         .btn-confirm {
             width: 100%; padding: 16px; border-radius: 12px; background: var(--primary-color);
@@ -197,8 +199,8 @@
             transition: all 0.2s; display: flex; justify-content: center; align-items: center;
             min-height: 56px; box-sizing: border-box; font-family: inherit;
             border: 1px solid rgba(255,255,255,0.2);
-            /* ★常時発光（緑） */
-            animation: pulse-green 2s infinite ease-in-out;
+            /* ★常時発光（紫） */
+            animation: pulse-primary 2s infinite ease-in-out;
         }
         
         /* ★ホバー時発光（青） */
