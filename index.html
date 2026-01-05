@@ -178,9 +178,7 @@
         }
         .modal-overlay.active .modal-container { transform: scale(1); }
         
-        /* ★ Siri Glow Effect (Apple Intelligence Style) ★ 
-         紫・青・緑・シアンが混ざり合って回転するグラデーションアニメーション
-        */
+        /* ★ Siri Glow Effect (Border Only Version) ★ */
         @keyframes siri-glow-flow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -192,23 +190,28 @@
             padding: 0;
             display: flex;
             flex-direction: row;
-            /* Glowを外側に見せるため visible に */
-            overflow: visible !important; 
-            /* 既存のボーダーと背景を消して擬似要素に任せる */
-            border: none !important;
-            box-shadow: none !important;
-            background: transparent !important;
             position: relative;
             z-index: 1;
+            
+            /* 内部の背景色：ここで「枠の内側」を塗りつぶして裏のグラデーションを隠す */
+            background: rgba(20, 20, 20, 0.95) !important; 
+            border-radius: 24px;
+            
+            /* 既存のボーダーや影を消す */
+            border: none !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+            overflow: visible !important;
         }
 
-        /* 外側のGlowレイヤー（ぼかし発光） */
+        /* 外枠のグラデーションライン */
         .modal-container.wide-mode::before {
             content: '';
             position: absolute;
-            /* ボーダーの太さ分マイナスに設定 */
-            top: -4px; left: -4px; right: -4px; bottom: -4px;
-            border-radius: 26px; /* コンテナより少し大きく */
+            /* ここで枠の太さを決める（マイナス値が大きいほど太くなる） */
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
+            border-radius: 26px; /* 本体より少し大きく */
+            
+            /* Siriカラーのグラデーション */
             background: linear-gradient(
                 60deg,
                 #8407de, /* Purple */
@@ -219,24 +222,15 @@
                 #3b82f6  /* Blue Loop */
             );
             background-size: 300% 300%;
-            animation: siri-glow-flow 3s ease infinite;
-            z-index: -2;
-            filter: blur(10px); /* 光を拡散させる */
-            opacity: 0.9;
-        }
-
-        /* 内側の背景レイヤー（文字が見えるように暗くする） */
-        .modal-container.wide-mode::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 24px;
-            background: rgba(20, 20, 20, 0.85); /* ダークな半透明背景 */
-            backdrop-filter: blur(20px);
-            z-index: -1;
-            /* 内側にうっすら境界線を入れて締まりを出す */
-            border: 1px solid rgba(255,255,255,0.15); 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            animation: siri-glow-flow 3s linear infinite;
+            z-index: -1; /* 本体の後ろに配置 */
+            
+            /* filter: blur(...) の値を調整することで
+               「くっきりした枠」か「ふんわりした光」かを変えられます。
+               今回は「枠」に見えるよう小さめの値にしています。
+            */
+            filter: blur(4px);
+            opacity: 1;
         }
 
         .modal-close {
