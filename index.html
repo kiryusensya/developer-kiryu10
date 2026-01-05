@@ -28,8 +28,10 @@
             --neon-green: #00ff9d;
             /* エラー時の赤 */
             --neon-red: #ff2a2a; 
-            /* 成功時の緑 */
-            --success-green-border: #099c16;
+            
+            /* 成功時の緑2色 */
+            --success-green-light: #099c16;
+            --success-green-dark: #047016;
         }
 
         /* 全要素に対して余白計算を統一 */
@@ -170,15 +172,31 @@
         }
         .modal-overlay.active .modal-container { transform: scale(1); }
         
-        /* 成功時のモーダル（緑の発光ボーダー） */
+        /* ★成功時のモーダル外枠アニメーション定義 */
+        @keyframes success-pulse {
+            0% {
+                border-color: var(--success-green-light);
+                box-shadow: 0 0 25px rgba(9, 156, 22, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            }
+            50% {
+                border-color: var(--success-green-dark);
+                box-shadow: 0 0 15px rgba(4, 112, 22, 0.4), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            }
+            100% {
+                border-color: var(--success-green-light);
+                box-shadow: 0 0 25px rgba(9, 156, 22, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            }
+        }
+
         .modal-container.wide-mode {
             max-width: 900px;
             padding: 0;
             display: flex;
             flex-direction: row;
             overflow: hidden;
-            border: 2px solid var(--success-green-border);
-            box-shadow: 0 0 25px rgba(9, 156, 22, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 2px solid var(--success-green-light);
+            /* ★5秒かけてゆっくり点滅 */
+            animation: success-pulse 5s infinite ease-in-out;
         }
 
         .modal-close {
@@ -224,17 +242,23 @@
             box-shadow: none;
         }
 
-        /* --- ★エラー時の赤発光クラス（ボタン・入力欄用） --- */
-        .error-glow {
+        /* --- ★エラー時の赤発光クラス（ボタン用：中身も赤く） --- */
+        .btn-confirm.error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
             animation: none !important; 
-            /* 背景を濃い赤に変更 */
             background-color: rgba(255, 42, 42, 0.7) !important; 
             color: white !important; 
         }
 
-        /* --- ★エラー時のモーダル外枠発光クラス --- */
+        /* --- ★エラー時の赤発光クラス（入力欄用：外枠のみ赤く） --- */
+        .code-input.error-glow {
+            border-color: var(--neon-red) !important;
+            box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
+            /* 背景色は変えない */
+        }
+
+        /* --- エラー時のモーダル外枠発光クラス --- */
         .modal-error-border {
             border: 2px solid var(--neon-red) !important;
             box-shadow: 0 0 30px rgba(255, 42, 42, 0.8) !important;
