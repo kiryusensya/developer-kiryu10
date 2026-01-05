@@ -15,9 +15,9 @@
     <style>
         /* --- デザイン設定 --- */
         :root {
-            /* ★変更: 通常時のメインカラーを指定の緑(#099c16)に設定 */
-            --primary-color: #6b05ab; 
-            /* ★追加: ホバー時用の元の青色 */
+            /* 通常時の緑 */
+            --primary-color: #099c16; 
+            /* ホバー時の青 */
             --hover-blue: #3b82f6; 
             
             --glass-bg: rgba(255, 255, 255, 0.1);
@@ -28,7 +28,7 @@
             --neon-green: #00ff9d;
         }
 
-        /* 全要素に対して余白計算を統一（横スクロール防止の要） */
+        /* 全要素に対して余白計算を統一 */
         *, *::before, *::after {
             box-sizing: border-box;
         }
@@ -40,7 +40,7 @@
             color: var(--text-main);
             background-image: url('https://static.wixstatic.com/media/2f0694_4d2ff9ae44cb47edad6e3bb1f8b83ae2~mv2.jpg/v1/fill/w_1200,h_750,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/jia-kongno-huo-xingya-xingwo-chitsu3ci-yuan-kong-jianshin.jpg');
             background-size: cover; background-position: center; background-attachment: fixed;
-            overflow-x: hidden; /* 横スクロールを強制的に禁止 */
+            overflow-x: hidden;
             width: 100%;
         }
 
@@ -96,28 +96,42 @@
         .card-title { font-size: 22px; font-weight: bold; margin: 0 0 10px 0; }
         .card-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 25px 0; line-height: 1.6; }
         
+        /* ★ボタンの発光アニメーション定義★ */
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 10px rgba(9, 156, 22, 0.5), 0 0 5px rgba(9, 156, 22, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(9, 156, 22, 0.8), 0 0 15px rgba(9, 156, 22, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(9, 156, 22, 0.5), 0 0 5px rgba(9, 156, 22, 0.3); }
+        }
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(59, 130, 246, 1.0), 0 0 20px rgba(59, 130, 246, 0.7); }
+            100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+
         .btn-action {
             display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; border-radius: 50px;
-            background: var(--primary-color); /* 通常時は緑 */
+            background: var(--primary-color);
             color: white; text-decoration: none; font-weight: bold; font-size: 15px;
-            border: none; cursor: pointer; transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-            /* 通常時は緑の影 */
-            box-shadow: 0 4px 15px rgba(9, 156, 22, 0.4);
+            border: 1px solid rgba(255,255,255,0.2); /* 光を際立たせる薄い境界線 */
+            cursor: pointer; transition: background 0.3s, transform 0.2s;
             font-family: inherit; justify-content: center;
             max-width: 100%;
+            /* ★常時発光（緑） */
+            animation: pulse-green 2s infinite ease-in-out;
         }
-        /* ★変更: ホバー時は青色に変更 */
+        
+        /* ★ホバー時発光（青） */
         .btn-action:hover { 
             background: var(--hover-blue); 
             transform: scale(1.05); 
-            /* 影も青色に */
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+            border-color: rgba(59, 130, 246, 0.8);
+            animation: pulse-blue 1.0s infinite ease-in-out; /* 点滅を少し速く */
         }
 
         footer { padding: 20px; font-size: 13px; color: var(--text-muted); text-align: center; width: 100%; }
         .footer-link { color: white; text-decoration: none; border-bottom: 1px dotted white; }
 
-        /* --- ★言語選択オーバーレイ★ --- */
+        /* --- 言語選択 --- */
         #langSelectionOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px);
@@ -136,7 +150,7 @@
             grid-column: span 2;
         }
 
-        /* --- モーダル基本設定 --- */
+        /* --- モーダル --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
@@ -174,18 +188,32 @@
             outline: none; transition: border-color 0.3s, box-shadow 0.3s;
             text-transform: uppercase;
         }
-        /* 入力フォーカス時は緑色 */
-        .code-input:focus { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(9, 156, 22, 0.3); }
+        /* 入力フォーカス時も緑に発光 */
+        .code-input:focus { border-color: var(--primary-color); box-shadow: 0 0 20px rgba(9, 156, 22, 0.5); }
         
         .btn-confirm {
             width: 100%; padding: 16px; border-radius: 12px; background: var(--primary-color);
             color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer;
             transition: all 0.2s; display: flex; justify-content: center; align-items: center;
             min-height: 56px; box-sizing: border-box; font-family: inherit;
+            border: 1px solid rgba(255,255,255,0.2);
+            /* ★常時発光（緑） */
+            animation: pulse-green 2s infinite ease-in-out;
         }
-        /* ★変更: ホバー時は青色に変更 */
-        .btn-confirm:hover { background: var(--hover-blue); transform: translateY(-2px); }
-        .btn-confirm:disabled { background: var(--primary-color); opacity: 0.8; cursor: wait; transform: none; }
+        
+        /* ★ホバー時発光（青） */
+        .btn-confirm:hover { 
+            background: var(--hover-blue); 
+            transform: translateY(-2px); 
+            border-color: rgba(59, 130, 246, 0.8);
+            animation: pulse-blue 1.0s infinite ease-in-out;
+        }
+        
+        .btn-confirm:disabled { 
+            background: var(--primary-color); opacity: 0.8; cursor: wait; transform: none; 
+            animation: none; /* 無効時は光らせない */
+            box-shadow: none;
+        }
         
         #successPhase { display: none; width: 100%; height: 100%; }
         .success-layout { display: flex; width: 100%; min-height: 500px; }
