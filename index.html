@@ -28,6 +28,10 @@
             --neon-green: #00ff9d;
             /* エラー時の赤 */
             --neon-red: #ff2a2a; 
+            
+            /* 成功時の緑2色 */
+            --success-green-light: #099c16;
+            --success-green-dark: #047016;
         }
 
         /* 全要素に対して余白計算を統一 */
@@ -178,20 +182,23 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* ★ 成功時のワイドモーダル (修正版) ★ */
+        /* ★ 成功時のワイドモーダル (修正版：背景黒を強制) ★ */
         .modal-container.wide-mode {
             max-width: 900px;
             padding: 0;
             display: flex;
             flex-direction: row;
-            /* ここで背景色を「黒」に指定して、中身が塗りつぶされるのを防ぐ */
+            
+            /* 重要：ボックス本体の背景を「完全な黒」に指定 */
             background: #141414 !important; 
             border: none !important;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+            
             overflow: visible !important; 
             max-height: none !important;
             height: auto;
             border-radius: 24px;
+            
             /* スタッキングコンテキストを確立 */
             position: relative;
             z-index: 1;
@@ -215,6 +222,11 @@
             z-index: -1; 
             filter: blur(6px);
             opacity: 1;
+        }
+
+        /* 以前の ::after は不要なので削除 */
+        .modal-container.wide-mode::after {
+            display: none;
         }
 
         .modal-close {
@@ -291,7 +303,12 @@
 
         .success-left { flex: 1; background-color: rgba(0,0,0,0.3); position: relative; display: none; }
         .success-left img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
-        .success-right { flex: 1.2; padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
+        /* 重要：右側コンテナの背景を透明にする（親の黒背景を見せるため） */
+        .success-right { 
+            flex: 1.2; padding: 40px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; 
+            background: transparent !important;
+        }
 
         /* ★「アクセスが承認されました」バッジの発光設定 (修正版) ★ */
         .success-tag {
