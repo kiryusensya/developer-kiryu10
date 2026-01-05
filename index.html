@@ -28,6 +28,8 @@
             --neon-green: #00ff9d;
             /* エラー時の赤 */
             --neon-red: #ff2a2a; 
+            /* ★成功時の緑 */
+            --success-green-border: #099c16;
         }
 
         /* 全要素に対して余白計算を統一 */
@@ -169,7 +171,17 @@
             display: flex; flex-direction: column;
         }
         .modal-overlay.active .modal-container { transform: scale(1); }
-        .modal-container.wide-mode { max-width: 900px; padding: 0; display: flex; flex-direction: row; overflow: hidden; }
+        
+        /* ★変更: 成功時のモーダル（wide-mode）に緑の発光ボーダーを追加 */
+        .modal-container.wide-mode {
+            max-width: 900px;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            border: 2px solid var(--success-green-border);
+            box-shadow: 0 0 25px rgba(9, 156, 22, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
 
         .modal-close {
             position: absolute; top: 20px; right: 20px; cursor: pointer; color: rgba(255,255,255,0.6); transition: color 0.2s; z-index: 100;
@@ -217,7 +229,7 @@
             box-shadow: none;
         }
 
-        /* --- ★エラー時の赤発光クラス★ --- */
+        /* --- エラー時の赤発光クラス --- */
         .error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
@@ -750,13 +762,13 @@
                 lucide.createIcons();
                 shakeModal();
                 
-                // ★赤く光らせる (3秒)
+                // 赤く光らせる (3秒)
                 codeInput.classList.add('error-glow');
                 confirmBtn.classList.add('error-glow');
                 setTimeout(() => {
                     codeInput.classList.remove('error-glow');
                     confirmBtn.classList.remove('error-glow');
-                }, 500);
+                }, 3000);
             }
         } catch (error) {
             console.error(error);
@@ -765,7 +777,7 @@
             confirmBtn.textContent = t.modal_btn_auth;
             statusContainer.innerHTML = `<span class="error-msg">${t.msg_error}</span>`;
             
-            // ★通信エラー時も赤く光らせる
+            // 通信エラー時も赤く光らせる
             codeInput.classList.add('error-glow');
             confirmBtn.classList.add('error-glow');
             setTimeout(() => {
