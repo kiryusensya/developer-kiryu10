@@ -881,39 +881,49 @@
                 grid-column: span 1; 
             }
 
-            /* ★修正: スマホでもPCと同じく5列横並びにする */
+            /* ★修正点: スマホでの横スクロール対応とPC型維持 */
             .support-grid {
-                /* 強制的に5列にする */
-                grid-template-columns: repeat(5, 1fr) !important; 
-                gap: 4px; /* 隙間を極力狭くする */
+                /* GridをやめてFlexboxにして横並びスクロールにする */
+                display: flex !important; 
+                flex-direction: row;
+                overflow-x: auto; /* 横スクロール許可 */
+                gap: 15px; /* ボックス間の余白 */
+                padding-bottom: 20px; /* スクロールバーのための余白 */
+                justify-content: flex-start; /* 左から並べる */
+                
+                /* スクロールを滑らかにする */
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
             }
             
-            /* 個別の列指定をリセットして自動配置に戻す */
+            /* 個別の列指定を解除 */
             .support-item:nth-child(n) {
                 grid-column: auto !important;
             }
 
-            /* ★高さ統一：スマホでもPCと同じ高さ(280px) */
+            /* ★ボックスの形状設定（PCと同じ形を維持する） */
             .support-item { 
-                height: 280px; 
-                padding: 10px 2px; /* パディングを詰める */
-                min-width: 0; /* フレックスアイテムの縮小を許可 */
-            }
-            .support-item i { 
-                font-size: 28px; /* アイコンサイズを少し小さくして収める */
-            }
-            .support-item span { 
-                font-size: 10px; /* 文字サイズを小さく */
-                word-break: break-all; /* はみ出し防止 */
+                height: 280px; /* PCと同じ高さ */
+                min-width: 160px; /* ★重要：つぶれないように最小幅を固定 */
+                width: 160px; /* 幅も固定 */
+                flex: 0 0 auto; /* フレックス内で縮小しないようにする */
+                scroll-snap-align: center; /* スクロール時に中央に吸着 */
+                padding: 20px 10px; /* 余白もPCと同じに */
             }
             
-            /* スマホ用のボタン調整（しっかり横になるように） */
+            .support-item i { 
+                font-size: 48px; /* アイコンサイズもPCと同じ */
+            }
+            .support-item span { 
+                font-size: 14px; /* 文字サイズもPCと同じ */
+            }
+            
+            /* ボタンがはみ出さないように調整 */
             .btn-inquiry-small {
-                padding: 6px 0; /* 横パディング0で幅を確保 */
-                width: 90%;
-                font-size: 10px;
-                white-space: nowrap; /* 折り返し禁止 */
-                margin-bottom: 10px;
+                width: 90%; /* 幅を少し狭めて収まりよくする */
+                font-size: 12px;
+                white-space: nowrap;
+                margin-bottom: 20px;
             }
         }
 
