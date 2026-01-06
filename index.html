@@ -881,14 +881,21 @@
                 grid-column: span 1; 
             }
 
-            /* ★修正点: スマホでの横スクロール対応とPC型維持 */
+            /* ★修正: スマホでの横スクロール対応とPC型維持 */
             .support-grid {
                 /* GridをやめてFlexboxにして横並びスクロールにする */
                 display: flex !important; 
                 flex-direction: row;
                 overflow-x: auto; /* 横スクロール許可 */
                 gap: 15px; /* ボックス間の余白 */
-                padding-bottom: 20px; /* スクロールバーのための余白 */
+                
+                /* ★重要: パディングを追加してホバー時の見切れを防止 */
+                padding: 20px 10px; 
+                
+                /* モーダルの端まで広げる */
+                margin: 0 -20px; 
+                width: calc(100% + 40px);
+                
                 justify-content: flex-start; /* 左から並べる */
                 
                 /* スクロールを滑らかにする */
