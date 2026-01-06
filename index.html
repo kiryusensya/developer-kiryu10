@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>_.k__yu.10</title>
+    <title>kiryu-sensya(Developers)</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,7 +91,7 @@
             flex-direction: column; 
             align-items: center;
             color: var(--text-main);
-            background-image: url('https://static.wixstatic.com/media/2f0694_4d2ff9ae44cb47edad6e3bb1f8b83ae2~mv2.jpg/v1/fill/w_1200,h_750,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/jia-kongno-huo-xingya-xingwo-chitsu3ci-yuan-kong-jianshin.jpg');
+            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
             background-size: cover; 
             background-position: center; 
             background-attachment: fixed;
@@ -191,7 +191,7 @@
             width: 45px; 
             height: 45px; 
             border-radius: 50%;
-            background-image: url('https://static.wixstatic.com/media/2f0694_bd65f14c98474408a7f54e430a57f9a3~mv2.jpg/v1/fill/w_1126,h_1488,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Gemini_Generated_Image_iu9ecaiu9ecaiu9e_.jpg');
+            background-image: url('https://static.wixstatic.com/media/2f0694_94084522973d4a92834268413fc68d95~mv2.png/v1/crop/x_0,y_0,w_2176,h_1742/fill/w_1200,h_960,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/kiryu-sensya.png');
             background-size: cover; 
             border: 2px solid rgba(255,255,255,0.5);
             flex-shrink: 0;
@@ -1049,7 +1049,7 @@
     </div>
 
     <header>
-        <div class="logo"><i data-lucide="user-round-check" style="color: #9347FF;"></i>_.k__yu.10</div>
+        <div class="logo"><i data-lucide="user-round-check" style="color: #9347FF;"></i>kiryu_sensya(Developers)</div>
         <div class="header-right">
             <select id="languageSwitcher" class="lang-select glass-panel">
                 <option value="ja" selected>日本語</option>
@@ -1066,17 +1066,17 @@
         <div class="grid-menu">
             <div class="menu-card glass-panel">
                 <div class="card-icon-box"><i data-lucide="key" size="40"></i></div>
-                <h3 class="card-title" data-translate="card1_title">アクセス解放</h3>
-                <p class="card-desc" data-translate="card1_desc">コードを入力して<br>限定コンテンツをアンロック</p>
+                <h3 class="card-title" data-translate="card1_title">アクティベーション</h3>
+                <p class="card-desc" data-translate="card1_desc">コードを使用してコンテンツをアンロック</p>
                 <button id="btnOpenModal" class="btn-action">
-                    <span data-translate="card1_btn">コードを入力</span><i data-lucide="download" size="16"></i>
+                    <span data-translate="card1_btn">コードを使用</span><i data-lucide="download" size="16"></i>
                 </button>
             </div>
 
             <div class="menu-card glass-panel">
                 <div class="card-icon-box" style="color: #f472b6;"><i data-lucide="newspaper" size="40"></i></div>
                 <h3 class="card-title" data-translate="card2_title">ニュース</h3>
-                <p class="card-desc" data-translate="card2_desc">このサイトに関する<br>最新のアップデート情報</p>
+                <p class="card-desc" data-translate="card2_desc">このサイトに関する最新のアップデート情報</p>
                 <button id="btnOpenNews" class="btn-action">
                     <span data-translate="card2_btn">確認する</span><i data-lucide="circle-fading-arrow-up" size="16"></i>
                 </button>
@@ -1094,7 +1094,7 @@
     </div>
 
     <footer>
-        Enforcement Administer: <a href="https://lit.link/kiryusensya" target="_blank" class="footer-link">kiryu-sensya</a>
+        Enforcement Administer: <a href="https://developer-kiryu10.vercel.app/" target="_blank" class="footer-link">kiryu-sensya</a>
         <br><span style="opacity: 0.5; font-size: 11px;">© 2019-2026 kiryu-sensya. All rights reserved.</span>
     </footer>
 
@@ -1103,7 +1103,7 @@
             <div class="modal-close" id="modalCloseBtn"><i data-lucide="x"></i></div>
 
             <div id="inputPhase">
-                <h2 class="modal-title" data-translate="modal_title">アクセス解放</h2>
+                <h2 class="modal-title" data-translate="modal_title">アクティベーション</h2>
                 <p class="modal-sub" data-translate="modal_sub">コードを入力してください。</p>
                 <div class="input-wrapper">
                     <input type="text" id="activationCode" class="code-input" placeholder="コードを入力" autocomplete="off">
@@ -1122,10 +1122,10 @@
                         
                         <div class="success-tag">
                             <i data-lucide="circle-check-big" size="23"></i>
-                            <span data-translate="success_badge">アクセスが承認されました</span>
+                            <span data-translate="success_badge">コードが認証されました。</span>
                         </div>
                         
-                        <h2 class="success-title-main" data-translate="success_main_title">解放されたコンテンツリスト</h2>
+                        <h2 class="success-title-main" data-translate="success_main_title">有効化されたコンテンツ</h2>
                         
                         <div class="success-info-box">
                             <div class="success-label" data-translate="success_label_name">コンテンツ名称</div>
@@ -1173,7 +1173,7 @@
         <div class="modal-container glass-panel wide-support-mode">
             <div class="modal-close" id="supportCloseX"><i data-lucide="x"></i></div>
 
-            <h2 class="modal-title" style="margin-bottom: 20px;" data-translate="support_modal_title">お問い合わせ</h2>
+            <h2 class="modal-title" style="margin-bottom: 20px;" data-translate="support_modal_title">サポート</h2>
             
             <div class="support-grid">
                 <div class="support-item">
@@ -1214,68 +1214,68 @@
     // --- 翻訳データ ---
     const TRANSLATIONS = {
         ja: {
-            card1_title: "アクセス解放", card1_desc: "コードを入力して<br>限定コンテンツをアンロック", card1_btn: "コードを入力",
-            card2_title: "ニュース", card2_desc: "このサイトに関する<br>最新のアップデート情報", card2_btn: "確認する",
+            card1_title: "アクティベーション", card1_desc: "コードを使用してコンテンツをアンロック", card1_btn: "コードを使用",
+            card2_title: "ニュース", card2_desc: "このサイトに関するアップデート情報", card2_btn: "確認する",
             card3_title: "サポート", card3_desc: "コードが無効な場合などは<br>こちらからご連絡ください", card3_btn: "問い合わせ",
-            modal_title: "アクセス解放", modal_sub: "コードを入力してください。",
+            modal_title: "アクティベーション", modal_sub: "コードを入力してください。",
             modal_placeholder: "コードを入力", modal_btn_auth: "認証する",
             msg_verifying: "確認中",
             msg_invalid: "このコードは無効です。", 
             msg_used: "このコードは既に使用済みです。", 
-            msg_error: "通信エラーが発生しました",
-            success_badge: "アクセスが承認されました", success_main_title: "解放されたコンテンツリスト",
+            msg_error: "通信エラーが発生しました。",
+            success_badge: "コードが認証されました。", success_main_title: "有効化されたコンテンツ",
             success_label_name: "コンテンツ名称", btn_close: "閉じる", btn_download: "ダウンロード",
-            news_title: "最新情報", news_label: "変更ログ", news_content: "韓国語,ロシア語が追加されました。<br>1度限り使用可能なコードを発行しました。",
+            news_title: "最新情報", news_label: "変更ログ", news_content: "デザインがアップデートされました。<br>韓国語,ロシア語が追加されました。<br>1度限りのコードを発行しました。",
             // Support Modal (キー追加)
-            support_modal_title: "お問い合わせ", btn_inquiry: "問い合わせ"
+            support_modal_title: "何かお困りですか？ ", btn_inquiry: "問い合わせ"
         },
         en: {
-            card1_title: "Access Unlock", card1_desc: "Enter code to unlock<br>exclusive content", card1_btn: "Enter Code",
-            card2_title: "News", card2_desc: "Latest updates <br>about this site.", card2_btn: "Check",
+            card1_title: "Activation", card1_desc: "Enter code to unlock content", card1_btn: "Use Code",
+            card2_title: "News", card2_desc: "Updates about this site.", card2_btn: "Check",
             card3_title: "Support", card3_desc: "Contact us if your code<br>is invalid or missing.", card3_btn: "Contact Us",
-            modal_title: "Access Unlock", modal_sub: "Please enter your code.",
+            modal_title: "Activation", modal_sub: "Please enter your code.",
             modal_placeholder: "Enter Code", modal_btn_auth: "CHECK",
             msg_verifying: "Checking",
             msg_invalid: "This code is invalid.",
             msg_used: "This code has already been used.",
             msg_error: "Connection error occurred.",
-            success_badge: "Your access has been authorized.", success_main_title: "List of Available Content",
+            success_badge: "The code has been activated.", success_main_title: "Activated content",
             success_label_name: "Content Name", btn_close: "Close", btn_download: "Download",
-            news_title: "Latest News", news_label: "Changelog", news_content: "Korean and Russian have been added.<br> A one-time use code has been issued.",
-            support_modal_title: "Contact Support", btn_inquiry: "Inquiry"
+            news_title: "Latest News", news_label: "Changelog", news_content: "The design has been updated.<br>Korean and Russian have been added.<br>A one-time code has been issued.",
+            support_modal_title: "What can I help you with?", btn_inquiry: "Contact Us"
         },
         zh: {
-            card1_title: "访问解锁", card1_desc: "输入代码以解锁<br>独家内容", card1_btn: "输入代码",
-            card2_title: "新闻", card2_desc: "本网站的<br>最新更新信息", card2_btn: "查看",
-            card3_title: "支持", card3_desc: "如果代码无效<br>请联系我们", card3_btn: "联系我们",
-            modal_title: "访问解锁", modal_sub: "请输入您的激活码",
+            card1_title: "激活", card1_desc: "使用代码以解锁内容", card1_btn: "使用代码",
+            card2_title: "新闻", card2_desc: "本网站的更新信息", card2_btn: "查看",
+            card3_title: "支持", card3_desc: "如果代码无效请联系我们", card3_btn: "联系我们",
+            modal_title: "激活", modal_sub: "请输入您的激活码",
             modal_placeholder: "输入代码", modal_btn_auth: "检查",
             msg_verifying: "正在检查",
             msg_invalid: "该代码无效。",
             msg_used: "该代码已被使用。",
             msg_error: "发生通信错误",
-            success_badge: "访问已批准", success_main_title: "可用内容列表",
+            success_badge: "代码已激活。", success_main_title: "激活内容",
             success_label_name: "内容名称", btn_close: "关闭", btn_download: "下载",
-            news_title: "最新消息", news_label: "更新日志", news_content: "韩语、俄语已新增支持。<br>已为您生成仅限一次性使用的代码。",
-            support_modal_title: "联系支持", btn_inquiry: "咨询"
+            news_title: "最新消息", news_label: "更新日志", news_content: "设计已更新。<br>新增韩语和俄语支持。<br>一次性码已生成。",
+            support_modal_title: "有什么可以帮到您的吗？", btn_inquiry: "联系我们"
         },
         ko: {
-            card1_title: "액세스 해제", card1_desc: "코드를 입력하여<br>한정 콘텐츠 잠금 해제", card1_btn: "코드 입력",
+            card1_title: "활성화", card1_desc: "잠금 해제 코드 입력 콘텐츠", card1_btn: "사용 코드",
             card2_title: "뉴스", card2_desc: "이 사이트에 관한<br>최신 업데이트 정보", card2_btn: "확인",
             card3_title: "지원", card3_desc: "코드가 유효하지 않은 경우<br>여기로 연락주십시오", card3_btn: "문의하기",
-            modal_title: "액세스 해제", modal_sub: "보유하신 활성화 코드를 입력해 주세요",
+            modal_title: "활성화", modal_sub: "보유하신 활성화 코드를 입력해 주세요",
             modal_placeholder: "코드 입력", modal_btn_auth: "인증하기",
             msg_verifying: "확인 중",
             msg_invalid: "유효하지 않은 코드입니다.",
             msg_used: "이미 사용된 코드입니다.",
             msg_error: "통신 오류가 발생했습니다",
-            success_badge: "액세스 승인됨", success_main_title: "이용 가능한 콘텐츠 목록",
+            success_badge: "코드가 활성화되었습니다.", success_main_title: "활성화된 콘텐츠",
             success_label_name: "콘텐츠 명칭", btn_close: "닫기", btn_download: "다운로드",
-            news_title: "최신 정보", news_label: "변경 내역", news_content: "한국어, 러시아어가 추가되었습니다.<br>1회 한정 사용 가능한 코드를 발행했습니다.",
-            support_modal_title: "문의하기", btn_inquiry: "문의"
+            news_title: "최신 정보", news_label: "변경 내역", news_content: "디자인이 업데이트되었습니다.<br>한국어와 러시아어가 추가되었습니다.<br>일회용 코드가 발급되었습니다.",
+            support_modal_title: "뭘 도와드릴까요?", btn_inquiry: "문의"
         },
         ru: {
-            card1_title: "Доступ", card1_desc: "Введите код для разблокировки<br>эксклюзивного контента", card1_btn: "Ввод кода",
+            card1_title: "Активация", card1_desc: "Введите код для разблокировки<br>контента", card1_btn: "Код использования",
             card2_title: "Новости", card2_desc: "Последние обновления<br>о проекте", card2_btn: "Проверить",
             card3_title: "Поддержка", card3_desc: "Свяжитесь с нами, если<br>код недействителен", card3_btn: "Связаться",
             modal_title: "Активация", modal_sub: "Пожалуйста, введите ваш код активации",
@@ -1284,10 +1284,10 @@
             msg_invalid: "Неверный код.",
             msg_used: "Код уже использован.",
             msg_error: "Ошибка соединения",
-            success_badge: "Доступ разрешен", success_main_title: "Доступный контент",
+            success_badge: "Код активирован.", success_main_title: "Активированный контент",
             success_label_name: "Название", btn_close: "Закрыть", btn_download: "Скачать",
-            news_title: "Новости", news_label: "Список изменений", news_content: "Добавлены корейский и русский языки.<br>Выдан одноразовый код.",
-            support_modal_title: "Поддержка", btn_inquiry: "Запрос"
+            news_title: "Новости", news_label: "Список изменений", news_content: "Дизайн был обновлен.<br>Добавлены корейский и русский языки.<br>Выдан одноразовый код.",
+            support_modal_title: "Чем я могу вам помочь?", btn_inquiry: "Запрос"
         }
     };
 
@@ -1519,7 +1519,7 @@
                     modalContainer.classList.remove('modal-error-border');
                     codeInput.classList.remove('error-glow');
                     confirmBtn.classList.remove('error-glow');
-                }, 3000);
+                }, 1800);
             }
         } catch (error) {
             console.error(error);
