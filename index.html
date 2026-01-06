@@ -881,28 +881,23 @@
                 grid-column: span 1; 
             }
 
-            /* サポートモーダル：スマホレイアウト (上2列・下3列) */
+            /* ★修正点: スマホでもPCと同じく5列横並びにする */
             .support-grid {
-                grid-template-columns: repeat(6, 1fr);
-                gap: 8px; /* スマホでも隙間を狭く */
-            }
-            .support-item:nth-child(1), .support-item:nth-child(2) { 
-                grid-column: span 3; 
-            }
-            .support-item:nth-child(3), .support-item:nth-child(4), .support-item:nth-child(5) { 
-                grid-column: span 2; 
+                /* 強制的に5列にする */
+                grid-template-columns: repeat(5, 1fr); 
+                gap: 5px; /* 隙間を極力狭くする */
             }
             
-            /* ★高さ統一：スマホでもPCと同じ高さ */
+            /* ★高さ統一：スマホでもPCと同じ高さ(280px) */
             .support-item { 
                 height: 280px; 
-                padding: 15px 5px; 
+                padding: 15px 2px; /* パディングを詰めて内容を入れる */
             }
             .support-item i { 
-                font-size: 40px; 
+                font-size: 40px; /* アイコンサイズは維持 */
             }
             .support-item span { 
-                font-size: 12px; 
+                font-size: 12px; /* 文字サイズ維持 */
             }
         }
 
@@ -1199,7 +1194,7 @@
             success_label_name: "コンテンツ名称", btn_close: "閉じる", btn_download: "ダウンロード",
             news_title: "最新情報", news_label: "変更ログ", news_content: "韓国語,ロシア語が追加されました。<br>1度限り使用可能なコードを発行しました。",
             // Support Modal (キー追加)
-            support_modal_title: "お問い合わせ", btn_inquiry: "問い合わせ"
+            support_modal_title: "お困りですか？", btn_inquiry: "問い合わせ"
         },
         en: {
             card1_title: "Access Unlock", card1_desc: "Enter code to unlock<br>exclusive content", card1_btn: "Enter Code",
