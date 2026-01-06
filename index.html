@@ -8,11 +8,42 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
+        /* --- フォント定義 (セルフホスティング) --- */
+        /* ※実際のファイルパスに合わせて書き換えてください */
+
+        /* 1. HarmonyOS Sans (欧文・数字・ロシア語用) */
+        @font-face {
+            font-family: 'HarmonyOS Sans';
+            src: url('./assets/fonts/HarmonyOS_Sans_Regular.woff2') format('woff2'); 
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'HarmonyOS Sans';
+            src: url('./assets/fonts/HarmonyOS_Sans_Bold.woff2') format('woff2'); 
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        /* 2. HarmonyOS Sans SC (中国語用) */
+        @font-face {
+            font-family: 'HarmonyOS Sans SC';
+            src: url('./assets/fonts/HarmonyOS_Sans_SC_Regular.woff2') format('woff2'); 
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'HarmonyOS Sans SC';
+            src: url('./assets/fonts/HarmonyOS_Sans_SC_Bold.woff2') format('woff2'); 
+            font-weight: 700;
+            font-style: normal;
+        }
+
         /* --- デザイン設定 --- */
         :root {
             /* メインカラー：紫 */
@@ -40,7 +71,8 @@
         }
 
         body {
-            font-family: "HarmonyOS Sans", "Outfit", "Noto Sans JP", "Microsoft YaHei", "Malgun Gothic", sans-serif;
+            /* デフォルトフォント (JSで上書きされますが念のため) */
+            font-family: "HarmonyOS Sans", sans-serif;
             margin: 0; padding: 0; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
             color: var(--text-main);
@@ -48,6 +80,55 @@
             background-size: cover; background-position: center; background-attachment: fixed;
             overflow-x: hidden;
             width: 100%;
+        }
+
+        /* --- ★言語別フォント設定 (重要) --- */
+        
+        /* ルール: 左側のフォントから優先して使われます。
+           "HarmonyOS Sans" を一番左に置くことで、そこに含まれる「数字・英語」は必ずHarmonyOS Sansになります。
+           日本語や韓国語はHarmonyOS Sansに含まれていないため、自動的に次のフォント(Noto等)が使われます。
+        */
+
+        /* 日本語 (ja) */
+        html[lang="ja"] body,
+        html[lang="ja"] input,
+        html[lang="ja"] button,
+        html[lang="ja"] select,
+        html[lang="ja"] textarea {
+            font-family: "HarmonyOS Sans", "Noto Sans JP", sans-serif;
+        }
+
+        /* 英語 (en) */
+        html[lang="en"] body,
+        html[lang="en"] input,
+        html[lang="en"] button {
+            font-family: "HarmonyOS Sans", sans-serif;
+        }
+
+        /* 中国語 (zh) - 数字はGlobal版、漢字はSC版 */
+        html[lang="zh"] body,
+        html[lang="zh"] input,
+        html[lang="zh"] button {
+            font-family: "HarmonyOS Sans", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+        }
+
+        /* 韓国語 (ko) */
+        html[lang="ko"] body,
+        html[lang="ko"] input,
+        html[lang="ko"] button {
+            font-family: "HarmonyOS Sans", "Noto Sans KR", "Malgun Gothic", sans-serif;
+        }
+
+        /* ロシア語 (ru) - HarmonyOS Sansはキリル文字対応 */
+        html[lang="ru"] body,
+        html[lang="ru"] input,
+        html[lang="ru"] button {
+            font-family: "HarmonyOS Sans", sans-serif;
+        }
+
+        /* コード入力欄は常に英語フォント優先 */
+        .code-input {
+            font-family: "HarmonyOS Sans", sans-serif !important;
         }
 
         body::before {
@@ -192,37 +273,48 @@
             }
         }
 
-        /* 2. 青紫ミックスアニメーション (ホバー時 - 枠線 & 影) */
-        @keyframes anim-blue-purple {
+        /* 2. 青紫ミックスアニメーション (ホバー時 - メインボックス枠線用) */
+        /* 影は控えめに、枠線の色をより鮮やかに強調 */
+        @keyframes anim-box-blue-purple {
             0% {
-                border-color: #3b82f6; /* 青 */
-                box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), 0 0 5px rgba(59, 130, 246, 0.2);
+                border-color: #0066ff; /* より鮮やかな青 */
+                box-shadow: 0 0 15px rgba(0, 102, 255, 0.4), 0 0 5px rgba(0, 102, 255, 0.2);
             }
             50% {
-                border-color: #8407de; /* 紫 */
-                box-shadow: 0 0 40px rgba(132, 7, 222, 0.8), 0 0 20px rgba(132, 7, 222, 0.5);
+                border-color: #aa00ff; /* より鮮やかな紫 */
+                box-shadow: 0 0 25px rgba(170, 0, 255, 0.6), 0 0 10px rgba(170, 0, 255, 0.3);
             }
             100% {
-                border-color: #3b82f6; /* 青 */
-                box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), 0 0 5px rgba(59, 130, 246, 0.2);
+                border-color: #0066ff; /* より鮮やかな青 */
+                box-shadow: 0 0 15px rgba(0, 102, 255, 0.4), 0 0 5px rgba(0, 102, 255, 0.2);
             }
         }
 
-        /* 3. 青紫ミックスアニメーション (ホバー時 - バッジの枠線と背景のみ) */
-        /* ★修正：文字色(color)は含めない */
-        @keyframes anim-badge-border-bg {
+        /* 3. 青紫ミックスアニメーション (ホバー時 - バッジ & ボタン用) */
+        /* 影は控えめに、枠線の色をより鮮やかに強調 */
+        @keyframes anim-badge-blue-purple {
             0% {
-                border-color: #3b82f6;
-                background: rgba(59, 130, 246, 0.15);
+                border-color: #0066ff;
+                background: rgba(0, 102, 255, 0.15);
+                box-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
             }
             50% {
-                border-color: #8407de;
-                background: rgba(132, 7, 222, 0.15);
+                border-color: #aa00ff;
+                background: rgba(170, 0, 255, 0.15);
+                box-shadow: 0 0 25px rgba(170, 0, 255, 0.6);
             }
             100% {
-                border-color: #3b82f6;
-                background: rgba(59, 130, 246, 0.15);
+                border-color: #0066ff;
+                background: rgba(0, 102, 255, 0.15);
+                box-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
             }
+        }
+        
+        /* 4. アイコン(SVG)用 */
+        @keyframes anim-svg-mixed {
+            0% { filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)); }
+            50% { filter: drop-shadow(0 0 5px rgba(170, 0, 255, 0.8)); }
+            100% { filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)); }
         }
 
 
@@ -241,9 +333,9 @@
         
         /* --- モーダル設定 (ホバー連動時：青紫) --- */
         #modalContainer.wide-mode.sync-blue-mode {
-            /* 枠線のアニメーションを強制適用 */
-            animation: anim-blue-purple 3s infinite ease-in-out !important;
-            border-color: #3b82f6 !important;
+            /* !importantで確実に適用 */
+            animation: anim-box-blue-purple 3s infinite ease-in-out !important;
+            border-color: #0066ff !important; /* 初期値を鮮やかな青に */
         }
 
         .modal-close {
@@ -261,7 +353,7 @@
             border: 1px solid var(--glass-border); border-radius: 12px; padding: 16px;
             color: white; font-size: 18px; text-align: center;
             letter-spacing: 0em; 
-            font-family: "HarmonyOS Sans", sans-serif; 
+            /* font-familyは上で定義済み */
             outline: none; transition: all 0.3s;
             text-transform: uppercase;
         }
@@ -331,15 +423,16 @@
 
         /* ★★★ 連動モード適用：バッジ（枠線アニメーション + 文字色固定） ★★★ */
         #modalContainer.wide-mode.sync-blue-mode .success-tag {
-            /* 枠線と背景のアニメーション */
-            animation: anim-badge-border-bg 3s infinite ease-in-out !important;
-            /* 文字色は青固定（点滅させない） */
-            color: #3b82f6 !important;
+            /* 枠線と背景のアニメーション（青⇔紫） */
+            animation: anim-badge-blue-purple 3s infinite ease-in-out !important;
+            /* 文字色は鮮やかな青固定（点滅させない） */
+            color: #0066ff !important;
             text-shadow: none !important;
+            border-color: #0066ff !important;
         }
         /* アイコンも青固定（点滅させない） */
         #modalContainer.wide-mode.sync-blue-mode .success-tag svg {
-             filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.8)) !important;
+             filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)) !important;
              animation: none !important;
         }
         
@@ -358,9 +451,9 @@
         }
 
         /* ★★★ 連動モード適用：コンテンツ名 ★★★ */
-        /* 青色(#3b82f6)にするが、光らせない（text-shadow: none） */
+        /* 鮮やかな青色(#0066ff)にするが、光らせない（text-shadow: none） */
         #modalContainer.wide-mode.sync-blue-mode .success-content {
-            color: #3b82f6 !important;
+            color: #0066ff !important;
             text-shadow: none !important;
             animation: none !important;
         }
@@ -380,9 +473,9 @@
         #successDownloadBtn:hover {
             background: var(--hover-blue) !important;
             /* ホバー時：青紫ミックスアニメーション（枠線と影） */
-            animation: anim-blue-purple 3s infinite ease-in-out !important;
+            animation: anim-badge-blue-purple 3s infinite ease-in-out !important;
             transform: translateY(-2px);
-            border-color: #3b82f6 !important;
+            border-color: #0066ff !important;
         }
 
         #modalCloseSub {
@@ -727,6 +820,10 @@
     // --- 言語切り替えロジック ---
     function updateLanguage(lang) {
         CURRENT_LANG = lang;
+        
+        // ★HTMLのlang属性を更新してCSSをトリガーする
+        document.documentElement.lang = lang;
+
         const t = TRANSLATIONS[lang];
         if(!t) return;
 
