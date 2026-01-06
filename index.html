@@ -173,9 +173,12 @@
         .modal-overlay.active .modal-container { transform: scale(1); }
         
         /* ------------------------------------------------------------- */
-        /* ★通常時（緑色）のアニメーション定義 */
+        /* ★アニメーション定義★ */
+        /* ※重要: キーフレーム内に !important を書くと無効になるため削除済 */
         /* ------------------------------------------------------------- */
-        @keyframes success-pulse {
+        
+        /* 1. 緑色アニメーション (デフォルト) */
+        @keyframes anim-green {
             0% {
                 border-color: var(--success-green-light);
                 box-shadow: 0 0 15px rgba(9, 156, 22, 0.4), 0 0 5px rgba(9, 156, 22, 0.2);
@@ -190,12 +193,8 @@
             }
         }
 
-        /* ------------------------------------------------------------- */
-        /* ★★★ 連動モード（青紫ミックス）のアニメーション定義 ★★★ */
-        /* ------------------------------------------------------------- */
-        
-        /* 1. 枠線と影用 (モーダル、ボタン用) - 青⇔紫の呼吸 */
-        @keyframes pulse-border-mixed {
+        /* 2. 青紫ミックスアニメーション (ホバー時 - 枠線 & 影) */
+        @keyframes anim-blue-purple {
             0% {
                 border-color: #3b82f6; /* 青 */
                 box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), 0 0 5px rgba(59, 130, 246, 0.2);
@@ -210,8 +209,8 @@
             }
         }
 
-        /* 2. バッジ用 (枠線＋文字色＋背景) - 青⇔紫 */
-        @keyframes pulse-badge-mixed {
+        /* 3. 青紫ミックスアニメーション (ホバー時 - バッジ用) */
+        @keyframes anim-badge-mixed {
             0% {
                 border-color: #3b82f6;
                 color: #3b82f6;
@@ -232,14 +231,15 @@
             }
         }
         
-        /* 3. アイコン(SVG)用フィルター */
-        @keyframes pulse-svg-mixed {
+        /* 4. アイコン(SVG)用 */
+        @keyframes anim-svg-mixed {
             0% { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.8)); }
             50% { filter: drop-shadow(0 0 5px rgba(132, 7, 222, 0.8)); }
             100% { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.8)); }
         }
 
 
+        /* --- モーダル設定 (通常時：緑) --- */
         .modal-container.wide-mode {
             max-width: 900px;
             padding: 0;
@@ -247,15 +247,17 @@
             flex-direction: row;
             overflow: hidden;
             border: 2px solid var(--success-green-light);
-            /* 通常時は緑アニメーション 3s */
-            animation: success-pulse 3s infinite ease-in-out;
+            /* デフォルトは緑アニメーション */
+            animation: anim-green 3s infinite ease-in-out;
             transition: border-color 0.3s ease;
         }
         
-        /* ★★★ 連動モード適用：モーダル外枠（確実に適用されるよう優先度調整） ★★★ */
-        .modal-container.wide-mode.sync-blue-mode {
+        /* --- モーダル設定 (ホバー連動時：青紫) --- */
+        /* IDセレクタを使って優先順位を最強にする */
+        #modalContainer.wide-mode.sync-blue-mode {
+            /* !important を使って強制的にアニメーションを差し替える */
+            animation: anim-blue-purple 3s infinite ease-in-out !important;
             border-color: #3b82f6 !important;
-            animation: pulse-border-mixed 3s infinite ease-in-out !important;
         }
 
         .modal-close {
@@ -325,7 +327,7 @@
         .success-left img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
         .success-right { flex: 1.2; padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
 
-        /* ★成功バッジ（チェックマーク）のスタイル */
+        /* ★成功バッジ（チェックマーク）の設定 */
         .success-tag {
             background: rgba(9, 156, 22, 0.2);
             border: 2px solid var(--success-green-light);
@@ -335,23 +337,19 @@
             text-shadow: 0 0 8px rgba(0, 255, 157, 0.6); 
             font-family: inherit;
             white-space: nowrap;
-            /* 通常時は緑アニメーション 3s */
-            animation: success-pulse 3s infinite ease-in-out;
+            /* 通常時は緑アニメーション */
+            animation: anim-green 3s infinite ease-in-out;
             transition: all 0.3s ease;
         }
         .success-tag svg { filter: drop-shadow(0 0 5px rgba(0, 255, 157, 0.8)); flex-shrink: 0; transition: all 0.3s ease; }
 
-        /* ★★★ 連動モード適用：バッジ（枠線・文字色・アイコンが青紫変化） ★★★ */
-        .modal-container.wide-mode.sync-blue-mode .success-tag {
+        /* ★★★ 連動モード適用：バッジ（青紫アニメーション） ★★★ */
+        #modalContainer.wide-mode.sync-blue-mode .success-tag {
+            animation: anim-badge-mixed 3s infinite ease-in-out !important;
             border-color: #3b82f6 !important;
-            color: #3b82f6 !important;
-            background: rgba(59, 130, 246, 0.15) !important;
-            text-shadow: 0 0 8px rgba(59, 130, 246, 0.6) !important;
-            /* バッジ用ミックスアニメーション */
-            animation: pulse-badge-mixed 3s infinite ease-in-out !important;
         }
-        .modal-container.wide-mode.sync-blue-mode .success-tag svg {
-             animation: pulse-svg-mixed 3s infinite ease-in-out !important;
+        #modalContainer.wide-mode.sync-blue-mode .success-tag svg {
+             animation: anim-svg-mixed 3s infinite ease-in-out !important;
         }
         
         .success-title-main { font-size: 28px; font-weight: bold; margin-bottom: 20px; line-height: 1.3; }
@@ -370,7 +368,7 @@
 
         /* ★★★ 連動モード適用：コンテンツ名 ★★★ */
         /* 青色(#3b82f6)にするが、光らせない（text-shadow: none） */
-        .modal-container.wide-mode.sync-blue-mode .success-content {
+        #modalContainer.wide-mode.sync-blue-mode .success-content {
             color: #3b82f6 !important;
             text-shadow: none !important;
             animation: none !important;
@@ -385,16 +383,15 @@
             flex: 2; text-decoration: none; text-align: center; min-width: 140px;
             background: #099c16 !important;
             border: 2px solid var(--success-green-light) !important;
-            /* 通常時は緑アニメーション 3s */
-            animation: success-pulse 3s infinite ease-in-out !important;
+            /* 通常時は緑アニメーション */
+            animation: anim-green 3s infinite ease-in-out !important;
         }
         #successDownloadBtn:hover {
             background: var(--hover-blue) !important;
-            border-color: #3b82f6 !important;
-            
-            /* ★★★ ホバー時：ボーダー用ミックスアニメーション 3s ★★★ */
-            animation: pulse-border-mixed 3s infinite ease-in-out !important;
+            /* ホバー時：青紫ミックスアニメーション */
+            animation: anim-blue-purple 3s infinite ease-in-out !important;
             transform: translateY(-2px);
+            border-color: #3b82f6 !important;
         }
 
         #modalCloseSub {
