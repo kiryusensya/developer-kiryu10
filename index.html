@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script src="https://unpkg.com/lucide@latest"></script>
     
@@ -504,19 +506,30 @@
             text-decoration: none;
             color: white;
             transition: 0.3s;
-            min-height: 120px;
+            /* ★縦長の長方形に変更 */
+            height: 220px;
             text-align: center;
         }
-        .support-item i { margin-bottom: 10px; color: var(--neon-cyan); transition: color 0.3s; }
+        
+        /* FontAwesomeアイコンのサイズと色調整 */
+        .support-item i { 
+            font-size: 48px; /* アイコンを大きく */
+            margin-bottom: 20px; 
+            color: var(--neon-cyan); 
+            transition: color 0.3s, transform 0.3s; 
+        }
         .support-item span { font-size: 14px; font-weight: bold; }
         
         .support-item:hover {
             background: rgba(255,255,255,0.2);
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: var(--primary-color);
             box-shadow: 0 0 15px rgba(132, 7, 222, 0.4);
         }
-        .support-item:hover i { color: var(--primary-color); }
+        .support-item:hover i { 
+            color: var(--primary-color); 
+            transform: scale(1.1); /* ホバー時にアイコンも少し拡大 */
+        }
 
         /* --- モバイル専用調整 --- */
         @media (max-width: 768px) {
@@ -553,7 +566,9 @@
                 grid-column: span 2;
             }
             
-            .support-item { padding: 15px 5px; min-height: 100px; }
+            /* スマホでは高さを少し抑えるが、それでも縦長感を維持 */
+            .support-item { padding: 15px 5px; height: 160px; }
+            .support-item i { font-size: 36px; margin-bottom: 15px; }
             .support-item span { font-size: 12px; }
         }
 
@@ -784,23 +799,23 @@
             
             <div class="support-grid">
                 <a href="#" class="support-item">
-                    <i data-lucide="gamepad-2" size="32"></i>
+                    <i class="fa-brands fa-playstation"></i>
                     <span>PlayStation</span>
                 </a>
                 <a href="#" class="support-item">
-                    <i data-lucide="gamepad" size="32"></i>
+                    <i class="fa-brands fa-xbox"></i>
                     <span>Xbox</span>
                 </a>
                 <a href="#" class="support-item">
-                    <i data-lucide="disc" size="32"></i>
+                    <i class="fa-brands fa-discord"></i>
                     <span>Discord</span>
                 </a>
                 <a href="#" class="support-item">
-                    <i data-lucide="github" size="32"></i>
+                    <i class="fa-brands fa-github"></i>
                     <span>GitHub</span>
                 </a>
                 <a href="#" class="support-item">
-                    <i data-lucide="instagram" size="32"></i>
+                    <i class="fa-brands fa-instagram"></i>
                     <span>Instagram</span>
                 </a>
             </div>
