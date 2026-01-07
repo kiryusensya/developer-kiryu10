@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@upstash/ratelimit": "latest",
+    "@upstash/redis": "latest"
+  }
+}
