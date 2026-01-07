@@ -47,9 +47,7 @@
            DESIGN SETTINGS
            ========================================= */
         :root {
-            /* メインカラー：紫 */
             --primary-color: #8407de; 
-            /* ホバー時の青 */
             --hover-blue: #3b82f6; 
             
             --glass-bg: rgba(255, 255, 255, 0.1);
@@ -58,23 +56,19 @@
             --text-muted: rgba(255, 255, 255, 0.7);
             --neon-cyan: #00f7ff;
             --neon-green: #00ff9d;
-            /* エラー時の赤 */
             --neon-red: #ff2a2a; 
             
-            /* 成功時の緑2色 */
             --success-green-light: #099c16;
             --success-green-dark: #047016;
 
-            /* ★背景画像の一括設定（ここを変えれば全画面変わります）★ */
-            --main-bg-image: url('#');
+            /* 背景画像設定 */
+            --main-bg-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         }
 
-        /* 全要素に対して余白計算を統一 */
         *, *::before, *::after {
             box-sizing: border-box;
         }
 
-        /* HTMLとBODY両方に横スクロール禁止を適用 */
         html, body {
             margin: 0; 
             padding: 0; 
@@ -88,41 +82,30 @@
             flex-direction: column; 
             align-items: center;
             color: var(--text-main);
-            /* 画像がない場合の背景色を黒に指定 */
             background-color: #000000;
-            /* ★修正: CSS変数を使って背景画像を指定 */
             background-image: var(--main-bg-image);
             background-size: cover; 
             background-position: center; 
             background-attachment: fixed;
         }
 
-        /* =========================================
-           LANGUAGE-SPECIFIC FONT STACKS
-           ========================================= */
-        
-        /* 日本語 (ja) */
+        /* Fonts */
         html[lang="ja"] body, html[lang="ja"] input, html[lang="ja"] button, html[lang="ja"] select, html[lang="ja"] textarea {
             font-family: "HarmonyOS Sans", "Noto Sans JP", sans-serif;
         }
-        /* 英語 (en) */
         html[lang="en"] body, html[lang="en"] input, html[lang="en"] button {
             font-family: "HarmonyOS Sans", sans-serif;
         }
-        /* 中国語 (zh) */
         html[lang="zh"] body, html[lang="zh"] input, html[lang="zh"] button {
             font-family: "HarmonyOS Sans", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
         }
-        /* 韓国語 (ko) */
         html[lang="ko"] body, html[lang="ko"] input, html[lang="ko"] button {
             font-family: "HarmonyOS Sans", "Noto Sans KR", "Malgun Gothic", sans-serif;
         }
-        /* ロシア語 (ru) */
         html[lang="ru"] body, html[lang="ru"] input, html[lang="ru"] button {
             font-family: "HarmonyOS Sans", sans-serif;
         }
 
-        /* コード入力欄は常に英語フォント優先 */
         .code-input {
             font-family: "HarmonyOS Sans", sans-serif !important;
         }
@@ -138,7 +121,7 @@
             z-index: -1;
         }
 
-        /* --- 共通コンポーネント --- */
+        /* Components */
         .glass-panel {
             background: var(--glass-bg); 
             backdrop-filter: blur(12px); 
@@ -147,7 +130,7 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* --- ヘッダー --- */
+        /* --- Header --- */
         header {
             width: 100%; 
             max-width: 1200px; 
@@ -170,32 +153,32 @@
             align-items: center; 
             gap: 20px; 
         }
+        
+        /* ★変更: 言語選択メニューを大きくデザイン調整 */
         .lang-select {
-            background: rgba(0,0,0,0.3); 
+            background: rgba(0,0,0,0.4); 
             border: 1px solid var(--glass-border); 
             color: white;
-            padding: 5px 10px; 
-            border-radius: 20px; 
+            padding: 10px 20px; /* パディングを増やして大きく */
+            border-radius: 30px; 
             outline: none; 
             cursor: pointer;
             font-family: inherit;
+            font-size: 16px; /* 文字サイズを大きく */
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .lang-select:hover {
+            background: rgba(255,255,255,0.1);
         }
         .lang-select option { 
             background-color: #000; 
             color: white; 
         }
 
-        .profile-img {
-            width: 45px; 
-            height: 45px; 
-            border-radius: 50%;
-            background-image: url('#');
-            background-size: cover; 
-            border: 2px solid rgba(255,255,255,0.5);
-            flex-shrink: 0;
-        }
+        /* アバター(.profile-img)のスタイルは削除しました */
 
-        /* --- メインコンテンツ --- */
+        /* --- Main Content --- */
         .container {
             width: 100%; 
             max-width: 1000px; 
@@ -249,7 +232,7 @@
             line-height: 1.6; 
         }
         
-        /* ★通常ボタン用アニメーション★ */
+        /* Animations */
         @keyframes pulse-primary {
             0% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5), 0 0 5px rgba(132, 7, 222, 0.3); }
             50% { box-shadow: 0 0 25px rgba(132, 7, 222, 0.8), 0 0 15px rgba(132, 7, 222, 0.5); }
@@ -302,7 +285,7 @@
             border-bottom: 1px dotted white; 
         }
 
-        /* --- 言語選択 --- */
+        /* --- Lang Selection Overlay --- */
         #langSelectionOverlay {
             position: fixed; 
             top: 0; 
@@ -311,7 +294,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.85); 
             backdrop-filter: blur(15px);
-            z-index: 10001; /* ログイン画面(10000)より手前に表示 */
+            z-index: 10001; 
             display: flex; 
             justify-content: center; 
             align-items: center;
@@ -335,25 +318,24 @@
             grid-column: span 2;
         }
 
-        /* --- サイトロック画面用CSS --- */
+        /* --- Site Login Overlay (Locked) --- */
         #siteLoginOverlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000; /* 背景を真っ黒にしてサイトを隠す */
-            /* ★修正: CSS変数を使って背景画像を指定 */
+            background-color: #000;
             background-image: var(--main-bg-image);
             background-size: cover;
-            z-index: 10000; /* 言語選択(10001)の下、メイン画面より上に表示 */
-            display: none; /* 初期状態は非表示 */
+            z-index: 10000; 
+            display: none; 
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
 
-        /* --- モーダル --- */
+        /* --- Modals --- */
         .modal-overlay {
             position: fixed; 
             top: 0; 
@@ -394,11 +376,7 @@
             transform: scale(1); 
         }
         
-        /* ------------------------------------------------------------- */
-        /* ★アニメーション定義★ */
-        /* ------------------------------------------------------------- */
-        
-        /* 1. 緑色アニメーション (デフォルト) */
+        /* Modal Animations */
         @keyframes anim-green {
             0% {
                 border-color: var(--success-green-light);
@@ -413,8 +391,6 @@
                 box-shadow: 0 0 15px rgba(9, 156, 22, 0.4), 0 0 5px rgba(9, 156, 22, 0.2);
             }
         }
-
-        /* 2. 青紫ミックスアニメーション (ホバー時 - メインボックス枠線用) */
         @keyframes anim-box-blue-purple {
             0% {
                 border-color: #0066ff;
@@ -429,8 +405,6 @@
                 box-shadow: 0 0 15px rgba(0, 102, 255, 0.4), 0 0 5px rgba(0, 102, 255, 0.2);
             }
         }
-
-        /* 3. 青紫ミックスアニメーション (ホバー時 - バッジ & ボタン用) */
         @keyframes anim-badge-blue-purple {
             0% {
                 border-color: #0066ff;
@@ -448,16 +422,12 @@
                 box-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
             }
         }
-        
-        /* 4. アイコン(SVG)用 */
         @keyframes anim-svg-mixed {
             0% { filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)); }
             50% { filter: drop-shadow(0 0 5px rgba(170, 0, 255, 0.8)); }
             100% { filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)); }
         }
 
-
-        /* --- モーダル設定 (通常時：緑) --- */
         .modal-container.wide-mode {
             max-width: 900px;
             padding: 0;
@@ -465,16 +435,12 @@
             flex-direction: row;
             overflow: hidden;
             border: 2px solid var(--success-green-light);
-            /* デフォルトは緑アニメーション */
             animation: anim-green 3s infinite ease-in-out;
             transition: border-color 0.3s ease;
         }
-        
-        /* --- モーダル設定 (ホバー連動時：青紫) --- */
         #modalContainer.wide-mode.sync-blue-mode {
-            /* !importantで確実に適用 */
             animation: anim-box-blue-purple 3s infinite ease-in-out !important;
-            border-color: #0066ff !important; /* 初期値を鮮やかな青に */
+            border-color: #0066ff !important;
         }
 
         .modal-close {
@@ -565,7 +531,6 @@
             box-shadow: none;
         }
 
-        /* --- エラー時の赤発光クラス --- */
         .btn-confirm.error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
@@ -617,7 +582,6 @@
             text-align: left; 
         }
 
-        /* ★成功バッジ（チェックマーク）の設定 */
         .success-tag {
             background: rgba(9, 156, 22, 0.2);
             border: 2px solid var(--success-green-light);
@@ -633,7 +597,6 @@
             text-shadow: 0 0 8px rgba(0, 255, 157, 0.6); 
             font-family: inherit;
             white-space: nowrap;
-            /* 通常時は緑アニメーション */
             animation: anim-green 3s infinite ease-in-out;
             transition: all 0.3s ease;
         }
@@ -643,16 +606,12 @@
             transition: all 0.3s ease; 
         }
 
-        /* ★★★ 連動モード適用：バッジ（枠線アニメーション + 文字色固定） ★★★ */
         #modalContainer.wide-mode.sync-blue-mode .success-tag {
-            /* 枠線と背景のアニメーション（青⇔紫） */
             animation: anim-badge-blue-purple 3s infinite ease-in-out !important;
-            /* 文字色は鮮やかな青固定（点滅させない） */
             color: #0066ff !important;
             text-shadow: none !important;
             border-color: #0066ff !important;
         }
-        /* アイコンも青固定（点滅させない） */
         #modalContainer.wide-mode.sync-blue-mode .success-tag svg {
              filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)) !important;
              animation: none !important;
@@ -677,20 +636,16 @@
             color: var(--text-muted); 
         }
         
-        /* ★コンテンツ名テキスト */
         .success-content { 
             font-size: 18px; 
             font-weight: bold; 
             margin-top: 5px; 
-            /* 通常時：緑色で光る */
             color: var(--neon-green); 
             word-break: break-all;
             text-shadow: 0 0 5px rgba(0, 255, 157, 0.5); 
             transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
-        /* ★★★ 連動モード適用：コンテンツ名 ★★★ */
-        /* 鮮やかな青色(#0066ff)にするが、光らせない（text-shadow: none） */
         #modalContainer.wide-mode.sync-blue-mode .success-content {
             color: #0066ff !important;
             text-shadow: none !important;
@@ -713,7 +668,6 @@
             flex-wrap: wrap; 
         }
         
-        /* ★成功時のダウンロードボタン */
         #successDownloadBtn { 
             flex: 2; 
             text-decoration: none; 
@@ -721,12 +675,10 @@
             min-width: 140px;
             background: #099c16 !important;
             border: 2px solid var(--success-green-light) !important;
-            /* 通常時は緑アニメーション */
             animation: anim-green 3s infinite ease-in-out !important;
         }
         #successDownloadBtn:hover {
             background: var(--hover-blue) !important;
-            /* ホバー時：青紫ミックスアニメーション（枠線と影） */
             animation: anim-badge-blue-purple 3s infinite ease-in-out !important;
             transform: translateY(-2px);
             border-color: #0066ff !important;
@@ -756,7 +708,7 @@
             border-color: #fff; 
         }
 
-        /* --- ★サポートモーダル専用スタイル (大幅改修) --- */
+        /* --- Support Modal --- */
         .modal-container.wide-support-mode {
             max-width: 900px; /* PC幅確保 */
             padding: 30px; /* 余白調整 */
@@ -776,7 +728,6 @@
             }
         }
 
-        /* サポートアイテム(ボックス) */
         .support-item {
             display: flex; 
             flex-direction: column; 
@@ -788,18 +739,15 @@
             border-radius: 16px;
             color: white;
             transition: 0.3s;
-            /* ★Closeボタンを消した分、高さを増やして縦長に (200px -> 280px) */
             height: 280px; 
             text-align: center;
             width: 100%;
         }
         
-        /* FontAwesomeアイコン */
         .support-item i { 
             font-size: 48px; 
-            margin-top: 20px; /* 上部の余白も少し調整 */
+            margin-top: 20px; 
             margin-bottom: 10px; 
-            /* 色はHTMLのstyleタグで本物の色を指定し、CSSでは変更しない */
             transition: transform 0.3s; 
         }
         .support-item span { 
@@ -814,14 +762,12 @@
             border-color: rgba(255, 255, 255, 0.4);
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
-        /* ホバー時のアイコン：色は変えず、少し拡大のみ */
         .support-item:hover i { 
             transform: scale(1.1);
         }
 
-        /* 問い合わせボタン (ボックス内) */
         .btn-inquiry-small {
-            margin-bottom: 20px; /* 下部の余白調整 */
+            margin-bottom: 20px; 
             display: inline-block;
             padding: 10px 20px;
             border-radius: 30px;
@@ -841,7 +787,7 @@
             box-shadow: 0 0 10px rgba(132, 7, 222, 0.5);
         }
 
-        /* --- モバイル専用調整 --- */
+        /* --- Mobile Adjustments --- */
         @media (max-width: 768px) {
             header { 
                 padding: 15px; 
@@ -854,7 +800,7 @@
                 gap: 10px; 
             }
             .container { 
-                padding: 0 15px; /* ここが15px */
+                padding: 0 15px; 
             }
             .grid-menu { 
                 gap: 20px; 
@@ -898,55 +844,41 @@
                 grid-column: span 1; 
             }
 
-            /* ★修正: スマホでの横スクロール対応とPC型維持 */
             .support-grid {
-                /* GridをやめてFlexboxにして横並びスクロールにする */
                 display: flex !important; 
                 flex-direction: row;
-                overflow-x: auto; /* 横スクロール許可 */
-                gap: 15px; /* ボックス間の余白 */
-                
-                /* ★重要: パディングを追加してホバー時の見切れを防止 */
+                overflow-x: auto; 
+                gap: 15px; 
                 padding: 20px 10px; 
-                
-                /* ★修正: マージンをコンテナのパディング(-15px)と合わせる */
                 margin: 0 -15px; 
-                
-                /* ★修正: 計算式をマージンに合わせて修正 */
                 width: calc(100% + 30px);
-                
-                justify-content: flex-start; /* 左から並べる */
-                
-                /* スクロールを滑らかにする */
+                justify-content: flex-start; 
                 -webkit-overflow-scrolling: touch;
                 scroll-snap-type: x mandatory;
             }
             
-            /* 個別の列指定を解除 */
             .support-item:nth-child(n) {
                 grid-column: auto !important;
             }
 
-            /* ★ボックスの形状設定（PCと同じ形を維持する） */
             .support-item { 
-                height: 280px; /* PCと同じ高さ */
-                min-width: 160px; /* ★重要：つぶれないように最小幅を固定 */
-                width: 160px; /* 幅も固定 */
-                flex: 0 0 auto; /* フレックス内で縮小しないようにする */
-                scroll-snap-align: center; /* スクロール時に中央に吸着 */
-                padding: 20px 10px; /* 余白もPCと同じに */
+                height: 280px; 
+                min-width: 160px; 
+                width: 160px; 
+                flex: 0 0 auto; 
+                scroll-snap-align: center; 
+                padding: 20px 10px; 
             }
             
             .support-item i { 
-                font-size: 48px; /* アイコンサイズもPCと同じ */
+                font-size: 48px; 
             }
             .support-item span { 
-                font-size: 14px; /* 文字サイズもPCと同じ */
+                font-size: 14px; 
             }
             
-            /* ボタンがはみ出さないように調整 */
             .btn-inquiry-small {
-                width: 90%; /* 幅を少し狭めて収まりよくする */
+                width: 90%; 
                 font-size: 12px;
                 white-space: nowrap;
                 margin-bottom: 20px;
@@ -989,7 +921,6 @@
             gap: 5px; 
         }
 
-        /* --- 近未来的なローディングスピナー --- */
         .cyber-spinner {
             position: relative;
             width: 26px;
@@ -1114,7 +1045,6 @@
                 <option value="ko">한국어</option>
                 <option value="ru">Русский</option>
             </select>
-            <div class="profile-img"></div>
         </div>
     </header>
 
@@ -1638,6 +1568,10 @@
     sitePassInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') checkSiteLogin();
     });
+
+</script>
+</body>
+</html>
 
 </script>
 </body>
