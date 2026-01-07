@@ -174,6 +174,10 @@
             font-size: 16px; 
             font-weight: bold;
             transition: background 0.3s;
+            /* ★PC時は右下に絶対配置 */
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
         }
         .lang-select:hover {
             background: rgba(255,255,255,0.1);
@@ -192,7 +196,18 @@
             display: flex; 
             flex-direction: column; 
             justify-content: center;
+            /* ログイン前は非表示（JSで制御） */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none; /* ログイン前はクリック不可 */
         }
+        
+        /* ログイン後に適用するクラス */
+        .container.logged-in {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .grid-menu { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
@@ -276,6 +291,7 @@
             animation: pulse-blue-fast 1.0s infinite ease-in-out; 
         }
 
+        /* --- フッターレイアウト --- */
         footer { 
             padding: 20px; 
             font-size: 13px; 
@@ -283,11 +299,12 @@
             text-align: center; 
             width: 100%; 
             word-break: break-all;
-            /* フッター内を縦積みに */
+            /* PC: 相対配置で中の絶対配置の基準にする */
+            position: relative;
             display: flex;
-            flex-direction: column;
+            justify-content: center; /* テキストは中央 */
             align-items: center;
-            gap: 15px;
+            min-height: 80px; /* セレクトボックスが入る高さを確保 */
         }
         .footer-link { 
             color: white; 
@@ -295,15 +312,14 @@
             border-bottom: 1px dotted white; 
         }
 
-        /* --- 言語選択 --- */
+        /* --- 言語選択 オーバーレイ --- */
         #langSelectionOverlay {
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%;
-            background: rgba(0, 0, 0, 0.85); 
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.95); 
             z-index: 10001; 
             display: flex; 
             justify-content: center; 
@@ -328,7 +344,121 @@
             grid-column: span 2;
         }
 
-        /* --- モーダル --- */
+        /* --- ★管理者ログイン画面 (新設) --- */
+        #adminLoginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000; /* 完全な黒背景 */
+            z-index: 10000; /* 言語選択(10001)より下、メインより上 */
+            display: none; /* 初期は非表示 */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .login-card {
+            background: #111111; /* 非常に暗いグレー */
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .login-icon {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .login-desc {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .login-label {
+            display: block;
+            text-align: left;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+            margin-left: 5px;
+        }
+
+        .login-input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        .login-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #8407de; /* 指定の紫 */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 0 15px rgba(132, 7, 222, 0.4);
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: #9d2ae6;
+            box-shadow: 0 0 25px rgba(132, 7, 222, 0.6);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        /* ログイン画面内の言語バッジ（右上） */
+        .login-lang-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #222;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #aaa;
+            border: 1px solid #333;
+        }
+
+        /* --- モーダル (汎用) --- */
         .modal-overlay {
             position: fixed; 
             top: 0; 
@@ -552,6 +682,12 @@
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
         }
+        /* 管理者ログイン用のエラー表示 */
+        .login-input.error-border {
+            border-color: var(--neon-red) !important;
+            box-shadow: 0 0 10px rgba(255, 42, 42, 0.5) !important;
+        }
+
         .modal-error-border {
             border: 2px solid var(--neon-red) !important;
             box-shadow: 0 0 30px rgba(255, 42, 42, 0.8) !important;
@@ -832,6 +968,26 @@
                 gap: 20px; 
             }
 
+            /* スマホ時のフッター設定 (Language Top/Right, Text Bottom/Center) */
+            footer {
+                flex-direction: column;
+                justify-content: center;
+                gap: 10px;
+                padding-bottom: 30px; /* 少し余白確保 */
+            }
+            .lang-select {
+                position: static; /* 絶対配置解除 */
+                order: -1; /* 順序を一番上に */
+                align-self: flex-end; /* 右寄せ */
+                margin-right: 10px; /* 右端の余白微調整 */
+                margin-bottom: 0;
+            }
+            .footer-content {
+                order: 1; /* 順序を下に */
+                width: 100%; /* 幅確保で中央揃えを確実に */
+                text-align: center;
+            }
+
             .modal-container.wide-mode { 
                 flex-direction: column; 
                 max-width: 100%; 
@@ -1039,11 +1195,31 @@
         </div>
     </div>
 
+    <div id="adminLoginOverlay">
+        <div class="login-card">
+            <div class="login-lang-badge" id="currentLangDisplay">日本語</div>
+
+            <div class="login-icon">
+                <i data-lucide="shield-check" size="48"></i>
+            </div>
+            <h2 class="login-title" data-translate="login_title">SYSTEM LOGIN</h2>
+            <p class="login-desc" data-translate="login_desc">アクセス権限を確認します。<br>IDとパスワードを入力してください。</p>
+            
+            <label class="login-label" data-translate="login_label_user">User ID</label>
+            <input type="text" id="loginUser" class="login-input" placeholder="ユーザー名">
+            
+            <label class="login-label" data-translate="login_label_pass">Password</label>
+            <input type="password" id="loginPass" class="login-input" placeholder="パスワード">
+            
+            <button class="login-btn" id="btnLoginAction" data-translate="login_btn">ログイン</button>
+        </div>
+    </div>
+
     <header>
         <div class="logo"><i data-lucide="user-round" style="color: #8407de;"></i>_.k__yu.10</div>
     </header>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="grid-menu">
             <div class="menu-card glass-panel">
                 <div class="card-icon-box"><i data-lucide="key" size="40"></i></div>
@@ -1075,6 +1251,11 @@
     </div>
 
     <footer>
+        <div class="footer-content">
+            Enforcement Administer: <a href="https://developer-kiryu10.vercel.app/" target="_blank" class="footer-link">kiryu-sensya</a>
+            <br><span style="opacity: 0.5; font-size: 11px;">© 2019-2026 kiryu-sensya. All rights reserved.</span>
+        </div>
+        
         <select id="languageSwitcher" class="lang-select glass-panel">
             <option value="ja" selected>日本語</option>
             <option value="en">English</option>
@@ -1082,11 +1263,6 @@
             <option value="ko">한국어</option>
             <option value="ru">Русский</option>
         </select>
-        
-        <div style="margin-top: 10px;">
-            Enforcement Administer: <a href="https://developer-kiryu10.vercel.app/" target="_blank" class="footer-link">kiryu-sensya</a>
-            <br><span style="opacity: 0.5; font-size: 11px;">© 2019-2026 kiryu-sensya. All rights reserved.</span>
-        </div>
     </footer>
 
     <div id="authModal" class="modal-overlay">
@@ -1156,7 +1332,7 @@
 <script>
     lucide.createIcons();
     // ▼ あなたのGASのURLに書き換えてください
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwFVUjphTbnkGeGdMrAP3U8uN5kJSsYUjVS4yJhtlL41pRwW15paLkBMLWA7y4i2boNEQ/exec"; 
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycby-euxYGL5-ov5Lb-Q_7HFcLvIgfTf354FQAqT0bOsTJFo7l3NDISmFS64dS8wr-DxScA/exec"; 
     let CURRENT_LANG = "ja"; 
 
     // --- 翻訳データ ---
@@ -1172,7 +1348,13 @@
             success_badge: "コードが認証されました。", success_main_title: "有効化されたコンテンツ",
             success_label_name: "コンテンツ名称", btn_close: "閉じる", btn_download: "ダウンロード",
             news_title: "最新情報", news_label: "変更ログ", news_content: "デザインがアップデートされました。<br>韓国語,ロシア語が追加されました。<br>1度限りのコードを発行しました。",
-            support_modal_title: "何かお困りですか？ ", btn_inquiry: "利用不可"
+            support_modal_title: "何かお困りですか？ ", btn_inquiry: "利用不可",
+            
+            // --- ログイン画面用 ---
+            login_title: "SYSTEM LOGIN", login_desc: "アクセス権限を確認します。<br>IDとパスワードを入力してください。",
+            login_label_user: "User ID", login_label_pass: "Password",
+            login_btn: "ログイン", login_btn_verifying: "確認中...",
+            login_placeholder_user: "ユーザー名", login_placeholder_pass: "パスワード"
         },
         en: {
             card1_title: "Activation", card1_desc: "Enter code to<br>unlock content", card1_btn: "Use Code",
@@ -1185,7 +1367,13 @@
             success_badge: "The code has been activated.", success_main_title: "Activated content",
             success_label_name: "Content Name", btn_close: "Close", btn_download: "Download",
             news_title: "Latest News", news_label: "Changelog", news_content: "The design has been updated.<br>Korean and Russian have been added.<br>A one-time code has been issued.",
-            support_modal_title: "What can I help you with?", btn_inquiry: "Stay tuned"
+            support_modal_title: "What can I help you with?", btn_inquiry: "Stay tuned",
+
+            // --- Login Screen ---
+            login_title: "SYSTEM LOGIN", login_desc: "Checking access privileges.<br>Please enter ID and Password.",
+            login_label_user: "User ID", login_label_pass: "Password",
+            login_btn: "Login", login_btn_verifying: "Verifying...",
+            login_placeholder_user: "Username", login_placeholder_pass: "Password"
         },
         zh: {
             card1_title: "激活", card1_desc: "使用代码<br>以解锁内容", card1_btn: "使用代码",
@@ -1198,7 +1386,13 @@
             success_badge: "代码已激活。", success_main_title: "激活内容",
             success_label_name: "内容名称", btn_close: "关闭", btn_download: "下载",
             news_title: "最新消息", news_label: "更新日志", news_content: "设计已更新。<br>新增韩语和俄语支持。<br>一次性码已生成。",
-            support_modal_title: "有什么可以帮到您的吗？", btn_inquiry: "敬请期待"
+            support_modal_title: "有什么可以帮到您的吗？", btn_inquiry: "敬请期待",
+
+            // --- Login Screen ---
+            login_title: "SYSTEM LOGIN", login_desc: "正在检查访问权限。<br>请输入ID和密码。",
+            login_label_user: "用户ID", login_label_pass: "密码",
+            login_btn: "登录", login_btn_verifying: "验证中...",
+            login_placeholder_user: "用户名", login_placeholder_pass: "密码"
         },
         ko: {
             card1_title: "활성화", card1_desc: "잠금 해제 코드<br>입력 콘텐츠", card1_btn: "사용 코드",
@@ -1211,7 +1405,13 @@
             success_badge: "코드가 활성화되었습니다.", success_main_title: "활성화된 콘텐츠",
             success_label_name: "콘텐츠 명칭", btn_close: "닫기", btn_download: "다운로드",
             news_title: "최신 정보", news_label: "변경 내역", news_content: "디자인이 업데이트되었습니다.<br>한국어와 러시아어가 추가되었습니다.<br>일회용 코드가 발급되었습니다.",
-            support_modal_title: "뭘 도와드릴까요?", btn_inquiry: "기대해 주세요"
+            support_modal_title: "뭘 도와드릴까요?", btn_inquiry: "기대해 주세요",
+
+            // --- Login Screen ---
+            login_title: "SYSTEM LOGIN", login_desc: "접근 권한을 확인합니다.<br>ID와 비밀번호를 입력해 주세요.",
+            login_label_user: "사용자 ID", login_label_pass: "비밀번호",
+            login_btn: "로그인", login_btn_verifying: "확인 중...",
+            login_placeholder_user: "사용자 이름", login_placeholder_pass: "비밀번호"
         },
         ru: {
             card1_title: "Активация", card1_desc: "Введите код для разблокировки<br>контента", card1_btn: "Код использования",
@@ -1224,66 +1424,178 @@
             success_badge: "Код активирован.", success_main_title: "Активированный контент",
             success_label_name: "Название", btn_close: "Закрыть", btn_download: "Скачать",
             news_title: "Новости", news_label: "Список изменений", news_content: "Дизайн был обновлен.<br>Добавлены корейский и русский языки.<br>Выдан одноразовый код.",
-            support_modal_title: "Чем я могу вам помочь?", btn_inquiry: "Недоступно"
+            support_modal_title: "Чем я могу вам помочь?", btn_inquiry: "Недоступно",
+
+            // --- Login Screen ---
+            login_title: "SYSTEM LOGIN", login_desc: "Проверка прав доступа.<br>Введите ID и пароль.",
+            login_label_user: "ID пользователя", login_label_pass: "Пароль",
+            login_btn: "Войти", login_btn_verifying: "Проверка...",
+            login_placeholder_user: "Имя пользователя", login_placeholder_pass: "Пароль"
         }
     };
 
     // --- DOM要素 ---
+    const langSelectionOverlay = document.getElementById('langSelectionOverlay');
+    const adminLoginOverlay = document.getElementById('adminLoginOverlay');
+    const mainContainer = document.getElementById('mainContainer');
+    
+    // Login elements
+    const loginUser = document.getElementById('loginUser');
+    const loginPass = document.getElementById('loginPass');
+    const btnLoginAction = document.getElementById('btnLoginAction');
+    const currentLangDisplay = document.getElementById('currentLangDisplay');
+
+    // Main Site elements
     const authModal = document.getElementById('authModal');
     const modalContainer = document.getElementById('modalContainer');
     const openAuthBtn = document.getElementById('btnOpenModal');
     const closeAuthBtn = document.getElementById('modalCloseBtn');
     const closeSubBtn = document.getElementById('modalCloseSub');
-    
     const inputPhase = document.getElementById('inputPhase');
     const successPhase = document.getElementById('successPhase');
-    
     const codeInput = document.getElementById('activationCode');
     const confirmBtn = document.getElementById('btnConfirm');
     const statusContainer = document.getElementById('statusContainer');
-    
     const successTitle = document.getElementById('successTitle');
     const successExtraInfo = document.getElementById('successExtraInfo');
     const successDownloadBtn = document.getElementById('successDownloadBtn');
     const successLeftCol = document.getElementById('successLeftCol');
     const successImage = document.getElementById('successImage');
 
-    const langSelectionOverlay = document.getElementById('langSelectionOverlay');
-
     // --- 起動時のフロー制御 ---
     document.addEventListener('DOMContentLoaded', () => {
+        // セッションストレージを確認（リロード対策：ログイン済みならスキップ）
+        const isLoggedIn = sessionStorage.getItem('is_admin_logged_in');
         const savedLang = localStorage.getItem('user_lang');
         const switcher = document.getElementById('languageSwitcher');
 
         if (savedLang) {
-            // 保存された言語がある場合: 言語選択画面は即座に隠す
-            langSelectionOverlay.style.display = 'none'; 
-            switcher.value = savedLang;
+            // 言語保存済み
             updateLanguage(savedLang);
+            switcher.value = savedLang;
+            langSelectionOverlay.style.display = 'none';
+
+            if (isLoggedIn === 'true') {
+                // ログイン済みならメイン表示
+                showMainContent();
+            } else {
+                // 言語はあるが未ログイン -> ログイン画面へ
+                showLoginScreen();
+            }
         } else {
-            // 初回訪問時: 言語選択画面を表示したままにする
+            // 初回訪問時: 言語選択画面を表示したまま
         }
     });
 
-    // 初回選択ボタンが押された時の処理
+    // 初回言語選択ボタン
     function setInitialLanguage(lang) {
-        localStorage.setItem('user_lang', lang); // 保存
-        
+        localStorage.setItem('user_lang', lang);
         updateLanguage(lang);
         document.getElementById('languageSwitcher').value = lang;
         
-        // 言語選択画面をフェードアウトして消す
+        // 言語選択画面をフェードアウト
         langSelectionOverlay.style.opacity = '0';
         langSelectionOverlay.style.visibility = 'hidden';
         setTimeout(() => { 
             langSelectionOverlay.style.display = 'none'; 
+            // 次のステップ：ログイン画面表示
+            showLoginScreen();
         }, 500);
     }
 
-    // ヘッダーのセレクトボックス変更時の処理
+    // --- ログイン画面表示 ---
+    function showLoginScreen() {
+        adminLoginOverlay.style.display = 'flex';
+        // 少し遅らせてフェードイン
+        requestAnimationFrame(() => {
+            adminLoginOverlay.style.opacity = '1';
+        });
+        
+        // 現在の言語を右上のバッジに表示
+        const langMap = { 'ja':'日本語', 'en':'English', 'zh':'中文', 'ko':'한국어', 'ru':'Русский' };
+        currentLangDisplay.textContent = langMap[CURRENT_LANG] || CURRENT_LANG;
+    }
+
+    // --- ログイン処理 ---
+    btnLoginAction.addEventListener('click', async () => {
+        const u = loginUser.value.trim();
+        const p = loginPass.value.trim();
+        const t = TRANSLATIONS[CURRENT_LANG];
+
+        if (!u || !p) {
+            shakeLoginCard();
+            return;
+        }
+
+        // UIをロード中に変更
+        loginUser.disabled = true;
+        loginPass.disabled = true;
+        btnLoginAction.disabled = true;
+        btnLoginAction.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px; margin-right:5px;"></span> ${t.login_btn_verifying}`;
+
+        // GASへ問い合わせ (type=login)
+        const requestUrl = `${GAS_API_URL}?type=login&user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`;
+
+        try {
+            const response = await fetch(requestUrl);
+            const data = await response.json();
+
+            if (data.success) {
+                // 成功
+                sessionStorage.setItem('is_admin_logged_in', 'true');
+                
+                // ログイン画面をフェードアウト
+                adminLoginOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    adminLoginOverlay.style.display = 'none';
+                    showMainContent();
+                }, 500);
+
+            } else {
+                // 失敗
+                throw new Error('Auth failed');
+            }
+        } catch (e) {
+            // エラー処理
+            console.error(e);
+            loginUser.classList.add('error-border');
+            loginPass.classList.add('error-border');
+            shakeLoginCard();
+            
+            // UIを元に戻す
+            loginUser.disabled = false;
+            loginPass.disabled = false;
+            btnLoginAction.disabled = false;
+            btnLoginAction.textContent = t.login_btn;
+            
+            setTimeout(() => {
+                loginUser.classList.remove('error-border');
+                loginPass.classList.remove('error-border');
+            }, 2000);
+        }
+    });
+
+    function shakeLoginCard() {
+        const card = document.querySelector('.login-card');
+        card.animate([
+            { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' },
+            { transform: 'translateX(10px)' }, { transform: 'translateX(0)' }
+        ], { duration: 300 });
+    }
+
+    // --- メインコンテンツ表示 ---
+    function showMainContent() {
+        mainContainer.classList.add('logged-in');
+        lucide.createIcons();
+    }
+
+
+    // --- (以下、既存のサイト内ロジック) ---
+
+    // ヘッダー(フッター)のセレクトボックス変更
     document.getElementById('languageSwitcher').addEventListener('change', (e) => {
         const lang = e.target.value;
-        localStorage.setItem('user_lang', lang); // 保存
+        localStorage.setItem('user_lang', lang);
         updateLanguage(lang);
     });
 
@@ -1295,21 +1607,23 @@
         const t = TRANSLATIONS[lang];
         if(!t) return;
 
-        // テキストの翻訳
+        // テキスト翻訳
         document.querySelectorAll('[data-translate]').forEach(el => {
             const key = el.getAttribute('data-translate');
             if(t[key]) el.innerHTML = t[key];
         });
 
-        // プレースホルダーの翻訳
+        // プレースホルダー翻訳
         document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
             const key = el.getAttribute('data-translate-placeholder');
             if(t[key]) el.placeholder = t[key];
         });
 
-        if(t.modal_placeholder) {
-            codeInput.placeholder = t.modal_placeholder;
-        }
+        if(t.modal_placeholder) codeInput.placeholder = t.modal_placeholder;
+        
+        // ログイン画面のプレースホルダーも更新
+        if(t.login_placeholder_user) loginUser.placeholder = t.login_placeholder_user;
+        if(t.login_placeholder_pass) loginPass.placeholder = t.login_placeholder_pass;
     }
 
     // --- 認証モーダル操作 ---
@@ -1390,7 +1704,7 @@
         codeInput.value = formatted;
     });
 
-    // --- 認証ロジック ---
+    // --- アクティベーション（サイト内）認証ロジック ---
     confirmBtn.addEventListener('click', async () => {
         const code = codeInput.value.trim();
         if(!code) return;
