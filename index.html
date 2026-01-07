@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>_.k__yu.10</title>
+    <title>kiryu-sensya</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -161,7 +161,7 @@
             gap: 10px; 
         }
         
-        /* 言語選択メニュー */
+        /* 言語選択メニュー (フッター用) */
         .lang-select {
             background: rgba(0,0,0,0.4); 
             border: 1px solid var(--glass-border); 
@@ -445,17 +445,35 @@
             cursor: wait;
         }
 
-        /* ログイン画面内の言語バッジ（右上） */
-        .login-lang-badge {
+        /* ログイン画面内の言語選択（右上・変更可能） */
+        .login-lang-select {
             position: absolute;
             top: 20px;
             right: 20px;
             background: #222;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
             color: #aaa;
             border: 1px solid #333;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+            /* 矢印を消す場合 */
+            /* appearance: none;
+            -webkit-appearance: none; */
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .login-lang-select:hover {
+            background: #333;
+            color: white;
+            border-color: #555;
+        }
+        /* オプションの背景色 */
+        .login-lang-select option {
+            background: #111;
+            color: white;
         }
 
         /* --- モーダル (汎用) --- */
@@ -1197,7 +1215,13 @@
 
     <div id="adminLoginOverlay">
         <div class="login-card">
-            <div class="login-lang-badge" id="currentLangDisplay">日本語</div>
+            <select id="loginLangSwitcher" class="login-lang-select">
+                <option value="ja">日本語</option>
+                <option value="en">English</option>
+                <option value="zh">中文</option>
+                <option value="ko">한국어</option>
+                <option value="ru">Русский</option>
+            </select>
 
             <div class="login-icon">
                 <i data-lucide="shield-check" size="48"></i>
@@ -1332,7 +1356,7 @@
 <script>
     lucide.createIcons();
     // ▼ あなたのGASのURLに書き換えてください
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycby-euxYGL5-ov5Lb-Q_7HFcLvIgfTf354FQAqT0bOsTJFo7l3NDISmFS64dS8wr-DxScA/exec"; 
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwFVUjphTbnkGeGdMrAP3U8uN5kJSsYUjVS4yJhtlL41pRwW15paLkBMLWA7y4i2boNEQ/exec"; 
     let CURRENT_LANG = "ja"; 
 
     // --- 翻訳データ ---
@@ -1443,7 +1467,7 @@
     const loginUser = document.getElementById('loginUser');
     const loginPass = document.getElementById('loginPass');
     const btnLoginAction = document.getElementById('btnLoginAction');
-    const currentLangDisplay = document.getElementById('currentLangDisplay');
+    const loginLangSwitcher = document.getElementById('loginLangSwitcher'); // 新設: ログイン画面の言語選択
 
     // Main Site elements
     const authModal = document.getElementById('authModal');
@@ -1506,14 +1530,24 @@
     // --- ログイン画面表示 ---
     function showLoginScreen() {
         adminLoginOverlay.style.display = 'flex';
+        // 現在の言語をプルダウンに反映
+        if (loginLangSwitcher) loginLangSwitcher.value = CURRENT_LANG;
+
         // 少し遅らせてフェードイン
         requestAnimationFrame(() => {
             adminLoginOverlay.style.opacity = '1';
         });
-        
-        // 現在の言語を右上のバッジに表示
-        const langMap = { 'ja':'日本語', 'en':'English', 'zh':'中文', 'ko':'한국어', 'ru':'Русский' };
-        currentLangDisplay.textContent = langMap[CURRENT_LANG] || CURRENT_LANG;
+    }
+
+    // --- ログイン画面での言語切り替えイベント ---
+    if (loginLangSwitcher) {
+        loginLangSwitcher.addEventListener('change', (e) => {
+            const lang = e.target.value;
+            localStorage.setItem('user_lang', lang);
+            updateLanguage(lang);
+            // フッター側のスイッチャーも同期
+            document.getElementById('languageSwitcher').value = lang;
+        });
     }
 
     // --- ログイン処理 ---
@@ -1624,6 +1658,11 @@
         // ログイン画面のプレースホルダーも更新
         if(t.login_placeholder_user) loginUser.placeholder = t.login_placeholder_user;
         if(t.login_placeholder_pass) loginPass.placeholder = t.login_placeholder_pass;
+        
+        // ログインボタンのテキストも戻す（ローディング中でない場合）
+        if (!btnLoginAction.disabled) {
+             btnLoginAction.textContent = t.login_btn;
+        }
     }
 
     // --- 認証モーダル操作 ---
