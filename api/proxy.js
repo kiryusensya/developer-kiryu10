@@ -1,62 +1,57 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
+// 1. レートリミットの準備（ここだけ追加）
 const redis = Redis.fromEnv();
-
-// レートリミット設定: 10秒間に2回まで
 const ratelimit = new Ratelimit({
   redis: redis,
-  limiter: Ratelimit.slidingWindow(2, "10 s"),
+  limiter: Ratelimit.slidingWindow(5, "60 s"), // 本番用設定: 60秒に5回まで
+  // テストしたければここを (2, "10 s") にしてもOK
 });
 
 export default async function handler(req, res) {
-  const identifier = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0] : 'ip';
-  
-  // 1. 制限チェック
-  const { success } = await ratelimit.limit(identifier);
-  if (!success) {
-    return res.status(429).json({ error: 'Too Many Requests', message: '連打制限がかかりました。' });
-  }
+  // -------------------------------------------------------
+  // 1. ここでセキュリティチェック（門番）
+  // -------------------------------------------------------
+  try {
+    const identifier = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0] : 'ip';
+    const { success } = await ratelimit.limit(identifier);
 
-  if (req.method === 'POST') {
-    try {
-      const gasUrl = process.env.GAS_API_URL;
-      
-      // データの整理（文字列ならオブジェクトに戻す）
-      let bodyData = req.body;
-      if (typeof bodyData === 'string') {
-        try { bodyData = JSON.parse(bodyData); } catch (e) {}
-      }
-
-      // 【最強の修正点】
-      // 1. URLの後ろにデータをくっつける（e.parameter 対策）
-      const urlObj = new URL(gasUrl);
-      if (bodyData && typeof bodyData === 'object') {
-        Object.keys(bodyData).forEach(key => {
-          urlObj.searchParams.append(key, bodyData[key]);
-        });
-      }
-
-      // 2. 封筒の中身にもデータを入れる（e.postData 対策）
-      const jsonBody = JSON.stringify(bodyData);
-
-      // GASへ送信（URLパラメータ付きのアドレスに、JSONを送る）
-      const response = await fetch(urlObj.toString(), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonBody
+    if (!success) {
+      return res.status(429).json({ 
+        error: 'Too Many Requests',
+        message: '試行回数が多すぎます。しばらく待ってから再試行してください。' 
       });
-
-      const data = await response.json();
-      return res.status(200).json(data);
-
-    } catch (error) {
-      console.error("Proxy Error:", error);
-      return res.status(500).json({ error: 'Internal Server Error' });
     }
+  } catch (err) {
+    // Redisがもし落ちていても、サイト自体は使えるようにエラーを無視して通す
+    console.error(err);
   }
 
-  return res.status(405).json({ error: 'Method Not Allowed' });
+  // -------------------------------------------------------
+  // 2. ここからは「元の正常に動いていたコード」と全く同じ仕組み
+  // -------------------------------------------------------
+  const GAS_URL = process.env.GAS_API_URL;
+
+  if (!GAS_URL) {
+    return res.status(500).json({ error: 'Server configuration error' });
+  }
+
+  // フロントエンドからのデータを受け取る
+  // (GETの?key=... も、POSTのbodyも、全部まとめてURLパラメータにします)
+  const params = new URLSearchParams({
+    ...(req.query || {}),
+    ...(req.body || {})
+  });
+
+  const targetUrl = `${GAS_URL}?${params.toString()}`;
+
+  try {
+    // 元のコードと同じ「GETリクエスト」でGASに問い合わせ
+    const response = await fetch(targetUrl);
+    const data = await response.json();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ error: 'Authentication failed' });
+  }
 }
