@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>kiryu-sensya</title>
+    <title>_.k__yu.10</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +47,9 @@
            DESIGN SETTINGS
            ========================================= */
         :root {
+            /* メインカラー：紫 */
             --primary-color: #8407de; 
+            /* ホバー時の青 */
             --hover-blue: #3b82f6; 
             
             --glass-bg: rgba(255, 255, 255, 0.1);
@@ -56,8 +58,10 @@
             --text-muted: rgba(255, 255, 255, 0.7);
             --neon-cyan: #00f7ff;
             --neon-green: #00ff9d;
+            /* エラー時の赤 */
             --neon-red: #ff2a2a; 
             
+            /* 成功時の緑2色 */
             --success-green-light: #099c16;
             --success-green-dark: #047016;
 
@@ -65,10 +69,12 @@
             --main-bg-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         }
 
+        /* 全要素に対して余白計算を統一 */
         *, *::before, *::after {
             box-sizing: border-box;
         }
 
+        /* HTMLとBODY両方に横スクロール禁止を適用 */
         html, body {
             margin: 0; 
             padding: 0; 
@@ -82,6 +88,7 @@
             flex-direction: column; 
             align-items: center;
             color: var(--text-main);
+            /* 画像がない場合の背景色を黒に指定 */
             background-color: #000000;
             background-image: var(--main-bg-image);
             background-size: cover; 
@@ -89,7 +96,10 @@
             background-attachment: fixed;
         }
 
-        /* Fonts */
+        /* =========================================
+           LANGUAGE-SPECIFIC FONT STACKS
+           ========================================= */
+        
         html[lang="ja"] body, html[lang="ja"] input, html[lang="ja"] button, html[lang="ja"] select, html[lang="ja"] textarea {
             font-family: "HarmonyOS Sans", "Noto Sans JP", sans-serif;
         }
@@ -106,6 +116,7 @@
             font-family: "HarmonyOS Sans", sans-serif;
         }
 
+        /* コード入力欄は常に英語フォント優先 */
         .code-input {
             font-family: "HarmonyOS Sans", sans-serif !important;
         }
@@ -121,7 +132,7 @@
             z-index: -1;
         }
 
-        /* Components */
+        /* --- 共通コンポーネント --- */
         .glass-panel {
             background: var(--glass-bg); 
             backdrop-filter: blur(12px); 
@@ -130,13 +141,14 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* --- Header --- */
+        /* --- ヘッダー --- */
         header {
             width: 100%; 
             max-width: 1200px; 
             padding: 20px;
             display: flex; 
-            justify-content: space-between; 
+            /* 左揃えに設定 */
+            justify-content: flex-start; 
             align-items: center; 
             margin-bottom: 40px;
         }
@@ -148,23 +160,18 @@
             align-items: center; 
             gap: 10px; 
         }
-        .header-right { 
-            display: flex; 
-            align-items: center; 
-            gap: 20px; 
-        }
         
-        /* ★変更: 言語選択メニューを大きくデザイン調整 */
+        /* 言語選択メニュー */
         .lang-select {
             background: rgba(0,0,0,0.4); 
             border: 1px solid var(--glass-border); 
             color: white;
-            padding: 10px 20px; /* パディングを増やして大きく */
+            padding: 10px 20px; 
             border-radius: 30px; 
             outline: none; 
             cursor: pointer;
             font-family: inherit;
-            font-size: 16px; /* 文字サイズを大きく */
+            font-size: 16px; 
             font-weight: bold;
             transition: background 0.3s;
         }
@@ -176,9 +183,7 @@
             color: white; 
         }
 
-        /* アバター(.profile-img)のスタイルは削除しました */
-
-        /* --- Main Content --- */
+        /* --- メインコンテンツ --- */
         .container {
             width: 100%; 
             max-width: 1000px; 
@@ -232,7 +237,7 @@
             line-height: 1.6; 
         }
         
-        /* Animations */
+        /* ★通常ボタン用アニメーション★ */
         @keyframes pulse-primary {
             0% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5), 0 0 5px rgba(132, 7, 222, 0.3); }
             50% { box-shadow: 0 0 25px rgba(132, 7, 222, 0.8), 0 0 15px rgba(132, 7, 222, 0.5); }
@@ -278,6 +283,11 @@
             text-align: center; 
             width: 100%; 
             word-break: break-all;
+            /* フッター内を縦積みに */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
         .footer-link { 
             color: white; 
@@ -285,7 +295,7 @@
             border-bottom: 1px dotted white; 
         }
 
-        /* --- Lang Selection Overlay --- */
+        /* --- 言語選択 --- */
         #langSelectionOverlay {
             position: fixed; 
             top: 0; 
@@ -318,24 +328,7 @@
             grid-column: span 2;
         }
 
-        /* --- Site Login Overlay (Locked) --- */
-        #siteLoginOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            background-image: var(--main-bg-image);
-            background-size: cover;
-            z-index: 10000; 
-            display: none; 
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        /* --- Modals --- */
+        /* --- モーダル --- */
         .modal-overlay {
             position: fixed; 
             top: 0; 
@@ -376,7 +369,11 @@
             transform: scale(1); 
         }
         
-        /* Modal Animations */
+        /* ------------------------------------------------------------- */
+        /* ★アニメーション定義★ */
+        /* ------------------------------------------------------------- */
+        
+        /* 1. 緑色アニメーション (デフォルト) */
         @keyframes anim-green {
             0% {
                 border-color: var(--success-green-light);
@@ -391,6 +388,8 @@
                 box-shadow: 0 0 15px rgba(9, 156, 22, 0.4), 0 0 5px rgba(9, 156, 22, 0.2);
             }
         }
+
+        /* 2. 青紫ミックスアニメーション (ホバー時 - メインボックス枠線用) */
         @keyframes anim-box-blue-purple {
             0% {
                 border-color: #0066ff;
@@ -405,6 +404,8 @@
                 box-shadow: 0 0 15px rgba(0, 102, 255, 0.4), 0 0 5px rgba(0, 102, 255, 0.2);
             }
         }
+
+        /* 3. 青紫ミックスアニメーション (ホバー時 - バッジ & ボタン用) */
         @keyframes anim-badge-blue-purple {
             0% {
                 border-color: #0066ff;
@@ -422,12 +423,16 @@
                 box-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
             }
         }
+        
+        /* 4. アイコン(SVG)用 */
         @keyframes anim-svg-mixed {
             0% { filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)); }
             50% { filter: drop-shadow(0 0 5px rgba(170, 0, 255, 0.8)); }
             100% { filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)); }
         }
 
+
+        /* --- モーダル設定 (通常時：緑) --- */
         .modal-container.wide-mode {
             max-width: 900px;
             padding: 0;
@@ -435,12 +440,16 @@
             flex-direction: row;
             overflow: hidden;
             border: 2px solid var(--success-green-light);
+            /* デフォルトは緑アニメーション */
             animation: anim-green 3s infinite ease-in-out;
             transition: border-color 0.3s ease;
         }
+        
+        /* --- モーダル設定 (ホバー連動時：青紫) --- */
         #modalContainer.wide-mode.sync-blue-mode {
+            /* !importantで確実に適用 */
             animation: anim-box-blue-purple 3s infinite ease-in-out !important;
-            border-color: #0066ff !important;
+            border-color: #0066ff !important; /* 初期値を鮮やかな青に */
         }
 
         .modal-close {
@@ -531,6 +540,7 @@
             box-shadow: none;
         }
 
+        /* --- エラー時の赤発光クラス --- */
         .btn-confirm.error-glow {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
@@ -582,6 +592,7 @@
             text-align: left; 
         }
 
+        /* ★成功バッジ（チェックマーク）の設定 */
         .success-tag {
             background: rgba(9, 156, 22, 0.2);
             border: 2px solid var(--success-green-light);
@@ -597,6 +608,7 @@
             text-shadow: 0 0 8px rgba(0, 255, 157, 0.6); 
             font-family: inherit;
             white-space: nowrap;
+            /* 通常時は緑アニメーション */
             animation: anim-green 3s infinite ease-in-out;
             transition: all 0.3s ease;
         }
@@ -606,12 +618,16 @@
             transition: all 0.3s ease; 
         }
 
+        /* ★★★ 連動モード適用：バッジ（枠線アニメーション + 文字色固定） ★★★ */
         #modalContainer.wide-mode.sync-blue-mode .success-tag {
+            /* 枠線と背景のアニメーション（青⇔紫） */
             animation: anim-badge-blue-purple 3s infinite ease-in-out !important;
+            /* 文字色は鮮やかな青固定（点滅させない） */
             color: #0066ff !important;
             text-shadow: none !important;
             border-color: #0066ff !important;
         }
+        /* アイコンも青固定（点滅させない） */
         #modalContainer.wide-mode.sync-blue-mode .success-tag svg {
              filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)) !important;
              animation: none !important;
@@ -636,16 +652,20 @@
             color: var(--text-muted); 
         }
         
+        /* ★コンテンツ名テキスト */
         .success-content { 
             font-size: 18px; 
             font-weight: bold; 
             margin-top: 5px; 
+            /* 通常時：緑色で光る */
             color: var(--neon-green); 
             word-break: break-all;
             text-shadow: 0 0 5px rgba(0, 255, 157, 0.5); 
             transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
+        /* ★★★ 連動モード適用：コンテンツ名 ★★★ */
+        /* 鮮やかな青色(#0066ff)にするが、光らせない（text-shadow: none） */
         #modalContainer.wide-mode.sync-blue-mode .success-content {
             color: #0066ff !important;
             text-shadow: none !important;
@@ -668,6 +688,7 @@
             flex-wrap: wrap; 
         }
         
+        /* ★成功時のダウンロードボタン */
         #successDownloadBtn { 
             flex: 2; 
             text-decoration: none; 
@@ -675,10 +696,12 @@
             min-width: 140px;
             background: #099c16 !important;
             border: 2px solid var(--success-green-light) !important;
+            /* 通常時は緑アニメーション */
             animation: anim-green 3s infinite ease-in-out !important;
         }
         #successDownloadBtn:hover {
             background: var(--hover-blue) !important;
+            /* ホバー時：青紫ミックスアニメーション（枠線と影） */
             animation: anim-badge-blue-purple 3s infinite ease-in-out !important;
             transform: translateY(-2px);
             border-color: #0066ff !important;
@@ -708,7 +731,7 @@
             border-color: #fff; 
         }
 
-        /* --- Support Modal --- */
+        /* --- ★サポートモーダル専用スタイル (大幅改修) --- */
         .modal-container.wide-support-mode {
             max-width: 900px; /* PC幅確保 */
             padding: 30px; /* 余白調整 */
@@ -728,6 +751,7 @@
             }
         }
 
+        /* サポートアイテム(ボックス) */
         .support-item {
             display: flex; 
             flex-direction: column; 
@@ -739,15 +763,18 @@
             border-radius: 16px;
             color: white;
             transition: 0.3s;
+            /* ★Closeボタンを消した分、高さを増やして縦長に (200px -> 280px) */
             height: 280px; 
             text-align: center;
             width: 100%;
         }
         
+        /* FontAwesomeアイコン */
         .support-item i { 
             font-size: 48px; 
-            margin-top: 20px; 
+            margin-top: 20px; /* 上部の余白も少し調整 */
             margin-bottom: 10px; 
+            /* 色はHTMLのstyleタグで本物の色を指定し、CSSでは変更しない */
             transition: transform 0.3s; 
         }
         .support-item span { 
@@ -762,12 +789,14 @@
             border-color: rgba(255, 255, 255, 0.4);
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
+        /* ホバー時のアイコン：色は変えず、少し拡大のみ */
         .support-item:hover i { 
             transform: scale(1.1);
         }
 
+        /* 問い合わせボタン (ボックス内) */
         .btn-inquiry-small {
-            margin-bottom: 20px; 
+            margin-bottom: 20px; /* 下部の余白調整 */
             display: inline-block;
             padding: 10px 20px;
             border-radius: 30px;
@@ -787,7 +816,7 @@
             box-shadow: 0 0 10px rgba(132, 7, 222, 0.5);
         }
 
-        /* --- Mobile Adjustments --- */
+        /* --- モバイル専用調整 --- */
         @media (max-width: 768px) {
             header { 
                 padding: 15px; 
@@ -796,11 +825,8 @@
             .logo { 
                 font-size: 20px; 
             }
-            .header-right { 
-                gap: 10px; 
-            }
             .container { 
-                padding: 0 15px; 
+                padding: 0 15px; /* ここが15px */
             }
             .grid-menu { 
                 gap: 20px; 
@@ -844,41 +870,55 @@
                 grid-column: span 1; 
             }
 
+            /* ★修正: スマホでの横スクロール対応とPC型維持 */
             .support-grid {
+                /* GridをやめてFlexboxにして横並びスクロールにする */
                 display: flex !important; 
                 flex-direction: row;
-                overflow-x: auto; 
-                gap: 15px; 
+                overflow-x: auto; /* 横スクロール許可 */
+                gap: 15px; /* ボックス間の余白 */
+                
+                /* ★重要: パディングを追加してホバー時の見切れを防止 */
                 padding: 20px 10px; 
+                
+                /* ★修正: マージンをコンテナのパディング(-15px)と合わせる */
                 margin: 0 -15px; 
+                
+                /* ★修正: 計算式をマージンに合わせて修正 */
                 width: calc(100% + 30px);
-                justify-content: flex-start; 
+                
+                justify-content: flex-start; /* 左から並べる */
+                
+                /* スクロールを滑らかにする */
                 -webkit-overflow-scrolling: touch;
                 scroll-snap-type: x mandatory;
             }
             
+            /* 個別の列指定を解除 */
             .support-item:nth-child(n) {
                 grid-column: auto !important;
             }
 
+            /* ★ボックスの形状設定（PCと同じ形を維持する） */
             .support-item { 
-                height: 280px; 
-                min-width: 160px; 
-                width: 160px; 
-                flex: 0 0 auto; 
-                scroll-snap-align: center; 
-                padding: 20px 10px; 
+                height: 280px; /* PCと同じ高さ */
+                min-width: 160px; /* ★重要：つぶれないように最小幅を固定 */
+                width: 160px; /* 幅も固定 */
+                flex: 0 0 auto; /* フレックス内で縮小しないようにする */
+                scroll-snap-align: center; /* スクロール時に中央に吸着 */
+                padding: 20px 10px; /* 余白もPCと同じに */
             }
             
             .support-item i { 
-                font-size: 48px; 
+                font-size: 48px; /* アイコンサイズもPCと同じ */
             }
             .support-item span { 
-                font-size: 14px; 
+                font-size: 14px; /* 文字サイズもPCと同じ */
             }
             
+            /* ボタンがはみ出さないように調整 */
             .btn-inquiry-small {
-                width: 90%; 
+                width: 90%; /* 幅を少し狭めて収まりよくする */
                 font-size: 12px;
                 white-space: nowrap;
                 margin-bottom: 20px;
@@ -921,6 +961,7 @@
             gap: 5px; 
         }
 
+        /* --- 近未来的なローディングスピナー --- */
         .cyber-spinner {
             position: relative;
             width: 26px;
@@ -976,43 +1017,6 @@
 </head>
 <body>
 
-    <div id="siteLoginOverlay">
-        <div class="glass-panel modal-container" style="max-width: 400px;">
-            <div style="position: absolute; top: 20px; right: 20px;">
-                <select id="loginLangSwitcher" class="lang-select" style="font-size: 12px; padding: 3px 8px;">
-                    <option value="ja">日本語</option>
-                    <option value="en">English</option>
-                    <option value="zh">中文</option>
-                    <option value="ko">한국어</option>
-                    <option value="ru">Русский</option>
-                </select>
-            </div>
-
-            <div class="logo" style="justify-content:center; margin-bottom:20px;">
-                <i data-lucide="shield-check" size="32" style="color: #9347FF;"></i>
-            </div>
-            <h2 style="font-size: 22px; margin-bottom: 10px;" data-translate="login_title">SYSTEM LOGIN</h2>
-            <p style="color:rgba(255,255,255,0.7); font-size:13px; margin-bottom: 20px;" data-translate="login_desc">
-                アクセス権限を確認します。<br>IDとパスワードを入力してください。
-            </p>
-            
-            <div style="text-align: left; margin-bottom: 15px;">
-                <label style="font-size: 12px; color: #ccc; margin-left: 5px;" data-translate="login_label_user">User ID</label>
-                <input type="text" id="siteUser" class="code-input" data-translate-placeholder="login_ph_user" placeholder="User Name" style="margin-top: 5px; text-align: left;">
-            </div>
-            
-            <div style="text-align: left; margin-bottom: 25px;">
-                <label style="font-size: 12px; color: #ccc; margin-left: 5px;" data-translate="login_label_pass">Password</label>
-                <input type="password" id="sitePass" class="code-input" data-translate-placeholder="login_ph_pass" placeholder="Password" style="margin-top: 5px; text-align: left;">
-            </div>
-
-            <button id="btnSiteLogin" class="btn-confirm" data-translate="login_btn">LOGIN</button>
-            <p id="loginErrorMsg" style="color: #ff2a2a; font-size: 13px; margin-top: 15px; display: none;">
-                <i data-lucide="alert-circle" size="12" style="vertical-align: middle;"></i> <span data-translate="login_error">IDまたはパスワードが違います</span>
-            </p>
-        </div>
-    </div>
-
     <div id="langSelectionOverlay">
         <div class="glass-panel lang-modal">
             <div class="logo" style="justify-content:center; margin-bottom:20px;">
@@ -1036,16 +1040,7 @@
     </div>
 
     <header>
-        <div class="logo"><i data-lucide="user-round-cog" style="color: #099c16;"></i>kiryu_sensya(Dev)</div>
-        <div class="header-right">
-            <select id="languageSwitcher" class="lang-select glass-panel">
-                <option value="ja" selected>日本語</option>
-                <option value="en">English</option>
-                <option value="zh">中文</option>
-                <option value="ko">한국어</option>
-                <option value="ru">Русский</option>
-            </select>
-        </div>
+        <div class="logo"><i data-lucide="user-round" style="color: #8407de;"></i>_.k__yu.10</div>
     </header>
 
     <div class="container">
@@ -1080,8 +1075,18 @@
     </div>
 
     <footer>
-        Enforcement Administer: <a href="https://developer-kiryu10.vercel.app/" target="_blank" class="footer-link">kiryu-sensya</a>
-        <br><span style="opacity: 0.5; font-size: 11px;">© 2019-2026 kiryu-sensya. All rights reserved.</span>
+        <select id="languageSwitcher" class="lang-select glass-panel">
+            <option value="ja" selected>日本語</option>
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+            <option value="ko">한국어</option>
+            <option value="ru">Русский</option>
+        </select>
+        
+        <div style="margin-top: 10px;">
+            Enforcement Administer: <a href="https://developer-kiryu10.vercel.app/" target="_blank" class="footer-link">kiryu-sensya</a>
+            <br><span style="opacity: 0.5; font-size: 11px;">© 2019-2026 kiryu-sensya. All rights reserved.</span>
+        </div>
     </footer>
 
     <div id="authModal" class="modal-overlay">
@@ -1151,10 +1156,10 @@
 <script>
     lucide.createIcons();
     // ▼ あなたのGASのURLに書き換えてください
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycby-euxYGL5-ov5Lb-Q_7HFcLvIgfTf354FQAqT0bOsTJFo7l3NDISmFS64dS8wr-DxScA/exec"; 
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwFVUjphTbnkGeGdMrAP3U8uN5kJSsYUjVS4yJhtlL41pRwW15paLkBMLWA7y4i2boNEQ/exec"; 
     let CURRENT_LANG = "ja"; 
 
-    // --- 翻訳データ (ログイン画面用キーを追加) ---
+    // --- 翻訳データ ---
     const TRANSLATIONS = {
         ja: {
             card1_title: "アクティベーション", card1_desc: "コードを使用して<br>コンテンツをアンロック", card1_btn: "コードを使用",
@@ -1167,12 +1172,7 @@
             success_badge: "コードが認証されました。", success_main_title: "有効化されたコンテンツ",
             success_label_name: "コンテンツ名称", btn_close: "閉じる", btn_download: "ダウンロード",
             news_title: "最新情報", news_label: "変更ログ", news_content: "デザインがアップデートされました。<br>韓国語,ロシア語が追加されました。<br>1度限りのコードを発行しました。",
-            support_modal_title: "何かお困りですか？ ", btn_inquiry: "利用不可",
-            // ★ログイン画面用
-            login_title: "SYSTEM LOGIN", login_desc: "アクセス権限を確認します。<br>IDとパスワードを入力してください。",
-            login_label_user: "User ID", login_label_pass: "Password",
-            login_ph_user: "ユーザー名", login_ph_pass: "パスワード",
-            login_btn: "ログイン", login_error: "IDまたはパスワードが違います"
+            support_modal_title: "何かお困りですか？ ", btn_inquiry: "利用不可"
         },
         en: {
             card1_title: "Activation", card1_desc: "Enter code to<br>unlock content", card1_btn: "Use Code",
@@ -1185,12 +1185,7 @@
             success_badge: "The code has been activated.", success_main_title: "Activated content",
             success_label_name: "Content Name", btn_close: "Close", btn_download: "Download",
             news_title: "Latest News", news_label: "Changelog", news_content: "The design has been updated.<br>Korean and Russian have been added.<br>A one-time code has been issued.",
-            support_modal_title: "What can I help you with?", btn_inquiry: "Stay tuned",
-            // ★Login Screen
-            login_title: "SYSTEM LOGIN", login_desc: "Verifying access rights.<br>Please enter your ID and password.",
-            login_label_user: "User ID", login_label_pass: "Password",
-            login_ph_user: "User Name", login_ph_pass: "Password",
-            login_btn: "LOGIN", login_error: "Invalid ID or Password"
+            support_modal_title: "What can I help you with?", btn_inquiry: "Stay tuned"
         },
         zh: {
             card1_title: "激活", card1_desc: "使用代码<br>以解锁内容", card1_btn: "使用代码",
@@ -1203,12 +1198,7 @@
             success_badge: "代码已激活。", success_main_title: "激活内容",
             success_label_name: "内容名称", btn_close: "关闭", btn_download: "下载",
             news_title: "最新消息", news_label: "更新日志", news_content: "设计已更新。<br>新增韩语和俄语支持。<br>一次性码已生成。",
-            support_modal_title: "有什么可以帮到您的吗？", btn_inquiry: "敬请期待",
-            // ★Login Screen
-            login_title: "系统登录", login_desc: "正在验证访问权限。<br>请输入ID和密码。",
-            login_label_user: "用户ID", login_label_pass: "密码",
-            login_ph_user: "用户名", login_ph_pass: "密码",
-            login_btn: "登录", login_error: "ID或密码错误"
+            support_modal_title: "有什么可以帮到您的吗？", btn_inquiry: "敬请期待"
         },
         ko: {
             card1_title: "활성화", card1_desc: "잠금 해제 코드<br>입력 콘텐츠", card1_btn: "사용 코드",
@@ -1221,12 +1211,7 @@
             success_badge: "코드가 활성화되었습니다.", success_main_title: "활성화된 콘텐츠",
             success_label_name: "콘텐츠 명칭", btn_close: "닫기", btn_download: "다운로드",
             news_title: "최신 정보", news_label: "변경 내역", news_content: "디자인이 업데이트되었습니다.<br>한국어와 러시아어가 추가되었습니다.<br>일회용 코드가 발급되었습니다.",
-            support_modal_title: "뭘 도와드릴까요?", btn_inquiry: "기대해 주세요",
-            // ★Login Screen
-            login_title: "시스템 로그인", login_desc: "접근 권한을 확인합니다.<br>ID와 비밀번호를 입력해 주세요.",
-            login_label_user: "사용자 ID", login_label_pass: "비밀번호",
-            login_ph_user: "사용자명", login_ph_pass: "비밀번호",
-            login_btn: "로그인", login_error: "ID 또는 비밀번호가 다릅니다"
+            support_modal_title: "뭘 도와드릴까요?", btn_inquiry: "기대해 주세요"
         },
         ru: {
             card1_title: "Активация", card1_desc: "Введите код для разблокировки<br>контента", card1_btn: "Код использования",
@@ -1239,12 +1224,7 @@
             success_badge: "Код активирован.", success_main_title: "Активированный контент",
             success_label_name: "Название", btn_close: "Закрыть", btn_download: "Скачать",
             news_title: "Новости", news_label: "Список изменений", news_content: "Дизайн был обновлен.<br>Добавлены корейский и русский языки.<br>Выдан одноразовый код.",
-            support_modal_title: "Чем я могу вам помочь?", btn_inquiry: "Недоступно",
-            // ★Login Screen
-            login_title: "ВХОД В СИСТЕМУ", login_desc: "Проверка прав доступа.<br>Пожалуйста, введите ID и пароль.",
-            login_label_user: "ID пользователя", login_label_pass: "Пароль",
-            login_ph_user: "Имя пользователя", login_ph_pass: "Пароль",
-            login_btn: "ВОЙТИ", login_error: "Неверный ID или пароль"
+            support_modal_title: "Чем я могу вам помочь?", btn_inquiry: "Недоступно"
         }
     };
 
@@ -1268,28 +1248,20 @@
     const successLeftCol = document.getElementById('successLeftCol');
     const successImage = document.getElementById('successImage');
 
-    const siteLoginOverlay = document.getElementById('siteLoginOverlay');
     const langSelectionOverlay = document.getElementById('langSelectionOverlay');
 
-    // --- ★改修: 起動時のフロー制御 ---
+    // --- 起動時のフロー制御 ---
     document.addEventListener('DOMContentLoaded', () => {
         const savedLang = localStorage.getItem('user_lang');
         const switcher = document.getElementById('languageSwitcher');
-        const loginSwitcher = document.getElementById('loginLangSwitcher');
 
         if (savedLang) {
-            // 保存された言語がある場合: 
-            // 1. 言語選択画面は即座に隠す
+            // 保存された言語がある場合: 言語選択画面は即座に隠す
             langSelectionOverlay.style.display = 'none'; 
             switcher.value = savedLang;
-            loginSwitcher.value = savedLang; // ログイン画面の選択肢も同期
             updateLanguage(savedLang);
-            
-            // 2. ★代わりにログイン画面を表示する
-            siteLoginOverlay.style.display = 'flex';
         } else {
             // 初回訪問時: 言語選択画面を表示したままにする
-            // ログイン画面はまだ表示しない
         }
     });
 
@@ -1299,21 +1271,12 @@
         
         updateLanguage(lang);
         document.getElementById('languageSwitcher').value = lang;
-        document.getElementById('loginLangSwitcher').value = lang; // ログイン画面の選択肢も同期
         
-        // 1. 言語選択画面をフェードアウトして消す
+        // 言語選択画面をフェードアウトして消す
         langSelectionOverlay.style.opacity = '0';
         langSelectionOverlay.style.visibility = 'hidden';
         setTimeout(() => { 
             langSelectionOverlay.style.display = 'none'; 
-            
-            // 2. ★消えた直後に「ログイン画面」を表示する
-            siteLoginOverlay.style.display = 'flex';
-            // 少しアニメーションで表示
-            siteLoginOverlay.animate([
-                { opacity: 0 }, { opacity: 1 }
-            ], { duration: 500, fill: 'forwards' });
-            
         }, 500);
     }
 
@@ -1321,19 +1284,10 @@
     document.getElementById('languageSwitcher').addEventListener('change', (e) => {
         const lang = e.target.value;
         localStorage.setItem('user_lang', lang); // 保存
-        document.getElementById('loginLangSwitcher').value = lang; // ログイン画面側も同期
         updateLanguage(lang);
     });
 
-    // ★追加: ログイン画面のセレクトボックス変更時の処理
-    document.getElementById('loginLangSwitcher').addEventListener('change', (e) => {
-        const lang = e.target.value;
-        localStorage.setItem('user_lang', lang); // 保存
-        document.getElementById('languageSwitcher').value = lang; // メイン画面側も同期
-        updateLanguage(lang);
-    });
-
-    // 言語切り替えロジック (改修: placeholderの翻訳に対応)
+    // 言語切り替えロジック
     function updateLanguage(lang) {
         CURRENT_LANG = lang;
         document.documentElement.lang = lang;
@@ -1347,7 +1301,7 @@
             if(t[key]) el.innerHTML = t[key];
         });
 
-        // プレースホルダー(入力欄の中の文字)の翻訳
+        // プレースホルダーの翻訳
         document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
             const key = el.getAttribute('data-translate-placeholder');
             if(t[key]) el.placeholder = t[key];
@@ -1522,56 +1476,6 @@
 
     successDownloadBtn.addEventListener('mouseenter', () => { modalContainer.classList.add('sync-blue-mode'); });
     successDownloadBtn.addEventListener('mouseleave', () => { modalContainer.classList.remove('sync-blue-mode'); });
-
-    // --- サイトログイン処理 (GAS連携) ---
-    const btnSiteLogin = document.getElementById('btnSiteLogin');
-    const siteUserInput = document.getElementById('siteUser');
-    const sitePassInput = document.getElementById('sitePass');
-    const loginErrorMsg = document.getElementById('loginErrorMsg');
-
-    async function checkSiteLogin() {
-        const u = siteUserInput.value;
-        const p = sitePassInput.value;
-        if(!u || !p) return;
-
-        btnSiteLogin.disabled = true;
-        const originalText = btnSiteLogin.textContent;
-        btnSiteLogin.innerHTML = `<span class="cyber-spinner"></span> Checking...`;
-        loginErrorMsg.style.display = "none";
-
-        try {
-            const targetUrl = `${GAS_API_URL}?type=login&user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`;
-            const response = await fetch(targetUrl);
-            const data = await response.json();
-
-            if (data.success) {
-                siteLoginOverlay.style.transition = "opacity 0.5s ease";
-                siteLoginOverlay.style.opacity = "0";
-                setTimeout(() => {
-                    siteLoginOverlay.style.display = "none";
-                }, 500);
-            } else {
-                throw new Error("Invalid credentials");
-            }
-        } catch (error) {
-            loginErrorMsg.style.display = "block";
-            lucide.createIcons();
-            btnSiteLogin.classList.add('error-glow');
-            setTimeout(() => btnSiteLogin.classList.remove('error-glow'), 500);
-        } finally {
-            btnSiteLogin.disabled = false;
-            btnSiteLogin.textContent = originalText;
-        }
-    }
-
-    btnSiteLogin.addEventListener('click', checkSiteLogin);
-    sitePassInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') checkSiteLogin();
-    });
-
-</script>
-</body>
-</html>
 
 </script>
 </body>
