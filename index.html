@@ -18,16 +18,6 @@
         /* =========================================
            FONT DEFINITIONS & LICENSE NOTICE
            ========================================= */
-
-        /* License Notice:
-           HarmonyOS Sans Fonts Software is licensed under HarmonyOS Sans Fonts License Agreement.
-           Copyright 2021 Huawei Device Co., Ltd.
-           
-           Required Notice:
-           This software uses HarmonyOS Sans Fonts.
-        */
-
-        /* 1. HarmonyOS Sans (Global / English / Numbers) */
         @font-face {
             font-family: 'HarmonyOS Sans';
             src: url('./assets/fonts/HarmonyOS_Sans_Regular.woff') format('woff'); 
@@ -40,8 +30,6 @@
             font-weight: 700;
             font-style: normal;
         }
-
-        /* 2. HarmonyOS Sans SC (Simplified Chinese) */
         @font-face {
             font-family: 'HarmonyOS Sans SC';
             src: url('./assets/fonts/HarmonyOS_SansSC_Regular.woff') format('woff'); 
@@ -76,6 +64,9 @@
             /* 成功時の緑2色 */
             --success-green-light: #099c16;
             --success-green-dark: #047016;
+
+            /* ★背景画像の一括設定（ここを変えれば全画面変わります）★ */
+            --main-bg-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         }
 
         /* 全要素に対して余白計算を統一 */
@@ -97,10 +88,10 @@
             flex-direction: column; 
             align-items: center;
             color: var(--text-main);
-            /* ★修正: 画像がない場合の背景色を黒に指定 */
+            /* 画像がない場合の背景色を黒に指定 */
             background-color: #000000;
-            /* 画像指定（こちらが優先されます） */
-            background-image: url('#');
+            /* ★修正: CSS変数を使って背景画像を指定 */
+            background-image: var(--main-bg-image);
             background-size: cover; 
             background-position: center; 
             background-attachment: fixed;
@@ -352,7 +343,8 @@
             width: 100%;
             height: 100%;
             background-color: #000; /* 背景を真っ黒にしてサイトを隠す */
-            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1472&auto=format&fit=crop');
+            /* ★修正: CSS変数を使って背景画像を指定 */
+            background-image: var(--main-bg-image);
             background-size: cover;
             z-index: 10000; /* 言語選択(10001)の下、メイン画面より上に表示 */
             display: none; /* 初期状態は非表示 */
@@ -1229,7 +1221,7 @@
 <script>
     lucide.createIcons();
     // ▼ あなたのGASのURLに書き換えてください
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycby-euxYGL5-ov5Lb-Q_7HFcLvIgfTf354FQAqT0bOsTJFo7l3NDISmFS64dS8wr-DxScA/exec"; 
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwFVUjphTbnkGeGdMrAP3U8uN5kJSsYUjVS4yJhtlL41pRwW15paLkBMLWA7y4i2boNEQ/exec"; 
     let CURRENT_LANG = "ja"; 
 
     // --- 翻訳データ (ログイン画面用キーを追加) ---
