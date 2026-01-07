@@ -3,7 +3,7 @@ import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
 
-// テスト設定: 10秒間に2回まで
+// レートリミット設定: 10秒間に2回まで
 const ratelimit = new Ratelimit({
   redis: redis,
   limiter: Ratelimit.slidingWindow(2, "10 s"),
@@ -12,36 +12,51 @@ const ratelimit = new Ratelimit({
 export default async function handler(req, res) {
   const identifier = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0] : 'ip';
   
-  // 制限チェック
+  // 1. 制限チェック
   const { success } = await ratelimit.limit(identifier);
-
   if (!success) {
-    return res.status(429).json({ 
-      error: 'Too Many Requests',
-      message: '連打制限がかかりました。少し待ってください。'
-    });
+    return res.status(429).json({ error: 'Too Many Requests', message: '連打制限がかかりました。' });
   }
 
   if (req.method === 'POST') {
     try {
       const gasUrl = process.env.GAS_API_URL;
       
-      // 【修正点】データが文字かオブジェクトかを確認して、正しく変換する
-      const payload = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      // 【重要】データの受け取りと形式の統一
+      // VercelがすでにJSON解析している場合としていない場合の両方に対応
+      let bodyData = req.body;
+      if (typeof bodyData === 'string') {
+        try {
+          bodyData = JSON.parse(bodyData);
+        } catch (e) {
+          // JSONパースに失敗したらそのまま使う
+        }
+      }
 
+      // 【ここが修正点】GASが確実に読める「フォームデータ形式」に変換する
+      // (e.parameter で受け取るタイプのGASスクリプトに対応)
+      const params = new URLSearchParams();
+      if (bodyData && typeof bodyData === 'object') {
+        Object.keys(bodyData).forEach(key => {
+          params.append(key, bodyData[key]);
+        });
+      }
+
+      // GASへ送信
       const response = await fetch(gasUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // 常にJSONとして送る
+          'Content-Type': 'application/x-www-form-urlencoded', // フォーム形式を指定
         },
-        body: payload
+        body: params.toString()
       });
 
       const data = await response.json();
       return res.status(200).json(data);
 
     } catch (error) {
-      return res.status(500).json({ error: 'Server Error' });
+      console.error("Proxy Error:", error);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 
