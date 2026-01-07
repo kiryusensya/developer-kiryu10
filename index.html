@@ -336,6 +336,23 @@
             grid-column: span 2;
         }
 
+        /* --- ★追加: サイトロック画面用CSS --- */
+        #siteLoginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* 背景を真っ黒にしてサイトを隠す */
+            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1472&auto=format&fit=crop');
+            background-size: cover;
+            z-index: 10000; /* 言語選択(9999)より上に表示 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
         /* --- モーダル --- */
         .modal-overlay {
             position: fixed; 
@@ -1008,23 +1025,6 @@
             filter: drop-shadow(0 0 3px var(--primary-color));
         }
 
-        /* --- ★追加: サイトロック画面用CSS --- */
-        #siteLoginOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000; /* 背景を真っ黒にしてサイトを隠す */
-            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1472&auto=format&fit=crop');
-            background-size: cover;
-            z-index: 10000; /* 言語選択(9999)より上に表示 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
         @keyframes pulse-core {
             0% { box-shadow: 0 0 2px var(--primary-color), inset 0 0 2px var(--neon-cyan); }
             100% { box-shadow: 0 0 10px var(--neon-cyan), inset 0 0 8px var(--primary-color); }
@@ -1042,7 +1042,8 @@
     </style>
 </head>
 <body>
-　　<div id="siteLoginOverlay">
+
+    <div id="siteLoginOverlay">
         <div class="glass-panel modal-container" style="max-width: 400px;">
             <div class="logo" style="justify-content:center; margin-bottom:20px;">
                 <i data-lucide="shield-check" size="32" style="color: #9347FF;"></i>
@@ -1251,7 +1252,7 @@
 
 <script>
     lucide.createIcons();
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwFVUjphTbnkGeGdMrAP3U8uN5kJSsYUjVS4yJhtlL41pRwW15paLkBMLWA7y4i2boNEQ/exec"; 
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycby-euxYGL5-ov5Lb-Q_7HFcLvIgfTf354FQAqT0bOsTJFo7l3NDISmFS64dS8wr-DxScA/exec"; 
     let CURRENT_LANG = "ja"; 
 
     // --- 翻訳データ ---
@@ -1466,8 +1467,7 @@
     const supportModal = document.getElementById('supportModal');
     const btnOpenSupport = document.getElementById('btnOpenSupport');
     const supportCloseX = document.getElementById('supportCloseX');
-    // Closeボタン削除に伴い、JavaScript側の参照も削除（または無視）
-
+    
     function openSupportModal() {
         supportModal.classList.add('active');
         lucide.createIcons(); // アイコン再描画
@@ -1478,7 +1478,6 @@
 
     if(btnOpenSupport) btnOpenSupport.addEventListener('click', openSupportModal);
     if(supportCloseX) supportCloseX.addEventListener('click', closeSupportModal);
-    // ボタン削除済みのためイベントリスナーも不要
     if(supportModal) supportModal.addEventListener('click', (e) => { if (e.target === supportModal) closeSupportModal(); });
 
 
@@ -1599,12 +1598,8 @@
         modalContainer.classList.remove('sync-blue-mode');
     });
 
-    // --- ★追加: サイトログイン処理 ---
+    // --- ★改修版: サイトログイン処理 (GAS連携) ---
     
-    // ▼ここに設定したいIDとパスワードを決めてください
-    const SITE_USER = "kiryu_sensya";
-    const SITE_PASS = "Rockstar CayoPer1700";
-
     const siteLoginOverlay = document.getElementById('siteLoginOverlay');
     const btnSiteLogin = document.getElementById('btnSiteLogin');
     const siteUserInput = document.getElementById('siteUser');
@@ -1612,28 +1607,49 @@
     const loginErrorMsg = document.getElementById('loginErrorMsg');
 
     // ログイン実行関数
-    function checkSiteLogin() {
+    async function checkSiteLogin() {
         const u = siteUserInput.value;
         const p = sitePassInput.value;
+        
+        if(!u || !p) return;
 
-        if (u === SITE_USER && p === SITE_PASS) {
-            // 正解の場合：フェードアウトして消す
-            siteLoginOverlay.style.transition = "opacity 0.5s ease";
-            siteLoginOverlay.style.opacity = "0";
-            setTimeout(() => {
-                siteLoginOverlay.style.display = "none";
-            }, 500);
+        // ボタンをロード中にする
+        btnSiteLogin.disabled = true;
+        const originalText = btnSiteLogin.textContent;
+        btnSiteLogin.innerHTML = `<span class="cyber-spinner"></span> Checking...`;
+        loginErrorMsg.style.display = "none";
+
+        // GASに問い合わせる (type=login を送る)
+        try {
+            // あなたのGASのURL (現在お使いのものと同じURL)
+            const targetUrl = `${GAS_API_URL}?type=login&user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`;
             
-            // ログイン済みフラグを保存したい場合は以下を有効化
-            // sessionStorage.setItem('is_logged_in', 'true');
-        } else {
-            // 不正解の場合：エラー表示＆揺らす
+            const response = await fetch(targetUrl);
+            const data = await response.json();
+
+            if (data.success) {
+                // 正解の場合
+                siteLoginOverlay.style.transition = "opacity 0.5s ease";
+                siteLoginOverlay.style.opacity = "0";
+                setTimeout(() => {
+                    siteLoginOverlay.style.display = "none";
+                }, 500);
+            } else {
+                // 不正解の場合
+                throw new Error("Invalid credentials");
+            }
+        } catch (error) {
+            // エラー表示
             loginErrorMsg.style.display = "block";
             lucide.createIcons();
             
             // ボタンを赤く点滅
             btnSiteLogin.classList.add('error-glow');
             setTimeout(() => btnSiteLogin.classList.remove('error-glow'), 500);
+        } finally {
+            // ボタンを元に戻す
+            btnSiteLogin.disabled = false;
+            btnSiteLogin.textContent = originalText;
         }
     }
 
@@ -1644,11 +1660,6 @@
     sitePassInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') checkSiteLogin();
     });
-
-    // (オプション) 既にログイン済みなら表示しない場合は以下のコメントを外す
-    // if (sessionStorage.getItem('is_logged_in') === 'true') {
-    //     siteLoginOverlay.style.display = 'none';
-    // }
 
 </script>
 </body>
