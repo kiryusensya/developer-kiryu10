@@ -1481,15 +1481,6 @@
             <button id="newsCloseBtn" class="btn-confirm" data-translate="btn_close">閉じる</button>
         </div>
     </div>
-                
-                <ul id="newsList">
-                    <li style="text-align:center; color:#888;">Loading...</li>
-                </ul>
-            </div>
-            
-            <button id="newsCloseBtn" class="btn-confirm" data-translate="btn_close">閉じる</button>
-        </div>
-    </div>
 
     <div id="supportModal" class="modal-overlay">
         <div class="modal-container glass-panel wide-support-mode">
@@ -1802,12 +1793,10 @@
 
             if (data.success && data.news && data.news.length > 0) {
                 data.news.forEach(item => {
-                    // ★GASから "type" (update/info/maintenance等) が返ってくると仮定
-                    // 返ってこない場合は本文の内容から推測、または "INFO" をデフォルトにする
+                    // ★バッジの種類を自動判定（UPDATE, MAINT, INFO）
                     let badgeType = 'info';
                     let badgeLabel = 'INFO';
 
-                    // 簡易的な判別ロジック (GAS側で type を指定していれば item.type を優先)
                     if (item.type) {
                         badgeType = item.type.toLowerCase();
                         badgeLabel = item.type.toUpperCase();
@@ -1822,6 +1811,7 @@
                     const li = document.createElement('li');
                     li.className = 'news-item'; // CSSクラス適用
                     
+                    // カード型デザインのHTMLを生成
                     li.innerHTML = `
                         <div class="news-header">
                             <span class="news-badge badge-${badgeType}">${badgeLabel}</span>
