@@ -122,8 +122,7 @@
         }
 
         /* =========================================
-           ★日付表示エリア専用フォント設定 (New)
-           数字はHarmonyOS、各言語文字はNoto等へフォールバック
+           ★日付表示エリア専用フォント設定
            ========================================= */
         .news-date[lang="ja"] {
             font-family: 'HarmonyOS Sans', 'Noto Sans JP', sans-serif !important;
@@ -193,7 +192,6 @@
             font-size: 16px; 
             font-weight: bold;
             transition: background 0.3s;
-            /* ★PC時は右下に絶対配置 */
             position: absolute;
             right: 20px;
             bottom: 20px;
@@ -215,13 +213,11 @@
             display: flex; 
             flex-direction: column; 
             justify-content: center;
-            /* ログイン前は非表示（JSで制御） */
             opacity: 0;
             transition: opacity 0.5s ease;
-            pointer-events: none; /* ログイン前はクリック不可 */
+            pointer-events: none;
         }
         
-        /* ログイン後に適用するクラス */
         .container.logged-in {
             opacity: 1;
             pointer-events: auto;
@@ -318,12 +314,11 @@
             text-align: center; 
             width: 100%; 
             word-break: break-all;
-            /* PC: 相対配置で中の絶対配置の基準にする */
             position: relative;
             display: flex;
-            justify-content: center; /* テキストは中央 */
+            justify-content: center; 
             align-items: center;
-            min-height: 80px; /* セレクトボックスが入る高さを確保 */
+            min-height: 80px;
         }
         .footer-link { 
             color: white; 
@@ -363,16 +358,16 @@
             grid-column: span 2;
         }
 
-        /* --- ★管理者ログイン画面 (新設) --- */
+        /* --- ★管理者ログイン画面 --- */
         #adminLoginOverlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000000; /* 完全な黒背景 */
-            z-index: 10000; /* 言語選択(10001)より下、メインより上 */
-            display: none; /* 初期は非表示 */
+            background: #000000;
+            z-index: 10000;
+            display: none;
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -386,7 +381,7 @@
             border-radius: 20px;
             padding: 40px;
             width: 100%;
-            max-width: 550px; /* ★幅を広げました */
+            max-width: 550px;
             text-align: center;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             position: relative;
@@ -442,7 +437,7 @@
         .login-btn {
             width: 100%;
             padding: 14px;
-            background: #8407de; /* 指定の紫 */
+            background: #8407de;
             color: white;
             border: none;
             border-radius: 12px;
@@ -464,7 +459,6 @@
             cursor: wait;
         }
 
-        /* ログイン画面内の言語選択（右上・変更可能） */
         .login-lang-select {
             position: absolute;
             top: 20px;
@@ -478,9 +472,6 @@
             outline: none;
             cursor: pointer;
             font-family: inherit;
-            /* 矢印を消す場合 */
-            /* appearance: none;
-            -webkit-appearance: none; */
             text-align: center;
             transition: all 0.2s;
         }
@@ -489,7 +480,6 @@
             color: white;
             border-color: #555;
         }
-        /* オプションの背景色 */
         .login-lang-select option {
             background: #111;
             color: white;
@@ -539,8 +529,6 @@
         /* ------------------------------------------------------------- */
         /* ★アニメーション定義★ */
         /* ------------------------------------------------------------- */
-        
-        /* 1. 緑色アニメーション (デフォルト) */
         @keyframes anim-green {
             0% {
                 border-color: var(--success-green-light);
@@ -556,7 +544,6 @@
             }
         }
 
-        /* 2. 青紫ミックスアニメーション (ホバー時 - メインボックス枠線用) */
         @keyframes anim-box-blue-purple {
             0% {
                 border-color: #0066ff;
@@ -572,7 +559,6 @@
             }
         }
 
-        /* 3. 青紫ミックスアニメーション (ホバー時 - バッジ & ボタン用) */
         @keyframes anim-badge-blue-purple {
             0% {
                 border-color: #0066ff;
@@ -591,15 +577,12 @@
             }
         }
         
-        /* 4. アイコン(SVG)用 */
         @keyframes anim-svg-mixed {
             0% { filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)); }
             50% { filter: drop-shadow(0 0 5px rgba(170, 0, 255, 0.8)); }
             100% { filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)); }
         }
 
-
-        /* --- モーダル設定 (通常時：緑) --- */
         .modal-container.wide-mode {
             max-width: 900px;
             padding: 0;
@@ -607,16 +590,13 @@
             flex-direction: row;
             overflow: hidden;
             border: 2px solid var(--success-green-light);
-            /* デフォルトは緑アニメーション */
             animation: anim-green 3s infinite ease-in-out;
             transition: border-color 0.3s ease;
         }
         
-        /* --- モーダル設定 (ホバー連動時：青紫) --- */
         #modalContainer.wide-mode.sync-blue-mode {
-            /* !importantで確実に適用 */
             animation: anim-box-blue-purple 3s infinite ease-in-out !important;
-            border-color: #0066ff !important; /* 初期値を鮮やかな青に */
+            border-color: #0066ff !important;
         }
 
         .modal-close {
@@ -719,7 +699,6 @@
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 25px rgba(255, 42, 42, 0.8) !important;
         }
-        /* 管理者ログイン用のエラー表示 */
         .login-input.error-border {
             border-color: var(--neon-red) !important;
             box-shadow: 0 0 10px rgba(255, 42, 42, 0.5) !important;
@@ -765,7 +744,6 @@
             text-align: left; 
         }
 
-        /* ★成功バッジ（チェックマーク）の設定 */
         .success-tag {
             background: rgba(9, 156, 22, 0.2);
             border: 2px solid var(--success-green-light);
@@ -781,7 +759,6 @@
             text-shadow: 0 0 8px rgba(0, 255, 157, 0.6); 
             font-family: inherit;
             white-space: nowrap;
-            /* 通常時は緑アニメーション */
             animation: anim-green 3s infinite ease-in-out;
             transition: all 0.3s ease;
         }
@@ -791,16 +768,12 @@
             transition: all 0.3s ease; 
         }
 
-        /* ★★★ 連動モード適用：バッジ（枠線アニメーション + 文字色固定） ★★★ */
         #modalContainer.wide-mode.sync-blue-mode .success-tag {
-            /* 枠線と背景のアニメーション（青⇔紫） */
             animation: anim-badge-blue-purple 3s infinite ease-in-out !important;
-            /* 文字色は鮮やかな青固定（点滅させない） */
             color: #0066ff !important;
             text-shadow: none !important;
             border-color: #0066ff !important;
         }
-        /* アイコンも青固定（点滅させない） */
         #modalContainer.wide-mode.sync-blue-mode .success-tag svg {
              filter: drop-shadow(0 0 5px rgba(0, 102, 255, 0.8)) !important;
              animation: none !important;
@@ -825,20 +798,16 @@
             color: var(--text-muted); 
         }
         
-        /* ★コンテンツ名テキスト */
         .success-content { 
             font-size: 18px; 
             font-weight: bold; 
             margin-top: 5px; 
-            /* 通常時：緑色で光る */
             color: var(--neon-green); 
             word-break: break-all;
             text-shadow: 0 0 5px rgba(0, 255, 157, 0.5); 
             transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
-        /* ★★★ 連動モード適用：コンテンツ名 ★★★ */
-        /* 鮮やかな青色(#0066ff)にするが、光らせない（text-shadow: none） */
         #modalContainer.wide-mode.sync-blue-mode .success-content {
             color: #0066ff !important;
             text-shadow: none !important;
@@ -861,7 +830,6 @@
             flex-wrap: wrap; 
         }
         
-        /* ★成功時のダウンロードボタン */
         #successDownloadBtn { 
             flex: 2; 
             text-decoration: none; 
@@ -869,12 +837,10 @@
             min-width: 140px;
             background: #099c16 !important;
             border: 2px solid var(--success-green-light) !important;
-            /* 通常時は緑アニメーション */
             animation: anim-green 3s infinite ease-in-out !important;
         }
         #successDownloadBtn:hover {
             background: var(--hover-blue) !important;
-            /* ホバー時：青紫ミックスアニメーション（枠線と影） */
             animation: anim-badge-blue-purple 3s infinite ease-in-out !important;
             transform: translateY(-2px);
             border-color: #0066ff !important;
@@ -904,27 +870,25 @@
             border-color: #fff; 
         }
 
-        /* --- ★サポートモーダル専用スタイル (大幅改修) --- */
+        /* --- ★サポートモーダル専用スタイル --- */
         .modal-container.wide-support-mode {
-            max-width: 900px; /* PC幅確保 */
-            padding: 30px; /* 余白調整 */
+            max-width: 900px;
+            padding: 30px;
         }
 
         .support-grid {
             display: grid;
-            gap: 10px; /* ★ボックス間の隙間を大幅に縮小 */
+            gap: 10px;
             margin-bottom: 20px;
             width: 100%;
         }
 
-        /* PC: 5列 */
         @media (min-width: 769px) {
             .support-grid { 
                 grid-template-columns: repeat(5, 1fr); 
             }
         }
 
-        /* サポートアイテム(ボックス) */
         .support-item {
             display: flex; 
             flex-direction: column; 
@@ -936,18 +900,15 @@
             border-radius: 16px;
             color: white;
             transition: 0.3s;
-            /* ★Closeボタンを消した分、高さを増やして縦長に (200px -> 280px) */
             height: 280px; 
             text-align: center;
             width: 100%;
         }
         
-        /* FontAwesomeアイコン */
         .support-item i { 
             font-size: 48px; 
-            margin-top: 20px; /* 上部の余白も少し調整 */
+            margin-top: 20px;
             margin-bottom: 10px; 
-            /* 色はHTMLのstyleタグで本物の色を指定し、CSSでは変更しない */
             transition: transform 0.3s; 
         }
         .support-item span { 
@@ -962,14 +923,12 @@
             border-color: rgba(255, 255, 255, 0.4);
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
-        /* ホバー時のアイコン：色は変えず、少し拡大のみ */
         .support-item:hover i { 
             transform: scale(1.1);
         }
 
-        /* 問い合わせボタン (ボックス内) */
         .btn-inquiry-small {
-            margin-bottom: 20px; /* 下部の余白調整 */
+            margin-bottom: 20px;
             display: inline-block;
             padding: 10px 20px;
             border-radius: 30px;
@@ -989,39 +948,28 @@
             box-shadow: 0 0 10px rgba(132, 7, 222, 0.5);
         }
 
-        /* --- モバイル専用調整 --- */
         @media (max-width: 768px) {
-            header { 
-                padding: 15px; 
-                margin-bottom: 20px; 
-            }
-            .logo { 
-                font-size: 20px; 
-            }
-            .container { 
-                padding: 0 15px; /* ここが15px */
-            }
-            .grid-menu { 
-                gap: 20px; 
-            }
+            header { padding: 15px; margin-bottom: 20px; }
+            .logo { font-size: 20px; }
+            .container { padding: 0 15px; }
+            .grid-menu { gap: 20px; }
 
-            /* スマホ時のフッター設定 (Language Top/Right, Text Bottom/Center) */
             footer {
                 flex-direction: column;
                 justify-content: center;
                 gap: 10px;
-                padding-bottom: 30px; /* 少し余白確保 */
+                padding-bottom: 30px;
             }
             .lang-select {
-                position: static; /* 絶対配置解除 */
-                order: -1; /* 順序を一番上に */
-                align-self: flex-end; /* 右寄せ */
-                margin-right: 10px; /* 右端の余白微調整 */
+                position: static;
+                order: -1;
+                align-self: flex-end;
+                margin-right: 10px;
                 margin-bottom: 0;
             }
             .footer-content {
-                order: 1; /* 順序を下に */
-                width: 100%; /* 幅確保で中央揃えを確実に */
+                order: 1;
+                width: 100%;
                 text-align: center;
             }
 
@@ -1031,134 +979,66 @@
                 overflow-y: auto; 
                 height: auto; 
             }
-            .success-layout { 
-                flex-direction: column; 
-            }
+            .success-layout { flex-direction: column; }
             .success-left { 
                 width: 100%; 
                 min-height: 200px; 
                 display: block; 
                 position: relative; 
             }
-            .success-left img { 
-                position: relative; 
-                height: 200px; 
-            }
+            .success-left img { position: relative; height: 200px; }
             .success-right { 
                 padding: 30px 20px; 
                 align-items: center; 
                 text-align: center; 
                 width: 100%; 
             }
-            .success-info-box { 
-                text-align: left; 
-            }
-            .success-right { 
-                align-items: stretch; 
-            }
-            .lang-grid { 
-                grid-template-columns: 1fr; 
-            }
-            .lang-grid button:last-child:nth-child(odd) { 
-                grid-column: span 1; 
-            }
+            .success-info-box { text-align: left; }
+            .success-right { align-items: stretch; }
+            .lang-grid { grid-template-columns: 1fr; }
+            .lang-grid button:last-child:nth-child(odd) { grid-column: span 1; }
 
-            /* ★修正: スマホでの横スクロール対応とPC型維持 */
             .support-grid {
-                /* GridをやめてFlexboxにして横並びスクロールにする */
                 display: flex !important; 
                 flex-direction: row;
-                overflow-x: auto; /* 横スクロール許可 */
-                gap: 15px; /* ボックス間の余白 */
-                
-                /* ★重要: パディングを追加してホバー時の見切れを防止 */
+                overflow-x: auto;
+                gap: 15px;
                 padding: 20px 10px; 
-                
-                /* ★修正: マージンをコンテナのパディング(-15px)と合わせる */
                 margin: 0 -15px; 
-                
-                /* ★修正: 計算式をマージンに合わせて修正 */
                 width: calc(100% + 30px);
-                
-                justify-content: flex-start; /* 左から並べる */
-                
-                /* スクロールを滑らかにする */
+                justify-content: flex-start;
                 -webkit-overflow-scrolling: touch;
                 scroll-snap-type: x mandatory;
             }
-            
-            /* 個別の列指定を解除 */
-            .support-item:nth-child(n) {
-                grid-column: auto !important;
-            }
-
-            /* ★ボックスの形状設定（PCと同じ形を維持する） */
+            .support-item:nth-child(n) { grid-column: auto !important; }
             .support-item { 
-                height: 280px; /* PCと同じ高さ */
-                min-width: 160px; /* ★重要：つぶれないように最小幅を固定 */
-                width: 160px; /* 幅も固定 */
-                flex: 0 0 auto; /* フレックス内で縮小しないようにする */
-                scroll-snap-align: center; /* スクロール時に中央に吸着 */
-                padding: 20px 10px; /* 余白もPCと同じに */
+                height: 280px;
+                min-width: 160px;
+                width: 160px;
+                flex: 0 0 auto;
+                scroll-snap-align: center;
+                padding: 20px 10px;
             }
+            .support-item i { font-size: 48px; }
+            .support-item span { font-size: 14px; }
             
-            .support-item i { 
-                font-size: 48px; /* アイコンサイズもPCと同じ */
-            }
-            .support-item span { 
-                font-size: 14px; /* 文字サイズもPCと同じ */
-            }
-            
-            /* ボタンがはみ出さないように調整 */
             .btn-inquiry-small {
-                width: 90%; /* 幅を少し狭めて収まりよくする */
+                width: 90%;
                 font-size: 12px;
                 white-space: nowrap;
                 margin-bottom: 20px;
             }
-        }
-
-        @media (max-width: 480px) {
-            .lang-modal { 
-                padding: 30px 20px; 
-            }
-            .modal-container { 
-                padding: 30px 20px; 
-            }
-            .card-title { 
-                font-size: 20px; 
-            }
-            .success-title-main { 
-                font-size: 22px; 
-            }
-            
-            .btn-group {
-                gap: 10px;
-            }
-            #successDownloadBtn, #modalCloseSub {
-                width: auto;
-                flex: 1;
-                min-width: 0;
-            }
             .login-card {
-                /* カードの横幅の余白を減らして文字スペースを確保 */
                 padding: 30px 15px !important;
                 width: 90%;
             }
-
             .login-title {
-                /* スマホでは文字サイズを小さくする (PCは24px) */
                 font-size: 18px !important;
-                
-                /* 強制的に改行させない指定 */
                 white-space: nowrap;
             }
         }
 
-        #statusContainer { 
-            margin-top: 15px; 
-            font-size: 14px; 
-        }
+        #statusContainer { margin-top: 15px; font-size: 14px; }
         .error-msg { 
             color: #ff6b6b; 
             display: flex; 
@@ -1167,7 +1047,6 @@
             gap: 5px; 
         }
 
-        /* --- 近未来的なローディングスピナー --- */
         .cyber-spinner {
             position: relative;
             width: 26px;
@@ -1177,7 +1056,6 @@
             border-radius: 50%;
             animation: pulse-core 1.5s ease-in-out infinite alternate;
         }
-
         .cyber-spinner::before {
             content: '';
             position: absolute;
@@ -1190,7 +1068,6 @@
             animation: spin-cyber 0.8s linear infinite;
             filter: drop-shadow(0 0 4px var(--neon-cyan));
         }
-
         .cyber-spinner::after {
             content: '';
             position: absolute;
@@ -1204,14 +1081,12 @@
             animation: spin-cyber-reverse 1.8s linear infinite;
             filter: drop-shadow(0 0 3px var(--primary-color));
         }
-
         @keyframes pulse-core {
             0% { box-shadow: 0 0 2px var(--primary-color), inset 0 0 2px var(--neon-cyan); }
             100% { box-shadow: 0 0 10px var(--neon-cyan), inset 0 0 8px var(--primary-color); }
         }
         @keyframes spin-cyber { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes spin-cyber-reverse { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
-
 
         .loading-dots::after {
             display: inline-block; animation: dot-steps 1.5s infinite steps(1);
@@ -1220,36 +1095,24 @@
         @keyframes dot-steps { 0% { content: '.'; } 33% { content: '..'; } 67% { content: '...'; } }
 
         /* =========================================
-           ★ニュースリスト用スタイル (リデザイン版)
+           ★ニュースリスト用スタイル (改修版)
            ========================================= */
         
-        /* ニュース表示エリアのコンテナ（スクロールバー調整含む） */
+        /* ニュース表示エリアのコンテナ */
         .news-container {
             text-align: left;
-            background: rgba(0, 0, 0, 0.3); /* より濃い背景 */
+            background: transparent !important; /* 背景透明化 */
             padding: 20px;
             border-radius: 16px;
             margin-bottom: 30px;
             max-height: 400px;
             overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none !important; /* 枠線削除 */
         }
 
-        /* スクロールバーのデザイン */
-        .news-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        .news-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-        .news-container::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
-        }
-        .news-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
+        .news-container::-webkit-scrollbar { width: 6px; }
+        .news-container::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 3px; }
+        .news-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 3px; }
 
         #newsList {
             list-style: none;
@@ -1257,86 +1120,42 @@
             margin: 0;
         }
 
-        /* ニュースアイテム（カード型） */
+        /* ニュースアイテム (ボックス感を完全に消去) */
         .news-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
+            background: transparent !important; /* 背景なし */
+            border: none !important;            /* 枠線なし */
+            box-shadow: none !important;        /* 影なし */
+            padding: 10px 0;                    /* 上下余白のみ */
+            margin-bottom: 15px;
+            transition: none;                   /* アニメーションなし */
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 5px;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
-        /* ホバー時の動き */
         .news-item:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: var(--primary-color);
-            transform: translateX(5px); /* 右に少しスライド */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            background: transparent !important;
+            transform: none !important;
+            box-shadow: none !important;
         }
         
-        /* 左端のアクセントライン */
+        /* 左端のアクセントライン削除 */
         .news-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--primary-color);
-            opacity: 0.5;
-            transition: opacity 0.3s;
-        }
-        .news-item:hover::before {
-            opacity: 1;
+            display: none !important;
         }
 
-        /* 日付とタグのラッパー */
-        .news-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-
+        /* --- 日付デザイン修正 --- */
+        /* UPDATE等のバッジは削除し、日付のみを表示 */
         .news-date {
-            color: rgba(255, 255, 255, 0.6);
-            /* font-familyは言語別にCSSで指定されます */
+            color: #ffffff;      /* 白色に変更 */
+            font-size: 20px;     /* 本文(14px)より大きく設定 (18px -> 20px) */
+            font-weight: bold;
+            margin-bottom: 5px;
             letter-spacing: 0.5px;
-        }
-
-        /* カテゴリバッジ（UPDATE, INFOなど） */
-        .news-badge {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 1px solid transparent;
-        }
-
-        /* バッジの色バリエーション */
-        .badge-update {
-            background: rgba(0, 247, 255, 0.15);
-            color: #00f7ff;
-            border-color: rgba(0, 247, 255, 0.3);
-        }
-        .badge-info {
-            background: rgba(132, 7, 222, 0.15);
-            color: #d084ff;
-            border-color: rgba(132, 7, 222, 0.3);
-        }
-        .badge-maintenance {
-            background: rgba(255, 165, 0, 0.15);
-            color: #ffb74d;
-            border-color: rgba(255, 165, 0, 0.3);
+            text-align: left;    /* 左寄せ */
+            display: block;      /* ブロック要素として表示 */
         }
 
         /* ニュース本文 */
@@ -1344,6 +1163,7 @@
             font-size: 14px;
             line-height: 1.6;
             color: #f0f0f0;
+            padding-left: 0;     /* 左端に寄せる */
         }
     </style>
 </head>
@@ -1534,7 +1354,6 @@
             success_badge: "コードが認証されました。", success_main_title: "有効化されたコンテンツ",
             success_label_name: "コンテンツ名称", btn_close: "閉じる", btn_download: "ダウンロード",
             news_title: "最新情報", news_label: "変更ログ", 
-            // news_contentは動的取得になるので削除しても良いですが、万が一のフォールバックとして残します
             news_content: "ニュースを読み込んでいます...",
             support_modal_title: "何かお困りですか？ ", btn_inquiry: "利用不可",
             footer_admin: "システム管理者",
@@ -1649,12 +1468,11 @@
     const successLeftCol = document.getElementById('successLeftCol');
     const successImage = document.getElementById('successImage');
 
-    // News elements (新設)
+    // News elements
     const newsList = document.getElementById('newsList');
 
     // --- 起動時のフロー制御 ---
     document.addEventListener('DOMContentLoaded', () => {
-        const isLoggedIn = sessionStorage.getItem('is_admin_logged_in');
         const savedLang = localStorage.getItem('user_lang');
         const switcher = document.getElementById('languageSwitcher');
 
@@ -1663,14 +1481,10 @@
             switcher.value = savedLang;
             langSelectionOverlay.style.display = 'none';
 
-            if (isLoggedIn === 'true') {
-                showMainContent();
-            } else {
-                showLoginScreen();
-            }
+            // ★修正: 一般公開用のため、ログインチェックに関わらずメインコンテンツを表示
+            showMainContent();
         }
         
-        // ★ニュース取得を実行
         fetchNews();
     });
 
@@ -1684,14 +1498,15 @@
         langSelectionOverlay.style.visibility = 'hidden';
         setTimeout(() => { 
             langSelectionOverlay.style.display = 'none'; 
-            showLoginScreen();
+            // ★修正: 言語選択後はログイン画面ではなく、直接メニューを表示（ボックスが出る問題を解消）
+            showMainContent();
         }, 500);
         
-        // 言語決定後にニュース再取得
         fetchNews();
     }
 
     function showLoginScreen() {
+        // 一般公開用の場合は呼び出しません
         adminLoginOverlay.style.display = 'flex';
         if (loginLangSwitcher) loginLangSwitcher.value = CURRENT_LANG;
         requestAnimationFrame(() => { adminLoginOverlay.style.opacity = '1'; });
@@ -1703,7 +1518,7 @@
             localStorage.setItem('user_lang', lang);
             updateLanguage(lang);
             document.getElementById('languageSwitcher').value = lang;
-            fetchNews(); // 言語変更でニュース更新
+            fetchNews();
         });
     }
 
@@ -1765,7 +1580,7 @@
         const lang = e.target.value;
         localStorage.setItem('user_lang', lang);
         updateLanguage(lang);
-        fetchNews(); // 言語変更でニュース更新
+        fetchNews(); 
     });
 
     function updateLanguage(lang) {
@@ -1776,7 +1591,6 @@
 
         document.querySelectorAll('[data-translate]').forEach(el => {
             const key = el.getAttribute('data-translate');
-            // news_contentは動的取得なので、翻訳辞書での上書きを除外する
             if(key !== 'news_content' && t[key]) el.innerHTML = t[key];
         });
 
@@ -1791,16 +1605,15 @@
         if (!btnLoginAction.disabled) btnLoginAction.textContent = t.login_btn;
     }
 
-    // --- ★ニュース取得機能 (リデザイン版) ---
+    // --- ★ニュース取得機能 (リデザイン版：スピナー削除、日付デザイン変更、バッジ削除) ---
     async function fetchNews() {
         if (!newsList) return;
         
-        // ローディング表示（スピナー付き）
-        const loadingText = (CURRENT_LANG === 'ja') ? 'ニュースを読み込んでいます...' : 'Loading news...';
+        // ★修正: 紫のスピナーを削除し、テキストのみのシンプルなローディングに変更
+        const loadingText = (CURRENT_LANG === 'ja') ? 'Loading...' : 'Loading...';
         newsList.innerHTML = `
-            <div style="display:flex; justify-content:center; align-items:center; height:100px; color:#888; flex-direction:column; gap:10px;">
-                <span class="cyber-spinner"></span>
-                <span style="font-size:12px;">${loadingText}</span>
+            <div style="text-align:center; color:#888; padding:20px;">
+                ${loadingText}
             </div>`;
         
         try {
@@ -1812,31 +1625,13 @@
 
             if (data.success && data.news && data.news.length > 0) {
                 data.news.forEach(item => {
-                    // ★バッジの種類を自動判定（UPDATE, MAINT, INFO）
-                    let badgeType = 'info';
-                    let badgeLabel = 'INFO';
-
-                    if (item.type) {
-                        badgeType = item.type.toLowerCase();
-                        badgeLabel = item.type.toUpperCase();
-                    } else if (item.content.includes('更新') || item.content.includes('Update') || item.content.includes('追加')) {
-                        badgeType = 'update';
-                        badgeLabel = 'UPDATE';
-                    } else if (item.content.includes('メンテナンス') || item.content.includes('Maintenance')) {
-                        badgeType = 'maintenance';
-                        badgeLabel = 'MAINT';
-                    }
-
                     const li = document.createElement('li');
-                    li.className = 'news-item'; // CSSクラス適用
+                    li.className = 'news-item'; 
                     
-                    // カード型デザインのHTMLを生成
-                    // ★ここがポイント: spanに lang="${CURRENT_LANG}" を追加してフォント適用
+                    // ★修正: バッジ表示(UPDATEなど)を削除し、日付と本文のみを表示
+                    // 日付を上に、本文を下に配置
                     li.innerHTML = `
-                        <div class="news-header">
-                            <span class="news-badge badge-${badgeType}">${badgeLabel}</span>
-                            <span class="news-date" lang="${CURRENT_LANG}">${item.date}</span>
-                        </div>
+                        <div class="news-date" lang="${CURRENT_LANG}">${item.date}</div>
                         <div class="news-content-text">${item.content}</div>
                     `;
                     newsList.appendChild(li);
@@ -1889,8 +1684,6 @@
     function openNewsModal() {
         newsModal.classList.add('active');
         lucide.createIcons(); 
-        // モーダルを開くたびに最新を取得したい場合はここで fetchNews() を呼ぶ
-        // fetchNews(); 
     }
     function closeNewsModal() {
         newsModal.classList.remove('active');
