@@ -1101,13 +1101,15 @@
         /* ニュース表示エリアのコンテナ */
         .news-container {
             text-align: left;
-            background: transparent !important; /* 背景透明化 */
+            /* ★修正: 黒っぽい背景に戻す */
+            background: rgba(0, 0, 0, 0.2) !important;
             padding: 20px;
             border-radius: 16px;
             margin-bottom: 30px;
             max-height: 400px;
             overflow-y: auto;
-            border: none !important; /* 枠線削除 */
+            /* ★修正: 枠線を薄いグレーで表示 */
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
         .news-container::-webkit-scrollbar { width: 6px; }
@@ -1120,28 +1122,32 @@
             margin: 0;
         }
 
-        /* ニュースアイテム (ボックス感を完全に消去) */
+        /* ニュースアイテム (紫装飾は削除、黒ボックスは維持) */
         .news-item {
-            background: transparent !important; /* 背景なし */
-            border: none !important;            /* 枠線なし */
-            box-shadow: none !important;        /* 影なし */
-            padding: 10px 0;                    /* 上下余白のみ */
-            margin-bottom: 15px;
-            transition: none;                   /* アニメーションなし */
+            /* ★修正: 黒い背景ボックスを維持 */
+            background: rgba(0, 0, 0, 0.5) !important;
+            /* ★修正: 枠線は薄いグレーに変更（紫のborder-colorは削除） */
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
             display: flex;
             flex-direction: column;
             gap: 5px;
             position: relative;
-            overflow: visible;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
+        /* ホバー時の挙動（紫に光らせない） */
         .news-item:hover {
-            background: transparent !important;
+            background: rgba(0, 0, 0, 0.7) !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
             transform: none !important;
             box-shadow: none !important;
         }
         
-        /* 左端のアクセントライン削除 */
+        /* 左端の紫ラインは削除 */
         .news-item::before {
             display: none !important;
         }
@@ -1605,7 +1611,7 @@
         if (!btnLoginAction.disabled) btnLoginAction.textContent = t.login_btn;
     }
 
-    // --- ★ニュース取得機能 (リデザイン版：スピナー削除、日付デザイン変更、バッジ削除) ---
+    // --- ★ニュース取得機能 (リデザイン版：スピナー削除、日付デザイン変更、バッジ削除、黒ボックス復活) ---
     async function fetchNews() {
         if (!newsList) return;
         
