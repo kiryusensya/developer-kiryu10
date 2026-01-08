@@ -1753,7 +1753,7 @@
         if (!newsList) return;
         
         // ローディング表示（紫のくるくる等は排除しテキストのみ）
-        const loadingText = (CURRENT_LANG === 'ja') ? 'Loading...' : 'Loading...';
+        const loadingText = TRANSLATIONS[CURRENT_LANG].news_content;
         newsList.innerHTML = `
             <div style="text-align:center; color:#888; padding:20px;">
                 ${loadingText}
