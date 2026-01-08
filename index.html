@@ -518,7 +518,8 @@
             width: 100%; 
             max-width: 480px; 
             border-radius: 24px; 
-            padding: 40px; 
+            /* ★修正: 上下のpaddingを調整して高さを詰める */
+            padding: 25px 25px 15px 25px; 
             text-align: center;
             position: relative; 
             transform: scale(0.9); 
@@ -615,10 +616,11 @@
             border-color: #0066ff !important; /* 初期値を鮮やかな青に */
         }
 
+        /* ★修正: ×ボタンの位置を調整 */
         .modal-close {
             position: absolute; 
-            top: 20px; 
-            right: 20px; 
+            top: 25px; /* コンテナのpadding-topと同じくらいに */
+            right: 25px; 
             cursor: pointer; 
             color: rgba(255,255,255,0.6); 
             transition: color 0.2s; 
@@ -631,11 +633,14 @@
         #inputPhase { 
             width: 100%; 
         }
+        /* ★修正: タイトルの余白を削除して詰める */
         .modal-title { 
             font-size: 26px; 
-            margin-bottom: 10px; 
+            margin-top: 0; 
+            margin-bottom: 0; /* 下の余白を削除 */
             font-weight: bold; 
             word-break: break-all; 
+            line-height: 1.2;
         }
         .modal-sub { 
             font-size: 14px; 
@@ -1094,8 +1099,8 @@
                 min-width: 160px; /* ★重要：つぶれないように最小幅を固定 */
                 width: 160px; /* 幅も固定 */
                 flex: 0 0 auto; /* フレックス内で縮小しないようにする */
-                scroll-snap-align: center; /* スクロール時に中央に吸着 */
-                padding: 20px 10px; /* 余白もPCと同じに */
+                scroll-snap-align: center; /* スクロール時に中央에 흡착 */
+                padding: 20px 10px; /* 여백도 PC와 동일하게 */
             }
             
             .support-item i { 
@@ -1121,9 +1126,6 @@
             .login-title {
                 /* スマホでは文字サイズを小さくする (PCは24px) */
                 font-size: 18px !important;
-                
-                /* 強制的に改行させない指定 */
-                /* white-space: nowrap;  ← 【削除】タイトルが切れるのを防ぐため */
             }
         }
 
@@ -1202,12 +1204,14 @@
             background: rgba(0, 0, 0, 0.3) !important;
             padding: 20px;
             border-radius: 16px;
-            margin-bottom: 0; /* ★修正: ボタン削除により下マージン不要 */
+            /* ★修正: 余白を削除 */
+            margin-top: 5px; 
+            margin-bottom: 0;
             max-height: 400px;
             overflow-y: auto;
             /* 枠線は薄い白系で維持 */
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            padding-bottom: 10px; /* ★修正: 下余白を詰める */
+            padding-bottom: 10px; /* 下余白を詰める */
         }
 
         .news-container::-webkit-scrollbar { width: 6px; }
@@ -1275,18 +1279,21 @@
         /* ★変更ログ（見出し）のデザイン */
         .news-heading {
             font-size: 16px;
-            color: var(--hover-blue); /* ← ★修正: 紫から青に変更 */
+            color: #ffffff; /* ← ★修正: 白字に変更 */
             margin: 0 0 15px 0;
             display: flex;
             align-items: center;
-            gap: 6px;
-            /* テキストのネオン発光効果 */
-            text-shadow: 0 0 8px rgba(59, 130, 246, 0.8); /* ← ★修正: 青色の発光 */
+            gap: 10px; /* アイコンとの距離 */
+            /* ★修正: 発光なし */
+            text-shadow: none; 
         }
         
-        /* アイコンのネオン発光効果 (SVG用) */
-        .news-heading svg {
-            filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.8)); /* ← ★修正: 青色の発光 */
+        /* ★修正: 赤い丸アイコン用のスタイル */
+        .red-circle-icon {
+            color: #ff2a2a; /* ネオンレッド */
+            font-size: 12px; /* 丸のサイズ */
+            /* 発光させるかはお好みですが、一旦ベタ塗りにします */
+            /* text-shadow: 0 0 5px rgba(255, 42, 42, 0.8); */
         }
     </style>
 </head>
@@ -1431,7 +1438,7 @@
             
             <div class="news-container">
                 <h3 class="news-heading">
-                    <i data-lucide="download" size="16"></i>
+                    <span class="red-circle-icon">●</span>
                     <span data-translate="news_label">変更ログ</span>
                 </h3>
                 
@@ -1593,7 +1600,6 @@
 
     // News elements
     const newsList = document.getElementById('newsList');
-    // const newsCloseBtn = document.getElementById('newsCloseBtn'); // 削除
 
     // --- 起動時のフロー制御 ---
     document.addEventListener('DOMContentLoaded', () => {
