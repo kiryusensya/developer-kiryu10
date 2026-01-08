@@ -1200,30 +1200,132 @@
         }
         @keyframes dot-steps { 0% { content: '.'; } 33% { content: '..'; } 67% { content: '...'; } }
 
-        /* ★ニュースリスト用スタイル（ここだけ追加） */
+        /* =========================================
+           ★ニュースリスト用スタイル (リデザイン版)
+           ========================================= */
+        
+        /* ニュース表示エリアのコンテナ（スクロールバー調整含む） */
+        .news-container {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.3); /* より濃い背景 */
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* スクロールバーのデザイン */
+        .news-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .news-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        .news-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+        .news-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
         #newsList {
             list-style: none;
             padding: 0;
             margin: 0;
-            text-align: left;
-        }
-        #newsList li {
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        #newsList li .news-date {
-            display: inline-block;
-            color: var(--neon-cyan);
-            font-weight: bold;
-            margin-right: 8px;
-            font-size: 12px;
         }
 
+        /* ニュースアイテム（カード型） */
+        .news-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ホバー時の動き */
+        .news-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--primary-color);
+            transform: translateX(5px); /* 右に少しスライド */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 左端のアクセントライン */
+        .news-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary-color);
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        .news-item:hover::before {
+            opacity: 1;
+        }
+
+        /* 日付とタグのラッパー */
+        .news-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .news-date {
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Outfit', sans-serif; /* 英数字用フォント */
+            letter-spacing: 0.5px;
+        }
+
+        /* カテゴリバッジ（UPDATE, INFOなど） */
+        .news-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid transparent;
+        }
+
+        /* バッジの色バリエーション */
+        .badge-update {
+            background: rgba(0, 247, 255, 0.15);
+            color: #00f7ff;
+            border-color: rgba(0, 247, 255, 0.3);
+        }
+        .badge-info {
+            background: rgba(132, 7, 222, 0.15);
+            color: #d084ff;
+            border-color: rgba(132, 7, 222, 0.3);
+        }
+        .badge-maintenance {
+            background: rgba(255, 165, 0, 0.15);
+            color: #ffb74d;
+            border-color: rgba(255, 165, 0, 0.3);
+        }
+
+        /* ニュース本文 */
+        .news-content-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -1365,11 +1467,20 @@
             <div class="modal-close" id="newsCloseX"><i data-lucide="x"></i></div>
             <h2 class="modal-title" style="margin-bottom: 20px;" data-translate="news_title">最新情報</h2>
             
-            <div style="text-align: left; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; margin-bottom: 30px; max-height: 400px; overflow-y: auto;">
-                <h3 style="font-size: 18px; color: var(--neon-cyan); margin: 0 0 15px 0;">
-                    <i data-lucide="info" size="16" style="vertical-align: middle; margin-right:5px;"></i>
+            <div class="news-container">
+                <h3 style="font-size: 16px; color: var(--text-muted); margin: 0 0 15px 0; display:flex; align-items:center; gap:6px;">
+                    <i data-lucide="history" size="16"></i>
                     <span data-translate="news_label">変更ログ</span>
                 </h3>
+                
+                <ul id="newsList">
+                    <li style="text-align:center; color:#888; padding:20px;">Loading...</li>
+                </ul>
+            </div>
+            
+            <button id="newsCloseBtn" class="btn-confirm" data-translate="btn_close">閉じる</button>
+        </div>
+    </div>
                 
                 <ul id="newsList">
                     <li style="text-align:center; color:#888;">Loading...</li>
@@ -1670,11 +1781,17 @@
         if (!btnLoginAction.disabled) btnLoginAction.textContent = t.login_btn;
     }
 
-    // --- ★ニュース取得機能 (新設) ---
+    // --- ★ニュース取得機能 (リデザイン版) ---
     async function fetchNews() {
         if (!newsList) return;
-        // リロード表示
-        newsList.innerHTML = '<li style="text-align:center; color:#888; padding:20px;">Loading news...</li>';
+        
+        // ローディング表示（スピナー付き）
+        const loadingText = (CURRENT_LANG === 'ja') ? 'ニュースを読み込んでいます...' : 'Loading news...';
+        newsList.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; height:100px; color:#888; flex-direction:column; gap:10px;">
+                <span class="cyber-spinner"></span>
+                <span style="font-size:12px;">${loadingText}</span>
+            </div>`;
         
         try {
             const requestUrl = `${GAS_API_URL}?type=news&lang=${CURRENT_LANG}`;
@@ -1685,18 +1802,44 @@
 
             if (data.success && data.news && data.news.length > 0) {
                 data.news.forEach(item => {
+                    // ★GASから "type" (update/info/maintenance等) が返ってくると仮定
+                    // 返ってこない場合は本文の内容から推測、または "INFO" をデフォルトにする
+                    let badgeType = 'info';
+                    let badgeLabel = 'INFO';
+
+                    // 簡易的な判別ロジック (GAS側で type を指定していれば item.type を優先)
+                    if (item.type) {
+                        badgeType = item.type.toLowerCase();
+                        badgeLabel = item.type.toUpperCase();
+                    } else if (item.content.includes('更新') || item.content.includes('Update') || item.content.includes('追加')) {
+                        badgeType = 'update';
+                        badgeLabel = 'UPDATE';
+                    } else if (item.content.includes('メンテナンス') || item.content.includes('Maintenance')) {
+                        badgeType = 'maintenance';
+                        badgeLabel = 'MAINT';
+                    }
+
                     const li = document.createElement('li');
-                    li.innerHTML = `<span class="news-date">${item.date}</span> ${item.content}`;
+                    li.className = 'news-item'; // CSSクラス適用
+                    
+                    li.innerHTML = `
+                        <div class="news-header">
+                            <span class="news-badge badge-${badgeType}">${badgeLabel}</span>
+                            <span class="news-date">${item.date}</span>
+                        </div>
+                        <div class="news-content-text">${item.content}</div>
+                    `;
                     newsList.appendChild(li);
                 });
             } else {
                 const noNewsMsg = (CURRENT_LANG === 'ja') ? 'お知らせはありません。' : 'No news available.';
-                newsList.innerHTML = `<li style="text-align:center; color:#888;">${noNewsMsg}</li>`;
+                newsList.innerHTML = `<div style="text-align:center; color:#888; padding:20px;">${noNewsMsg}</div>`;
             }
         } catch (error) {
             console.error('News fetch error:', error);
             const errorMsg = (CURRENT_LANG === 'ja') ? '読み込みに失敗しました。' : 'Failed to load news.';
-            newsList.innerHTML = `<li style="text-align:center; color:#ff6b6b;">${errorMsg}</li>`;
+            newsList.innerHTML = `<div style="text-align:center; color:#ff6b6b; padding:20px;"><i data-lucide="alert-triangle" style="margin-bottom:5px;"></i><br>${errorMsg}</div>`;
+            lucide.createIcons();
         }
     }
 
