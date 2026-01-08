@@ -123,6 +123,7 @@
 
         /* =========================================
            ★日付表示エリア専用フォント設定
+           数字はHarmonyOS、各言語文字はNoto等へフォールバック
            ========================================= */
         .news-date[lang="ja"] {
             font-family: 'HarmonyOS Sans', 'Noto Sans JP', sans-serif !important;
@@ -1126,6 +1127,9 @@
             .login-title {
                 /* スマホでは文字サイズを小さくする (PCは24px) */
                 font-size: 18px !important;
+                
+                /* 強制的に改行させない指定 */
+                /* white-space: nowrap;  ← 【削除】タイトルが切れるのを防ぐため */
             }
         }
 
