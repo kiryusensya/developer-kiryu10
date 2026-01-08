@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>_.k__yu.10(开发者)</title>
+    <title>kiryu-sensya</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -123,7 +123,6 @@
 
         /* =========================================
            ★日付表示エリア専用フォント設定
-           数字はHarmonyOS、各言語文字はNoto等へフォールバック
            ========================================= */
         .news-date[lang="ja"] {
             font-family: 'HarmonyOS Sans', 'Noto Sans JP', sans-serif !important;
@@ -365,18 +364,18 @@
 
         /* --- ★管理者ログイン画面 --- */
         #adminLoginOverlay {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
             background: #000000; /* 完全な黒背景 */
             z-index: 10000; /* 言語選択(10001)より下、メインより上 */
             display: none; /* 初期は非表示 */
-            justify-content: center; 
-            align-items: center; 
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            opacity: 0; 
+            opacity: 0;
             transition: opacity 0.5s ease;
         }
         
@@ -519,8 +518,7 @@
             width: 100%; 
             max-width: 480px; 
             border-radius: 24px; 
-            /* ★修正: 上下のpaddingを調整して高さを詰める */
-            padding: 25px 25px 15px 25px; 
+            padding: 40px; 
             text-align: center;
             position: relative; 
             transform: scale(0.9); 
@@ -617,11 +615,10 @@
             border-color: #0066ff !important; /* 初期値を鮮やかな青に */
         }
 
-        /* ★修正: ×ボタンの位置を調整 */
         .modal-close {
             position: absolute; 
-            top: 25px; /* コンテナのpadding-topと同じくらいに */
-            right: 25px; 
+            top: 20px; 
+            right: 20px; 
             cursor: pointer; 
             color: rgba(255,255,255,0.6); 
             transition: color 0.2s; 
@@ -634,14 +631,11 @@
         #inputPhase { 
             width: 100%; 
         }
-        /* ★修正: タイトルの余白を削除して詰める */
         .modal-title { 
             font-size: 26px; 
-            margin-top: 0; 
-            margin-bottom: 0; /* 下の余白を削除 */
+            margin-bottom: 10px; 
             font-weight: bold; 
             word-break: break-all; 
-            line-height: 1.2;
         }
         .modal-sub { 
             font-size: 14px; 
@@ -1100,8 +1094,8 @@
                 min-width: 160px; /* ★重要：つぶれないように最小幅を固定 */
                 width: 160px; /* 幅も固定 */
                 flex: 0 0 auto; /* フレックス内で縮小しないようにする */
-                scroll-snap-align: center; /* スクロール時に中央에 흡착 */
-                padding: 20px 10px; /* 여백도 PC와 동일하게 */
+                scroll-snap-align: center; /* スクロール時に中央に吸着 */
+                padding: 20px 10px; /* 余白もPCと同じに */
             }
             
             .support-item i { 
@@ -1208,14 +1202,11 @@
             background: rgba(0, 0, 0, 0.3) !important;
             padding: 20px;
             border-radius: 16px;
-            /* ★修正: 余白を削除 */
-            margin-top: 5px; 
-            margin-bottom: 0;
+            margin-bottom: 30px;
             max-height: 400px;
             overflow-y: auto;
             /* 枠線は薄い白系で維持 */
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            padding-bottom: 10px; /* 下余白を詰める */
         }
 
         .news-container::-webkit-scrollbar { width: 6px; }
@@ -1242,11 +1233,6 @@
             gap: 5px;
             position: relative;
             overflow: visible;
-        }
-
-        /* リスト最後のアイテムの下余白を削除 */
-        .news-item:last-child {
-            margin-bottom: 0;
         }
 
         /* ホバー時も何も表示させない */
@@ -1278,26 +1264,6 @@
             line-height: 1.6;
             color: #f0f0f0;
             padding-left: 0;     /* 左端 */
-        }
-
-        /* ★変更ログ（見出し）のデザイン */
-        .news-heading {
-            font-size: 16px;
-            color: #ffffff; /* ← ★修正: 白字に変更 */
-            margin: 0 0 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px; /* アイコンとの距離 */
-            /* ★修正: 発光なし */
-            text-shadow: none; 
-        }
-        
-        /* ★修正: 赤い丸アイコン用のスタイル */
-        .red-circle-icon {
-            color: #ff2a2a; /* ネオンレッド */
-            font-size: 12px; /* 丸のサイズ */
-            /* 発光させるかはお好みですが、一旦ベタ塗りにします */
-            /* text-shadow: 0 0 5px rgba(255, 42, 42, 0.8); */
         }
     </style>
 </head>
@@ -1441,8 +1407,8 @@
             <h2 class="modal-title" style="margin-bottom: 20px;" data-translate="news_title">最新情報</h2>
             
             <div class="news-container">
-                <h3 class="news-heading">
-                    <span class="red-circle-icon">●</span>
+                <h3 style="font-size: 16px; color: var(--text-muted); margin: 0 0 15px 0; display:flex; align-items:center; gap:6px;">
+                    <i data-lucide="history" size="16"></i>
                     <span data-translate="news_label">変更ログ</span>
                 </h3>
                 
@@ -1451,7 +1417,8 @@
                 </ul>
             </div>
             
-            </div>
+            <button id="newsCloseBtn" class="btn-confirm" data-translate="btn_close">閉じる</button>
+        </div>
     </div>
 
     <div id="supportModal" class="modal-overlay">
@@ -1487,13 +1454,12 @@
             success_badge: "コードが認証されました。", success_main_title: "有効化されたコンテンツ",
             success_label_name: "コンテンツ名称", btn_close: "閉じる", btn_download: "ダウンロード",
             news_title: "最新情報", news_label: "変更ログ", 
-            // news_contentは動的取得になるので削除しても良いですが、万が一のフォールバックとして残します
             news_content: "ニュースを読み込んでいます...",
             support_modal_title: "何かお困りですか？ ", btn_inquiry: "利用不可",
             footer_admin: "システム管理者",
             login_title: "システム管理者ログイン", login_desc: "アクセス権限を確認します。<br>身分証明書番号とパスワードを入力してください。",
             login_label_user: "身分証明書番号 ", login_label_pass: "パスワード",
-            login_btn: "ログイン", login_btn_verifying: "確認中", 
+            login_btn: "ログイン", login_btn_verifying: "確認中...",
             login_placeholder_user: "身分証明書番号", login_placeholder_pass: "パスワード"
         },
         en: {
@@ -1512,7 +1478,7 @@
             footer_admin: "Enforcement Administrator",
             login_title: "Enforcement Administrator<br>LOGIN", login_desc: "Verifying access privileges.<br>Please enter ID Number and Password.",
             login_label_user: "ID Number", login_label_pass: "Password",
-            login_btn: "Login", login_btn_verifying: "Verifying", 
+            login_btn: "Login", login_btn_verifying: "Verifying...",
             login_placeholder_user: "ID Number", login_placeholder_pass: "Password"
         },
         zh: {
@@ -1531,7 +1497,7 @@
             footer_admin: "系统管理长",
             login_title: "系统管理员登录", login_desc: "正在检查访问权限。<br>请输入身份证号和密码。",
             login_label_user: "身份证号", login_label_pass: "密码",
-            login_btn: "登录", login_btn_verifying: "验证中", 
+            login_btn: "登录", login_btn_verifying: "验证中...",
             login_placeholder_user: "身份证号", login_placeholder_pass: "密码"
         },
         ko: {
@@ -1550,7 +1516,7 @@
             footer_admin: "시스템 관리장",
             login_title: "시스템 관리장 로그인", login_desc: "접근 권한을 확인합니다.<br>신분 번호와 비밀번호를 입력하십시오.",
             login_label_user: "주민등록번호", login_label_pass: "비밀번호",
-            login_btn: "로그인", login_btn_verifying: "확인 중", 
+            login_btn: "로그인", login_btn_verifying: "확인 중...",
             login_placeholder_user: "주민등록번호", login_placeholder_pass: "비밀번호"
         },
         ru: {
@@ -1569,7 +1535,7 @@
             footer_admin: "Администратор",
             login_title: "Администратор<br>Войти", login_desc: "Проверьте права доступа. Введите свой идентификационный номер и пароль.",
             login_label_user: "Имя пользователя", login_label_pass: "Пароль",
-            login_btn: "Войти", login_btn_verifying: "Проверка", 
+            login_btn: "Войти", login_btn_verifying: "Проверка...",
             login_placeholder_user: "Имя пользователя", login_placeholder_pass: "Пароль"
         }
     };
@@ -1670,12 +1636,7 @@
         loginUser.disabled = true;
         loginPass.disabled = true;
         btnLoginAction.disabled = true;
-        
-        // ★修正: ボタン内のHTMLを更新。CSSアニメーション用の span を追加
-        btnLoginAction.innerHTML = `
-            <span class="cyber-spinner" style="width:16px; height:16px; margin-right:5px;"></span>
-            ${t.login_btn_verifying}<span class="loading-dots"></span>
-        `;
+        btnLoginAction.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px; margin-right:5px;"></span> ${t.login_btn_verifying}`;
 
         const requestUrl = `${GAS_API_URL}?type=login&user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`;
 
@@ -1749,65 +1710,48 @@
     }
 
     // --- ★ニュース取得機能 (最終修正版) ---
-    // --- ★ニュース取得機能（アニメーション完全版） ---
     async function fetchNews() {
-    if (!newsList) return;
-
-    // ▼ 翻訳されたローディング文のベース（末尾の ... を削除）
-    const baseText = TRANSLATIONS[CURRENT_LANG].news_content.replace(/\.+$/, "");
-
-    // ▼ 最初のローディング表示
-    newsList.innerHTML = `
-        <div id="news-loading" style="text-align:center; color:#888; padding:20px;">
-            ${baseText}.
-        </div>
-    `;
-
-    const loadingEl = document.getElementById("news-loading");
-
-    // ▼ アニメーション開始
-    let dotCount = 1;
-    const loadingTimer = setInterval(() => {
-        dotCount = (dotCount % 3) + 1; // 1 → 2 → 3 → 1 → …
-        loadingEl.textContent = baseText + ".".repeat(dotCount);
-    }, 500);
-
-    try {
-        const requestUrl = `${GAS_API_URL}?type=news&lang=${CURRENT_LANG}`;
-        const response = await fetch(requestUrl);
-        const data = await response.json();
-
-        // ▼ アニメーション停止
-        clearInterval(loadingTimer);
-
-        // ▼ ニュースが空の場合
-        if (!data || data.length === 0) {
-            newsList.innerHTML = `
-                <li style="text-align:center; color:#888; padding:20px;">
-                    ${TRANSLATIONS[CURRENT_LANG].news_content}
-                </li>`;
-            return;
-        }
-
-        // ▼ ニュースを表示
-        newsList.innerHTML = data.map(item => `
-            <li class="news-item">
-                <div class="news-title">${item.title}</div>
-                <div class="news-date">${item.date}</div>
-                <div class="news-body">${item.body}</div>
-            </li>
-        `).join("");
-
-    } catch (error) {
-        // ▼ エラー時もアニメーション停止
-        clearInterval(loadingTimer);
-
+        if (!newsList) return;
+        
+        // ローディング表示（紫のくるくる等は排除しテキストのみ）
+        const loadingText = (CURRENT_LANG === 'ja') ? 'Loading...' : 'Loading...';
         newsList.innerHTML = `
-            <li style="text-align:center; color:#888; padding:20px;">
-                Error loading news.
-            </li>`;
+            <div style="text-align:center; color:#888; padding:20px;">
+                ${loadingText}
+            </div>`;
+        
+        try {
+            const requestUrl = `${GAS_API_URL}?type=news&lang=${CURRENT_LANG}`;
+            const response = await fetch(requestUrl);
+            const data = await response.json();
+
+            newsList.innerHTML = ''; // クリア
+
+            if (data.success && data.news && data.news.length > 0) {
+                data.news.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'news-item'; 
+                    
+                    // ★修正: バッジ表示(UPDATEなど)を削除し、日付と本文のみを表示
+                    // 日付を上に、本文を下に配置
+                    li.innerHTML = `
+                        <div class="news-date" lang="${CURRENT_LANG}">${item.date}</div>
+                        <div class="news-content-text">${item.content}</div>
+                    `;
+                    newsList.appendChild(li);
+                });
+            } else {
+                const noNewsMsg = (CURRENT_LANG === 'ja') ? 'お知らせはありません。' : 'No news available.';
+                newsList.innerHTML = `<div style="text-align:center; color:#888; padding:20px;">${noNewsMsg}</div>`;
+            }
+        } catch (error) {
+            console.error('News fetch error:', error);
+            const errorMsg = (CURRENT_LANG === 'ja') ? '読み込みに失敗しました。' : 'Failed to load news.';
+            newsList.innerHTML = `<div style="text-align:center; color:#ff6b6b; padding:20px;"><i data-lucide="alert-triangle" style="margin-bottom:5px;"></i><br>${errorMsg}</div>`;
+            lucide.createIcons();
+        }
     }
-}
+
 
     // --- 認証モーダル操作 ---
     function openAuthModal() { authModal.classList.add('active'); resetAuthModal(); codeInput.focus(); }
@@ -1839,7 +1783,7 @@
     const newsModal = document.getElementById('newsModal');
     const btnOpenNews = document.getElementById('btnOpenNews');
     const newsCloseX = document.getElementById('newsCloseX');
-    // const newsCloseBtn = document.getElementById('newsCloseBtn'); // 削除
+    const newsCloseBtn = document.getElementById('newsCloseBtn');
 
     function openNewsModal() {
         newsModal.classList.add('active');
@@ -1851,7 +1795,7 @@
 
     if(btnOpenNews) btnOpenNews.addEventListener('click', openNewsModal);
     if(newsCloseX) newsCloseX.addEventListener('click', closeNewsModal);
-    // if(newsCloseBtn) newsCloseBtn.addEventListener('click', closeNewsModal);
+    if(newsCloseBtn) newsCloseBtn.addEventListener('click', closeNewsModal);
     if(newsModal) newsModal.addEventListener('click', (e) => { if (e.target === newsModal) closeNewsModal(); });
 
     // --- サポートモーダル操作 ---
