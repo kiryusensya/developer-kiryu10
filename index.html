@@ -653,7 +653,7 @@
             background: rgba(0, 0, 0, 0.3); 
             border: 1px solid var(--glass-border); 
             border-radius: 12px; 
-            padding: 16px; 
+            padding: 16px;
             color: white; 
             font-size: 18px; 
             text-align: center; 
@@ -691,7 +691,7 @@
         .btn-confirm:hover { 
             background: var(--hover-blue); 
             transform: translateY(-2px); 
-            border-color: rgba(59, 130, 246, 0.8); 
+            border-color: rgba(59, 130, 246, 0.8);
             animation: pulse-blue-fast 1.0s infinite ease-in-out; 
         }
         
@@ -927,15 +927,15 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: space-between;
-            padding: 20px 10px;
-            background: rgba(255,255,255,0.05);
+            padding: 20px 10px; 
+            background: rgba(255,255,255,0.05); 
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            color: white;
-            transition: 0.3s;
+            border-radius: 16px; 
+            color: white; 
+            transition: 0.3s; 
             /* ★Closeボタンを消した分、高さを増やして縦長に (200px -> 280px) */
             height: 280px; 
-            text-align: center;
+            text-align: center; 
             width: 100%;
         }
         
@@ -954,36 +954,36 @@
         }
         
         .support-item:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.15); 
+            transform: translateY(-5px); 
+            border-color: rgba(255, 255, 255, 0.4); 
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); 
         }
         /* ホバー時のアイコン：色は変えず、少し拡大のみ */
         .support-item:hover i { 
-            transform: scale(1.1);
+            transform: scale(1.1); 
         }
 
         /* 問い合わせボタン (ボックス内) */
         .btn-inquiry-small {
             margin-bottom: 20px; /* 下部の余白調整 */
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 30px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-            border: 1px solid rgba(255,255,255,0.3);
-            transition: all 0.2s;
-            width: 100%;
-            max-width: 120px;
+            display: inline-block; 
+            padding: 10px 20px; 
+            border-radius: 30px; 
+            background: rgba(255,255,255,0.1); 
+            color: white; 
+            text-decoration: none; 
+            font-size: 13px; 
+            font-weight: bold; 
+            border: 1px solid rgba(255,255,255,0.3); 
+            transition: all 0.2s; 
+            width: 100%; 
+            max-width: 120px; 
         }
         .btn-inquiry-small:hover {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(132, 7, 222, 0.5);
+            background: var(--primary-color); 
+            border-color: var(--primary-color); 
+            box-shadow: 0 0 10px rgba(132, 7, 222, 0.5); 
         }
 
         /* --- モバイル専用調整 --- */
@@ -1882,6 +1882,20 @@
                 successExtraInfo.textContent = data.extraInfo;
                 successDownloadBtn.textContent = data.buttonLabel || t.btn_download;
                 successDownloadBtn.href = data.actionUrl;
+
+                // ★追加機能: 解禁日チェック
+                if (data.isReleaseDateReached === false) {
+                    // まだ解禁されていない場合
+                    successDownloadBtn.style.pointerEvents = 'none'; // クリック不可
+                    successDownloadBtn.style.opacity = '0.6';        // 半透明
+                    successDownloadBtn.removeAttribute('href');      // リンク削除
+                    // ボタンのテキストを解禁日表示に変更 (例: "🔒 2026/05/20 12:00")
+                    successDownloadBtn.innerHTML = `<i data-lucide="lock" size="16" style="margin-right:5px;"></i> ${data.releaseDateStr}`;
+                } else {
+                    // 解禁済み（通常通り）
+                    successDownloadBtn.style.pointerEvents = 'auto';
+                    successDownloadBtn.style.opacity = '1';
+                }
 
                 if (data.imageUrl && data.imageUrl.startsWith("http")) {
                     successImage.src = data.imageUrl;
