@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>kiryu-sensya</title>
+    <title>_.k__yu.10</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -342,7 +342,7 @@
             z-index: 10001; 
             display: flex; 
             justify-content: center; 
-            align-items: center;
+            align-items: center; 
             transition: opacity 0.5s ease, visibility 0.5s ease;
             padding: 20px;
         }
@@ -1330,7 +1330,7 @@
     </div>
 
     <header>
-        <div class="logo"><i data-lucide="user-round-cog" style="color: #8407de;"></i>kiryu_sensya</div>
+        <div class="logo"><i data-lucide="user-round" style="color: #8407de;"></i>_.k__yu.10</div>
     </header>
 
     <div class="container" id="mainContainer">
@@ -1594,7 +1594,7 @@
             switcher.value = savedLang;
             langSelectionOverlay.style.display = 'none';
 
-            // ★修正: ログイン済みかチェックし、未ログインならログイン画面へ（機能ON）
+            // ★修正: ログイン済みかチェックし、未ログインならログイン画面へ
             if (isLoggedIn === 'true') {
                 showMainContent();
             } else {
@@ -1615,7 +1615,7 @@
         langSelectionOverlay.style.visibility = 'hidden';
         setTimeout(() => { 
             langSelectionOverlay.style.display = 'none'; 
-            // ★修正: 言語選択後はログイン画面へ遷移（機能ON）
+            // ★修正: 言語選択後はログイン画面へ遷移
             showLoginScreen();
         }, 500);
         
@@ -1851,12 +1851,13 @@
         codeInput.value = formatted;
     });
 
-    // --- アクティベーション（サイト内）認証ロジック ---
-    confirmBtn.addEventListener('click', async () => {
-        const code = codeInput.value.trim();
-        if(!code) return;
+    // ============================================
+    // ★追加機能: 認証実行関数 (自動実行でも使えるように切り出し)
+    // ============================================
+    async function performAuth(code) {
         const t = TRANSLATIONS[CURRENT_LANG];
-
+        
+        // ローディング表示
         codeInput.disabled = true;
         confirmBtn.disabled = true;
         confirmBtn.innerHTML = `<span class="cyber-spinner"></span> ${t.msg_verifying}<span class="loading-dots"></span>`;
@@ -1866,13 +1867,16 @@
         confirmBtn.classList.remove('error-glow');
 
         const requestUrl = `${GAS_API_URL}?key=${encodeURIComponent(code)}&lang=${CURRENT_LANG}`;
+
         try {
             const response = await fetch(requestUrl);
             const data = await response.json();
             
+            // 処理が終わったらボタン復帰
             codeInput.disabled = false; confirmBtn.disabled = false; confirmBtn.textContent = t.modal_btn_auth; 
 
             if (data.success) {
+                // 成功時の画面遷移
                 modalContainer.classList.add('wide-mode');
                 inputPhase.style.display = 'none';
                 successPhase.style.display = 'block';
@@ -1883,7 +1887,7 @@
                 successDownloadBtn.textContent = data.buttonLabel || t.btn_download;
                 successDownloadBtn.href = data.actionUrl;
 
-                // ★追加機能: 解禁日チェック
+                // ★追加機能: 解禁日チェックと自動リロードタイマー
                 if (data.isReleaseDateReached === false) {
                     // まだ解禁されていない場合
                     successDownloadBtn.style.pointerEvents = 'none'; // クリック不可
@@ -1891,6 +1895,30 @@
                     successDownloadBtn.removeAttribute('href');      // リンク削除
                     // ボタンのテキストを解禁日表示に変更 (例: "🔒 2026/05/20 12:00")
                     successDownloadBtn.innerHTML = `<i data-lucide="lock" size="16" style="margin-right:5px;"></i> ${data.releaseDateStr}`;
+
+                    // ==========================================
+                    // ★自動リロードタイマーのセット
+                    // ==========================================
+                    if (data.releaseDateStr) {
+                         // GASから送られてきた日付文字列をパース ("yyyy/MM/dd HH:mm" -> Date object)
+                         // 日本時間として解釈される前提
+                         const targetDate = new Date(data.releaseDateStr); 
+                         const now = new Date();
+                         
+                         // ターゲットまでのミリ秒数計算
+                         let diff = targetDate.getTime() - now.getTime();
+                         
+                         // もし差分が正で、かつ24時間以内ならタイマーをセットする
+                         // (あまりに未来の場合はサーバー負荷を避けるためセットしない等の判断も可だが、今回はシンプルにセット)
+                         if (diff > 0 && diff < 86400000) { 
+                             // バッファとして3秒(3000ms)追加して再実行
+                             setTimeout(() => {
+                                 performAuth(code); // 時間が来たら自動で再認証を実行！
+                             }, diff + 3000);
+                             console.log(`Timer set: Auto-unlock in ${diff/1000} seconds.`);
+                         }
+                    }
+
                 } else {
                     // 解禁済み（通常通り）
                     successDownloadBtn.style.pointerEvents = 'auto';
@@ -1905,6 +1933,7 @@
                 }
                 lucide.createIcons();
             } else {
+                // 失敗時（コード間違い、使用済みなど）
                 let errorMsg = t.msg_invalid;
                 if (data.message === "This code has already been used.") errorMsg = t.msg_used;
                 statusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="14"></i> ${errorMsg}</span>`;
@@ -1932,6 +1961,13 @@
                 confirmBtn.classList.remove('error-glow');
             }, 3000);
         }
+    }
+
+    // --- ボタンクリックイベント ---
+    confirmBtn.addEventListener('click', () => {
+        const code = codeInput.value.trim();
+        if(!code) return;
+        performAuth(code); // 切り出した関数を呼び出す
     });
 
     function shakeModal() {
