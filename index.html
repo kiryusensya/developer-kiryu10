@@ -1594,7 +1594,7 @@
             switcher.value = savedLang;
             langSelectionOverlay.style.display = 'none';
 
-            // ★修正: ログイン済みかチェックし、未ログインならログイン画面へ
+            // ログイン済みかチェックし、未ログインならログイン画面へ
             if (isLoggedIn === 'true') {
                 showMainContent();
             } else {
@@ -1615,7 +1615,6 @@
         langSelectionOverlay.style.visibility = 'hidden';
         setTimeout(() => { 
             langSelectionOverlay.style.display = 'none'; 
-            // ★修正: 言語選択後はログイン画面へ遷移
             showLoginScreen();
         }, 500);
         
@@ -1852,19 +1851,22 @@
     });
 
     // ============================================
-    // ★追加機能: 認証実行関数 (自動実行でも使えるように切り出し)
+    // ★追加機能: 認証実行関数 (自動実行に対応)
     // ============================================
-    async function performAuth(code) {
+    // isSilent = true の場合、画面遷移アニメーションなどをスキップする
+    async function performAuth(code, isSilent = false) {
         const t = TRANSLATIONS[CURRENT_LANG];
         
-        // ローディング表示
-        codeInput.disabled = true;
-        confirmBtn.disabled = true;
-        confirmBtn.innerHTML = `<span class="cyber-spinner"></span> ${t.msg_verifying}<span class="loading-dots"></span>`;
-        statusContainer.innerHTML = "";
-        modalContainer.classList.remove('modal-error-border');
-        codeInput.classList.remove('error-glow');
-        confirmBtn.classList.remove('error-glow');
+        // サイレントモードでなければローディング表示
+        if (!isSilent) {
+            codeInput.disabled = true;
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = `<span class="cyber-spinner"></span> ${t.msg_verifying}<span class="loading-dots"></span>`;
+            statusContainer.innerHTML = "";
+            modalContainer.classList.remove('modal-error-border');
+            codeInput.classList.remove('error-glow');
+            confirmBtn.classList.remove('error-glow');
+        }
 
         const requestUrl = `${GAS_API_URL}?key=${encodeURIComponent(code)}&lang=${CURRENT_LANG}`;
 
@@ -1872,16 +1874,23 @@
             const response = await fetch(requestUrl);
             const data = await response.json();
             
-            // 処理が終わったらボタン復帰
-            codeInput.disabled = false; confirmBtn.disabled = false; confirmBtn.textContent = t.modal_btn_auth; 
+            // サイレントモードでなければボタン復帰
+            if (!isSilent) {
+                codeInput.disabled = false; 
+                confirmBtn.disabled = false; 
+                confirmBtn.textContent = t.modal_btn_auth; 
+            }
 
             if (data.success) {
-                // 成功時の画面遷移
-                modalContainer.classList.add('wide-mode');
-                inputPhase.style.display = 'none';
-                successPhase.style.display = 'block';
-                successPhase.animate([ { opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' } ], { duration: 500, easing: 'ease-out' });
+                // サイレントモードでない場合のみ画面遷移アニメーションを実行
+                if (!isSilent) {
+                    modalContainer.classList.add('wide-mode');
+                    inputPhase.style.display = 'none';
+                    successPhase.style.display = 'block';
+                    successPhase.animate([ { opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' } ], { duration: 500, easing: 'ease-out' });
+                }
 
+                // 以下の情報は常に最新に更新
                 successTitle.textContent = data.message;
                 successExtraInfo.textContent = data.extraInfo;
                 successDownloadBtn.textContent = data.buttonLabel || t.btn_download;
@@ -1900,22 +1909,23 @@
                     // ★自動リロードタイマーのセット
                     // ==========================================
                     if (data.releaseDateStr) {
-                         // GASから送られてきた日付文字列をパース ("yyyy/MM/dd HH:mm" -> Date object)
-                         // 日本時間として解釈される前提
                          const targetDate = new Date(data.releaseDateStr); 
                          const now = new Date();
                          
                          // ターゲットまでのミリ秒数計算
                          let diff = targetDate.getTime() - now.getTime();
                          
-                         // もし差分が正で、かつ24時間以内ならタイマーをセットする
-                         // (あまりに未来の場合はサーバー負荷を避けるためセットしない等の判断も可だが、今回はシンプルにセット)
+                         // 24時間以内の未来ならタイマーセット
                          if (diff > 0 && diff < 86400000) { 
-                             // バッファとして3秒(3000ms)追加して再実行
-                             setTimeout(() => {
-                                 performAuth(code); // 時間が来たら自動で再認証を実行！
-                             }, diff + 3000);
+                             // 既にタイマーがセットされているか確認するロジックを入れても良いが、
+                             // 単純化のため上書きセットする（毎回performAuthが呼ばれるわけではないのでOK）
                              console.log(`Timer set: Auto-unlock in ${diff/1000} seconds.`);
+                             
+                             // バッファとして3秒(3000ms)追加して再実行
+                             // ★ここで isSilent = true を渡すことで、次は静かに更新される
+                             setTimeout(() => {
+                                 performAuth(code, true); 
+                             }, diff + 3000);
                          }
                     }
 
@@ -1923,6 +1933,8 @@
                     // 解禁済み（通常通り）
                     successDownloadBtn.style.pointerEvents = 'auto';
                     successDownloadBtn.style.opacity = '1';
+                    // もし以前ロック表示だった場合、ここで通常のボタン表示に戻る
+                    // （data.buttonLabel で上書き済み）
                 }
 
                 if (data.imageUrl && data.imageUrl.startsWith("http")) {
@@ -1933,12 +1945,29 @@
                 }
                 lucide.createIcons();
             } else {
-                // 失敗時（コード間違い、使用済みなど）
+                // 失敗時はサイレントモード関係なくエラー表示（通常ありえないが）
                 let errorMsg = t.msg_invalid;
                 if (data.message === "This code has already been used.") errorMsg = t.msg_used;
                 statusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="14"></i> ${errorMsg}</span>`;
                 lucide.createIcons();
-                shakeModal();
+                
+                if (!isSilent) {
+                    shakeModal();
+                    modalContainer.classList.add('modal-error-border');
+                    codeInput.classList.add('error-glow');
+                    confirmBtn.classList.add('error-glow');
+                    setTimeout(() => {
+                        modalContainer.classList.remove('modal-error-border');
+                        codeInput.classList.remove('error-glow');
+                        confirmBtn.classList.remove('error-glow');
+                    }, 1800);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            if (!isSilent) {
+                codeInput.disabled = false; confirmBtn.disabled = false; confirmBtn.textContent = t.modal_btn_auth;
+                statusContainer.innerHTML = `<span class="error-msg">${t.msg_error}</span>`;
                 modalContainer.classList.add('modal-error-border');
                 codeInput.classList.add('error-glow');
                 confirmBtn.classList.add('error-glow');
@@ -1946,20 +1975,8 @@
                     modalContainer.classList.remove('modal-error-border');
                     codeInput.classList.remove('error-glow');
                     confirmBtn.classList.remove('error-glow');
-                }, 1800);
+                }, 3000);
             }
-        } catch (error) {
-            console.error(error);
-            codeInput.disabled = false; confirmBtn.disabled = false; confirmBtn.textContent = t.modal_btn_auth;
-            statusContainer.innerHTML = `<span class="error-msg">${t.msg_error}</span>`;
-            modalContainer.classList.add('modal-error-border');
-            codeInput.classList.add('error-glow');
-            confirmBtn.classList.add('error-glow');
-            setTimeout(() => {
-                modalContainer.classList.remove('modal-error-border');
-                codeInput.classList.remove('error-glow');
-                confirmBtn.classList.remove('error-glow');
-            }, 3000);
         }
     }
 
@@ -1967,7 +1984,8 @@
     confirmBtn.addEventListener('click', () => {
         const code = codeInput.value.trim();
         if(!code) return;
-        performAuth(code); // 切り出した関数を呼び出す
+        // 手動クリックなので isSilent = false (デフォルト)
+        performAuth(code); 
     });
 
     function shakeModal() {
