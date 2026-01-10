@@ -1994,24 +1994,32 @@
                     successDownloadBtn.innerHTML = `<i data-lucide="lock" size="16" style="margin-right:5px;"></i> ${data.releaseDateStr}`;
 
                     // ==========================================
-                    // ★自動リロードタイマーのセット
+                    // ★自動リロードタイマーのセット (スマホ対応強化版)
                     // ==========================================
-                    if (data.releaseDateStr) {
-                         const targetDate = new Date(data.releaseDateStr); 
+                    // GASから送られてくる ISO形式(releaseDateIso) を優先して使う
+                    const dateSource = data.releaseDateIso || data.releaseDateStr;
+
+                    if (dateSource) {
+                         let parseableDate = dateSource;
+                         // ISO形式がない場合（古いキャッシュなど）の予備処理: ドットやハイフンをスラッシュに統一
+                         if (!data.releaseDateIso && typeof dateSource === 'string') {
+                            parseableDate = dateSource.replace(/\./g, '/').replace(/-/g, '/');
+                         }
+                         
+                         const targetDate = new Date(parseableDate); 
                          const now = new Date();
                          
                          // ターゲットまでのミリ秒数計算
                          let diff = targetDate.getTime() - now.getTime();
                          
+                         // ログで確認（PCのF12ツール用）
+                         console.log("Timer Target:", targetDate, "Diff:", diff);
+
                          // 24時間以内の未来ならタイマーセット
                          if (diff > 0 && diff < 86400000) { 
-                             // 既にタイマーがセットされているか確認するロジックを入れても良いが、
-                             // 単純化のため上書きセットする（毎回performAuthが呼ばれるわけではないのでOK）
-                             console.log(`Timer set: Auto-unlock in ${diff/1000} seconds.`);
-                             
                              // バッファとして3秒(3000ms)追加して再実行
-                             // ★ここで isSilent = true を渡すことで、次は静かに更新される
                              setTimeout(() => {
+                                 console.log("Auto-reloading...");
                                  performAuth(code, true); 
                              }, diff + 3000);
                          }
