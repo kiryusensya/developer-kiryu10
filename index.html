@@ -1303,17 +1303,31 @@
                 /* 上15px, 右10px, 下10px, 左10px に縮小 (PCは20px) */
                 padding: 15px 10px 10px 10px !important;
             }
-        } /* ★ここに閉じカッコが必要でした！これでスマホ設定を区切ります */
-
-        /* =========================================
-           ★PCニュース表示用 (読み込み完了後に幅を広げる)
+            /* =========================================
+           ★PCニュース表示用 (文字数に合わせて幅自動調整)
            ========================================= */
         @media (min-width: 769px) {
-            /* JSでこのクラスがついた時だけ幅を広げる */
             #newsModal .modal-container.news-wide-mode {
-                max-width: 900px !important; /* 480pxから900pxに拡大 */
-                width: 90%;
-                transition: max-width 0.4s ease; /* ヌルっと広がるアニメーション */
+                /* 幅を「中身（文字量）に合わせる」設定に変更 */
+                width: fit-content !important;
+                width: -moz-fit-content !important; /* Firefox用 */
+                
+                /* 最小・最大の制限 */
+                min-width: 480px;            /* 文字が少なくてもこれより小さくならない（読み込み時と同じ幅） */
+                max-width: 900px !important; /* 文字が多くてもこれ以上は広がらない */
+                
+                /* アニメーション */
+                transition: all 0.4s ease; 
+            }
+
+            /* コンテナ自体が縮んだ時に中身が崩れないようにする */
+            .news-container {
+                width: 100%;
+            }
+            
+            /* 長すぎる単語があっても枠内に収める */
+            .news-content-text {
+                word-break: break-word;
             }
         }
         }
