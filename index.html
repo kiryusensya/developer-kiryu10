@@ -1150,13 +1150,15 @@
             margin-top: 15px; 
             font-size: 14px; 
         }
+        /* ★エラーメッセージ用のクラス：赤色・太字を強制適用 */
         .error-msg { 
-            color: #ff2a2a; /* ★ご要望に合わせて赤色に固定 */
+            color: #ff2a2a !important; /* ★赤色固定 */
             display: flex; 
             align-items: center; 
             justify-content: center; 
             gap: 5px; 
             font-weight: bold; /* ★太字で強調 */
+            margin-top: 10px;
         }
 
         /* --- 近未来的なローディングスピナー --- */
@@ -2109,56 +2111,53 @@
                 const response = await fetch(requestUrl);
                 const data = await response.json();
 
-                if(data.success) {
+                // ★判定ロジックの修正: statusType: 'NO' の場合もエラー（入力画面維持）扱いにする
+                if(data.success && data.statusType !== 'NO') {
+                    // OK または デフォルト: 成功画面へ遷移
+                    instaInputPhase.style.display = 'none';
+                    instaSuccessPhase.style.display = 'block';
                     
-                    // ★追加ロジック: statusTypeが'NO'の場合は画面遷移せず赤字エラー表示
-                    if(data.statusType === 'NO') {
-                        // 入力状態に戻す
-                        instaInput.disabled = false;
-                        instaConfirm.disabled = false;
-                        instaConfirm.innerHTML = t.insta_btn; // ボタン戻す
-                        
-                        // エラー表示 (赤文字 & 太字)
-                        instaStatusContainer.innerHTML = `<span class="error-msg" style="color:#ff2a2a; font-weight:bold;"><i data-lucide="alert-circle" size="16"></i> ${data.message}</span>`;
-                        lucide.createIcons();
+                    // アカウント名表示
+                    instaResultAccount.textContent = account;
 
-                        // エラーアニメーション (シェイク)
-                        instagramModalContainer.animate([ { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' } ], { duration: 300 });
-                        instagramModalContainer.classList.add('modal-error-border');
-                        instaInput.classList.add('error-glow');
-                        instaConfirm.classList.add('error-glow');
-                        setTimeout(() => {
-                            instagramModalContainer.classList.remove('modal-error-border');
-                            instaInput.classList.remove('error-glow');
-                            instaConfirm.classList.remove('error-glow');
-                        }, 1800);
-
+                    // メッセージ表示
+                    instaSuccessMessage.textContent = data.message;
+                    
+                    // 色設定 (OKなら緑)
+                    if(data.statusType === 'OK') {
+                        instaSuccessMessage.className = 'status-ok';
                     } else {
-                        // OK または デフォルト: 成功画面へ遷移
-                        instaInputPhase.style.display = 'none';
-                        instaSuccessPhase.style.display = 'block';
-                        
-                        // アカウント名表示
-                        instaResultAccount.textContent = account;
-
-                        // メッセージ表示
-                        instaSuccessMessage.textContent = data.message;
-                        
-                        // 色設定 (OKなら緑)
-                        if(data.statusType === 'OK') {
-                            instaSuccessMessage.className = 'status-ok';
-                        } else {
-                            instaSuccessMessage.className = '';
-                        }
-
-                        // ボタン表示
-                        instaSuccessButton.style.display = 'inline-flex';
-                        instaSuccessButton.textContent = data.buttonLabel;
+                        instaSuccessMessage.className = '';
                     }
 
+                    // ボタン表示
+                    instaSuccessButton.style.display = 'inline-flex';
+                    instaSuccessButton.textContent = data.buttonLabel;
+
                 } else {
-                    // 失敗時（ユーザーが見つからないなど）
-                    throw new Error(data.message || "Invalid account");
+                    // 失敗時（NO または success: false）
+                    // サーバーからのメッセージがあればそれを優先、なければ翻訳テキスト
+                    const errorText = data.message || t.insta_error_user;
+
+                    // 入力状態に戻す
+                    instaInput.disabled = false;
+                    instaConfirm.disabled = false;
+                    instaConfirm.innerHTML = t.insta_btn; // ボタン戻す
+                    
+                    // エラー表示 (赤文字 & 太字)
+                    instaStatusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="16"></i> ${errorText}</span>`;
+                    lucide.createIcons();
+
+                    // エラーアニメーション (シェイク)
+                    instagramModalContainer.animate([ { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' } ], { duration: 300 });
+                    instagramModalContainer.classList.add('modal-error-border');
+                    instaInput.classList.add('error-glow');
+                    instaConfirm.classList.add('error-glow');
+                    setTimeout(() => {
+                        instagramModalContainer.classList.remove('modal-error-border');
+                        instaInput.classList.remove('error-glow');
+                        instaConfirm.classList.remove('error-glow');
+                    }, 1800);
                 }
             } catch (e) {
                 console.error(e);
@@ -2167,7 +2166,7 @@
                 instaConfirm.innerHTML = t.insta_btn; // 元に戻す
                 
                 // エラーメッセージ翻訳 (赤字 & 太字)
-                instaStatusContainer.innerHTML = `<span class="error-msg" style="color:#ff2a2a; font-weight:bold;"><i data-lucide="alert-circle" size="16"></i> ${t.insta_error_user}</span>`;
+                instaStatusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="16"></i> ${t.insta_error_user}</span>`;
                 lucide.createIcons();
                 
                 // エラーアニメーション
