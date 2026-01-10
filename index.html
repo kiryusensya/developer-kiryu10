@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>kityu-sensya</title>
+        <title>kiryu-sensya</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1506,18 +1506,18 @@
         <div class="modal-container glass-panel" id="instagramModalContainer">
             <div class="modal-close" id="instagramCloseBtn"><i data-lucide="x"></i></div>
             <div id="instaInputPhase">
-                <h2 class="modal-title" style="margin-bottom:10px;">Instagram Inquiry</h2>
-                <p class="modal-sub" style="margin-bottom:30px;">ユーザーID(@xxx)を入力してください</p>
+                <h2 class="modal-title" style="margin-bottom:10px;" data-translate="insta_title">Instagram Inquiry</h2>
+                <p class="modal-sub" style="margin-bottom:30px;" data-translate="insta_sub">ユーザーID(@xxx)を入力してください</p>
                 <div class="input-wrapper">
-                    <input type="text" id="instaInput" class="code-input" placeholder="@username" autocomplete="off" style="text-transform:none;">
+                    <input type="text" id="instaInput" class="code-input" placeholder="@username" autocomplete="off" style="text-transform:none;" data-translate-placeholder="insta_placeholder">
                 </div>
-                <button id="instaConfirm" class="btn-confirm">認証する</button>
+                <button id="instaConfirm" class="btn-confirm" data-translate="insta_btn">認証する</button>
                 <div id="instaStatusContainer" style="margin-top:15px; font-size:14px;"></div>
             </div>
             <div id="instaSuccessPhase" style="display:none;">
                 <div class="success-tag"><i data-lucide="circle-check-big" size="23"></i><span>Verified</span></div>
                 <p id="instaSuccessMessage" style="margin-bottom:20px; font-size:16px; line-height:1.5;"></p>
-                <a href="https://www.instagram.com/kiryu_sensya" target="_blank" id="instaSuccessButton" class="btn-confirm" style="text-decoration:none;">Open Instagram</a>
+                <a href="https://www.instagram.com/kiryu_sensya" target="_blank" id="instaSuccessButton" class="btn-confirm" style="text-decoration:none;" data-translate="insta_success_btn">Open Instagram</a>
             </div>
         </div>
     </div>
@@ -1525,10 +1525,10 @@
 <script>
     lucide.createIcons();
     // ▼ あなたのGASのURLに書き換えてください
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzGwoI0ZTRricl4tzqKVpztx0q9-bra9FsWJbHt_Jw_BRaJ75Gcxw09eyhN3m07YzUPhQ/exec"; 
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycby-euxYGL5-ov5Lb-Q_7HFcLvIgfTf354FQAqT0bOsTJFo7l3NDISmFS64dS8wr-DxScA/exec"; 
     let CURRENT_LANG = "ja"; 
 
-    // --- 翻訳データ ---
+    // --- 翻訳データ (Instagram対応版) ---
     const TRANSLATIONS = {
         ja: {
             card1_title: "アクティベーション", card1_desc: "コードを使用して<br>コンテンツをアンロック", card1_btn: "コードを使用",
@@ -1541,14 +1541,21 @@
             success_badge: "コードが認証されました。", success_main_title: "有効化されたコンテンツ",
             success_label_name: "コンテンツ名称", btn_close: "閉じる", btn_download: "ダウンロード",
             news_title: "最新情報", news_label: "変更ログ", 
-            // ニュースローディング用テキスト
             news_loading: "更新を確認中",
             support_modal_title: "何かお困りですか？ ", btn_inquiry: "利用不可",
             footer_admin: "システム管理者",
             login_title: "システム管理者ログイン", login_desc: "アクセス権限を確認します。<br>身分証明書番号とパスワードを入力してください。",
             login_label_user: "身分証明書番号 ", login_label_pass: "パスワード",
             login_btn: "ログイン", login_btn_verifying: "確認中",
-            login_placeholder_user: "身分証明書番号", login_placeholder_pass: "パスワード"
+            login_placeholder_user: "身分証明書番号", login_placeholder_pass: "パスワード",
+            // Instagram Modal
+            insta_title: "Instagram 問い合わせ",
+            insta_sub: "ユーザーID(@xxx)を入力してください",
+            insta_placeholder: "@ユーザー名",
+            insta_btn: "認証する",
+            insta_btn_verifying: "確認中",
+            insta_success_btn: "Instagramを開く",
+            insta_error_user: "ユーザーが見つかりません"
         },
         en: {
             card1_title: "Activation", card1_desc: "Enter code to<br>unlock content", card1_btn: "Use Code",
@@ -1567,7 +1574,15 @@
             login_title: "Enforcement Administrator<br>LOGIN", login_desc: "Verifying access privileges.<br>Please enter ID Number and Password.",
             login_label_user: "ID Number", login_label_pass: "Password",
             login_btn: "Login", login_btn_verifying: "Verifying",
-            login_placeholder_user: "ID Number", login_placeholder_pass: "Password"
+            login_placeholder_user: "ID Number", login_placeholder_pass: "Password",
+            // Instagram Modal
+            insta_title: "Instagram Inquiry",
+            insta_sub: "Please enter your User ID (@xxx)",
+            insta_placeholder: "@username",
+            insta_btn: "Verify",
+            insta_btn_verifying: "Checking...",
+            insta_success_btn: "Open Instagram",
+            insta_error_user: "User not found"
         },
         zh: {
             card1_title: "激活", card1_desc: "使用代码<br>以解锁内容", card1_btn: "使用代码",
@@ -1586,59 +1601,37 @@
             login_title: "系统管理员登录", login_desc: "正在检查访问权限。<br>请输入身份证号和密码。",
             login_label_user: "身份证号", login_label_pass: "密码",
             login_btn: "登录", login_btn_verifying: "验证中",
-            login_placeholder_user: "身份证号", login_placeholder_pass: "密码"
+            login_placeholder_user: "身份证号", login_placeholder_pass: "密码",
+            // Instagram Modal
+            insta_title: "Instagram 咨询",
+            insta_sub: "请输入您的用户ID（@xxx）",
+            insta_placeholder: "@用户名",
+            insta_btn: "验证",
+            insta_btn_verifying: "正在验证",
+            insta_success_btn: "打开 Instagram",
+            insta_error_user: "未找到用户"
         },
         ko: {
-            // --- メインメニュー & 登録 ---
-            card1_title: "등록", // 활성화(Activation) -> 등록(Registration)
-            card1_desc: "잠금해제 암호를<br>입력하십시오", 
-            card1_btn: "암호리용", 
-            card2_title: "새 소식", 
-            card2_desc: "이 홈페지에 대한<br>최신 갱신자료", // 사이트->홈페지, 업데이트->갱신
-            card2_btn: "열람", 
-            card3_title: "기술협조", // 지원->기술협조
-            card3_desc: "암호가 맞지 않을 경우<br>여기로 련락하십시오", // 연락->련락
-            card3_btn: "질문", 
-
-            // --- 登録モーダル ---
-            modal_title: "리용등록", 
-            modal_sub: "보유하신 등록암호를 입력하십시오", 
-            modal_placeholder: "암호입력", 
-            modal_btn_auth: "판정", // 인증(認証) -> 판정(判定)
-
-            // --- メッセージ ---
-            msg_verifying: "검토중입니다", 
-            msg_invalid: "무효한 암호입니다.", 
-            msg_used: "이미 리용된 암호입니다.", 
-            msg_error: "망 련결오류가 발생하였습니다.", // 통신오류 -> 망 련결오류
-
-            // --- 成功画面 ---
-            success_badge: "암호가 등록되였습니다.", // 되었습니다 -> 되였습니다 (北朝鮮綴り)
-            success_main_title: "등록된 자료", 
-            success_label_name: "자료명칭", 
-            btn_close: "닫기", 
-            btn_download: "적재", // 다운로드 -> 적재(積載/Load)
-
-            // --- ニュース & サポート ---
-            news_title: "최신보도", 
-            news_label: "갱신리력", 
-            news_loading: "갱신자료 확인중입니다", 
-            support_modal_title: "무엇을 도와드리면 되겠습니까?", 
-            btn_inquiry: "봉사대기", 
-            footer_admin: "체계관리원", // 시스템 관리자 -> 체계관리원
-
-            // --- ★管理者ログイン (新規追加部分) ---
-            login_title: "체계관리원 접속", // 로그인(Log-in) -> 접속(接続)
-            login_desc: "접근권한을 판정합니다。<br>신분번호와 통과암호를 입력하십시오。", 
-            // 権限確認->権限判定, ID->身分番号, パスワード->通過暗号
-            
-            login_label_user: "공민등록번호", // 주민등록번호(住民登録番号) -> 공민등록번호(公民登録番号:北朝鮮のID)
-            login_label_pass: "통과암호", // 비밀번호(秘密番号) -> 통과암호(通過暗号:北朝鮮のパスワード用語)
-            
-            login_btn: "접속", // ログイン -> 접속(接続) または 들어가기(入り)
-            login_btn_verifying: "검토중", 
-            login_placeholder_user: "공민등록번호", 
-            login_placeholder_pass: "통과암호"
+            card1_title: "등록", card1_desc: "잠금해제 암호를<br>입력하십시오", card1_btn: "암호리용", 
+            card2_title: "새 소식", card2_desc: "이 홈페지에 대한<br>최신 갱신자료", card2_btn: "열람", 
+            card3_title: "기술협조", card3_desc: "암호가 맞지 않을 경우<br>여기로 련락하십시오", card3_btn: "질문", 
+            modal_title: "리용등록", modal_sub: "보유하신 등록암호를 입력하십시오", 
+            modal_placeholder: "암호입력", modal_btn_auth: "판정",
+            msg_verifying: "검토중입니다", msg_invalid: "무효한 암호입니다.", msg_used: "이미 리용된 암호입니다.", msg_error: "망 련결오류가 발생하였습니다.", 
+            success_badge: "암호가 등록되였습니다.", success_main_title: "등록된 자료", success_label_name: "자료명칭", btn_close: "닫기", btn_download: "적재", 
+            news_title: "최신보도", news_label: "갱신리력", news_loading: "갱신자료 확인중입니다", 
+            support_modal_title: "무엇을 도와드리면 되겠습니까?", btn_inquiry: "봉사대기", 
+            footer_admin: "체계관리원", login_title: "체계관리원 접속", login_desc: "접근권한을 판정합니다。<br>신분번호와 통과암호를 입력하십시오。", 
+            login_label_user: "공민등록번호", login_label_pass: "통과암호", login_btn: "접속", login_btn_verifying: "검토중", 
+            login_placeholder_user: "공민등록번호", login_placeholder_pass: "통과암호",
+            // Instagram Modal
+            insta_title: "Instagram 문의",
+            insta_sub: "사용자 ID(@xxx)를 입력하십시오",
+            insta_placeholder: "@사용자명",
+            insta_btn: "확인",
+            insta_btn_verifying: "검토중",
+            insta_success_btn: "인스타그램 열기",
+            insta_error_user: "사용자를 찾을 수 없습니다"
         },
         ru: {
             card1_title: "Активация", card1_desc: "Введите код для разблокировки<br>контента", card1_btn: "Код использования",
@@ -1650,14 +1643,21 @@
             msg_invalid: "Неверный код.", msg_used: "Код уже использован.", msg_error: "Ошибка соединения",
             success_badge: "Код активирован.", success_main_title: "Активированный контент",
             success_label_name: "Название", btn_close: "Закрыть", btn_download: "Скачать",
-            news_title: "Новости", news_label: "Список изменений", 
-            news_loading: "Проверка обновлений",
+            news_title: "Новости", news_label: "Список изменений", news_loading: "Проверка обновлений",
             support_modal_title: "Чем я могу вам помочь?", btn_inquiry: "Недоступно",
             footer_admin: "Администратор",
             login_title: "Администратор<br>Войти", login_desc: "Проверьте права доступа.<br>Введите свой идентификационный номер и пароль.",
             login_label_user: "Имя пользователя", login_label_pass: "Пароль",
             login_btn: "Войти", login_btn_verifying: "Проверка",
-            login_placeholder_user: "Имя пользователя", login_placeholder_pass: "Пароль"
+            login_placeholder_user: "Имя пользователя", login_placeholder_pass: "Пароль",
+            // Instagram Modal
+            insta_title: "Instagram Запрос",
+            insta_sub: "Введите ваш User ID (@xxx)",
+            insta_placeholder: "@username",
+            insta_btn: "Проверить",
+            insta_btn_verifying: "Проверка...",
+            insta_success_btn: "Открыть Instagram",
+            insta_error_user: "Пользователь не найден"
         }
     };
 
@@ -1832,6 +1832,9 @@
         if(t.login_placeholder_user) loginUser.placeholder = t.login_placeholder_user;
         if(t.login_placeholder_pass) loginPass.placeholder = t.login_placeholder_pass;
         if (!btnLoginAction.disabled) btnLoginAction.textContent = t.login_btn;
+        // Instagram Modal Input Placeholder
+        if(t.insta_placeholder) instaInput.placeholder = t.insta_placeholder;
+        if (!instaConfirm.disabled) instaConfirm.textContent = t.insta_btn;
     }
 
    // --- ★ニュース取得機能 (幅調整機能付き) ---
@@ -1962,6 +1965,7 @@
 
     if(btnOpenInstagram) {
         btnOpenInstagram.addEventListener('click', () => {
+            const t = TRANSLATIONS[CURRENT_LANG];
             // サポートモーダルを閉じる
             supportModal.classList.remove('active');
             // Instagramモーダルを開く
@@ -1970,7 +1974,7 @@
             instaInput.value = "";
             instaInput.disabled = false;
             instaConfirm.disabled = false;
-            instaConfirm.innerHTML = "認証する";
+            instaConfirm.innerHTML = t.insta_btn; // 翻訳テキスト適用
             instaStatusContainer.innerHTML = "";
             instaInputPhase.style.display = 'block';
             instaSuccessPhase.style.display = 'none';
@@ -1997,12 +2001,14 @@
     if(instaConfirm) {
         instaConfirm.addEventListener('click', async () => {
             const account = instaInput.value.trim();
+            const t = TRANSLATIONS[CURRENT_LANG];
+            
             if(!account) return;
 
-            // ローディング
+            // ローディング (翻訳対応)
             instaInput.disabled = true;
             instaConfirm.disabled = true;
-            instaConfirm.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px;"></span> Checking...`;
+            instaConfirm.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px;"></span> ${t.insta_btn_verifying}`;
             instaStatusContainer.innerHTML = "";
 
             try {
@@ -2026,8 +2032,9 @@
                 console.error(e);
                 instaInput.disabled = false;
                 instaConfirm.disabled = false;
-                instaConfirm.innerHTML = "認証する";
-                instaStatusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="14"></i> ユーザーが見つかりません</span>`;
+                instaConfirm.innerHTML = t.insta_btn; // 元に戻す
+                // エラーメッセージ翻訳
+                instaStatusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="14"></i> ${t.insta_error_user}</span>`;
                 lucide.createIcons();
                 
                 // エラーアニメーション
