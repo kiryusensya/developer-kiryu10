@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>kityu-sensya</title>
+        <title>kiryu-sensya</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1515,15 +1515,18 @@
     <div id="instagramAuthModal" class="modal-overlay">
         <div class="modal-container glass-panel" id="instagramModalContainer">
             <div class="modal-close" id="instagramCloseBtn"><i data-lucide="x"></i></div>
+            
+            <h2 class="modal-title" style="margin-bottom:10px;" data-translate="insta_title">Instagram Inquiry</h2>
+            <p class="modal-sub" style="margin-bottom:30px;" data-translate="insta_sub">ユーザーID(@xxx)を入力してください</p>
+
             <div id="instaInputPhase">
-                <h2 class="modal-title" style="margin-bottom:10px;" data-translate="insta_title">Instagram Inquiry</h2>
-                <p class="modal-sub" style="margin-bottom:30px;" data-translate="insta_sub">ユーザーID(@xxx)を入力してください</p>
                 <div class="input-wrapper">
                     <input type="text" id="instaInput" class="code-input" placeholder="@username" autocomplete="off" style="text-transform:none;" data-translate-placeholder="insta_placeholder">
                 </div>
                 <button id="instaConfirm" class="btn-confirm" data-translate="insta_btn">認証する</button>
                 <div id="instaStatusContainer" style="margin-top:15px; font-size:14px;"></div>
             </div>
+            
             <div id="instaSuccessPhase" style="display:none;">
                 <div id="instaResultAccount" style="font-size: 24px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px;"></div>
                 
@@ -2022,10 +2025,10 @@
             
             if(!account) return;
 
-            // ローディング (翻訳対応)
+            // ローディング (翻訳対応 + アニメーション)
             instaInput.disabled = true;
             instaConfirm.disabled = true;
-            instaConfirm.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px;"></span> ${t.insta_btn_verifying}`;
+            instaConfirm.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px;"></span> ${t.insta_btn_verifying}<span class="loading-dots"></span>`;
             instaStatusContainer.innerHTML = "";
 
             try {
@@ -2034,37 +2037,57 @@
                 const data = await response.json();
 
                 if(data.success) {
-                    // 成功時
-                    instaInputPhase.style.display = 'none';
-                    instaSuccessPhase.style.display = 'block';
                     
-                    // アカウント名表示
-                    instaResultAccount.textContent = account;
-
-                    // メッセージ表示
-                    instaSuccessMessage.textContent = data.message;
-                    
-                    // GASから受け取ったステータスで色分け (OK=Green, NO=Red)
+                    // ★追加ロジック: NOの場合
                     if(data.statusType === 'NO') {
-                        // NOの場合: 赤色 + ボタン非表示
-                        instaSuccessMessage.className = 'status-no';
-                        instaSuccessButton.style.display = 'none';
+                        // 画面遷移せず、入力画面のままエラー表示エリアにメッセージを出す
+                        instaInput.disabled = false;
+                        instaConfirm.disabled = false;
+                        instaConfirm.innerHTML = t.insta_btn; // ボタン戻す
+                        
+                        // エラー表示 (赤文字)
+                        instaStatusContainer.innerHTML = `<span class="error-msg" style="color:var(--neon-red);"><i data-lucide="alert-circle" size="14"></i> ${data.message}</span>`;
+                        lucide.createIcons();
+
+                        // エラーアニメーション (シェイク)
+                        instagramModalContainer.animate([ { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' } ], { duration: 300 });
+                        instagramModalContainer.classList.add('modal-error-border');
+                        instaInput.classList.add('error-glow');
+                        instaConfirm.classList.add('error-glow');
+                        setTimeout(() => {
+                            instagramModalContainer.classList.remove('modal-error-border');
+                            instaInput.classList.remove('error-glow');
+                            instaConfirm.classList.remove('error-glow');
+                        }, 1800);
+
                     } else {
-                        // OK または デフォルト: 色設定
+                        // OK または デフォルト: 成功画面へ遷移
+                        instaInputPhase.style.display = 'none';
+                        instaSuccessPhase.style.display = 'block';
+                        
+                        // アカウント名表示
+                        instaResultAccount.textContent = account;
+
+                        // メッセージ表示
+                        instaSuccessMessage.textContent = data.message;
+                        
+                        // 色設定 (OKなら緑)
                         if(data.statusType === 'OK') {
                             instaSuccessMessage.className = 'status-ok';
                         } else {
                             instaSuccessMessage.className = '';
                         }
+
                         // ボタン表示
                         instaSuccessButton.style.display = 'inline-flex';
                         instaSuccessButton.textContent = data.buttonLabel;
+
+                        // アニメーション
+                        instaSuccessPhase.animate([ { opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' } ], { duration: 500 });
                     }
 
-                    // アニメーション
-                    instaSuccessPhase.animate([ { opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' } ], { duration: 500 });
                 } else {
-                    // 失敗時
+                    // 失敗時（ユーザーが見つからないなど）
                     throw new Error(data.message || "Invalid account");
                 }
             } catch (e) {
