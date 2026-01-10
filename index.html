@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>kiryu-sensya</title>
+    <title>kiryu-sensya</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,56 +16,59 @@
     
     <style>
         /* =========================================
-           FONT DEFINITIONS & LICENSE NOTICE
+           FONT DEFINITIONS
            ========================================= */
         @font-face {
             font-family: 'HarmonyOS Sans';
-            src: url('./assets/fonts/HarmonyOS_Sans_Regular.woff') format('woff'); 
+            src: url('./assets/fonts/HarmonyOS_Sans_Regular.woff') format('woff');
             font-weight: 400;
             font-style: normal;
         }
         @font-face {
             font-family: 'HarmonyOS Sans';
-            src: url('./assets/fonts/HarmonyOS_Sans_Bold.woff') format('woff'); 
+            src: url('./assets/fonts/HarmonyOS_Sans_Bold.woff') format('woff');
             font-weight: 700;
             font-style: normal;
         }
         @font-face {
             font-family: 'HarmonyOS Sans SC';
-            src: url('./assets/fonts/HarmonyOS_SansSC_Regular.woff') format('woff'); 
+            src: url('./assets/fonts/HarmonyOS_SansSC_Regular.woff') format('woff');
             font-weight: 400;
             font-style: normal;
         }
         @font-face {
             font-family: 'HarmonyOS Sans SC';
-            src: url('./assets/fonts/HarmonyOS_SansSC_Bold.woff') format('woff'); 
+            src: url('./assets/fonts/HarmonyOS_SansSC_Bold.woff') format('woff');
             font-weight: 700;
             font-style: normal;
         }
 
         /* =========================================
-           DESIGN SETTINGS
+           DESIGN SETTINGS & VARIABLES
            ========================================= */
         :root {
-            /* メインカラー：紫 */
+            /* メインカラー設定 */
             --primary-color: #8407de; 
-            /* ホバー時の青 */
             --hover-blue: #3b82f6; 
             
+            /* 背景・枠線設定 */
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
+            
+            /* テキストカラー */
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.7);
+            
+            /* アクセントカラー */
             --neon-cyan: #00f7ff;
             --neon-green: #00ff9d;
-            /* エラー時の赤 */
             --neon-red: #ff2a2a; 
             
             /* 成功時の緑2色 */
             --success-green-light: #099c16;
             --success-green-dark: #047016;
 
-            /* 背景画像設定 */
+            /* 背景画像 */
             --main-bg-image: url('');
         }
 
@@ -88,7 +91,6 @@
             flex-direction: column; 
             align-items: center;
             color: var(--text-main);
-            /* 画像がない場合の背景色を黒に指定 */
             background-color: #000000;
             background-image: var(--main-bg-image);
             background-size: cover; 
@@ -97,22 +99,33 @@
         }
 
         /* =========================================
-           LANGUAGE-SPECIFIC FONT STACKS (Global)
+           LANGUAGE-SPECIFIC FONT STACKS
            ========================================= */
-        
-        html[lang="ja"] body, html[lang="ja"] input, html[lang="ja"] button, html[lang="ja"] select, html[lang="ja"] textarea {
+        html[lang="ja"] body, 
+        html[lang="ja"] input, 
+        html[lang="ja"] button, 
+        html[lang="ja"] select, 
+        html[lang="ja"] textarea {
             font-family: "HarmonyOS Sans", "Noto Sans JP", sans-serif;
         }
-        html[lang="en"] body, html[lang="en"] input, html[lang="en"] button {
+        html[lang="en"] body, 
+        html[lang="en"] input, 
+        html[lang="en"] button {
             font-family: "HarmonyOS Sans", sans-serif;
         }
-        html[lang="zh"] body, html[lang="zh"] input, html[lang="zh"] button {
+        html[lang="zh"] body, 
+        html[lang="zh"] input, 
+        html[lang="zh"] button {
             font-family: "HarmonyOS Sans", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
         }
-        html[lang="ko"] body, html[lang="ko"] input, html[lang="ko"] button {
+        html[lang="ko"] body, 
+        html[lang="ko"] input, 
+        html[lang="ko"] button {
             font-family: "HarmonyOS Sans", "Noto Sans KR", "Malgun Gothic", sans-serif;
         }
-        html[lang="ru"] body, html[lang="ru"] input, html[lang="ru"] button {
+        html[lang="ru"] body, 
+        html[lang="ru"] input, 
+        html[lang="ru"] button {
             font-family: "HarmonyOS Sans", sans-serif;
         }
 
@@ -121,10 +134,7 @@
             font-family: "HarmonyOS Sans", sans-serif !important;
         }
 
-        /* =========================================
-           ★日付表示エリア専用フォント設定
-           数字はHarmonyOS、各言語文字はNoto等へフォールバック
-           ========================================= */
+        /* ニュース日付のフォント設定 */
         .news-date[lang="ja"] {
             font-family: 'HarmonyOS Sans', 'Noto Sans JP', sans-serif !important;
         }
@@ -139,7 +149,7 @@
             font-family: 'HarmonyOS Sans', sans-serif !important;
         }
 
-
+        /* 背景オーバーレイ */
         body::before {
             content: ''; 
             position: fixed; 
@@ -166,7 +176,6 @@
             max-width: 1200px; 
             padding: 20px;
             display: flex; 
-            /* 左揃えに設定 */
             justify-content: flex-start; 
             align-items: center; 
             margin-bottom: 40px;
@@ -193,7 +202,6 @@
             font-size: 16px; 
             font-weight: bold;
             transition: background 0.3s;
-            /* ★PC時は右下に絶対配置 */
             position: absolute;
             right: 20px;
             bottom: 20px;
@@ -215,13 +223,11 @@
             display: flex; 
             flex-direction: column; 
             justify-content: center;
-            /* ログイン前は非表示（JSで制御） */
             opacity: 0;
             transition: opacity 0.5s ease;
-            pointer-events: none; /* ログイン前はクリック不可 */
+            pointer-events: none;
         }
         
-        /* ログイン後に適用するクラス */
         .container.logged-in {
             opacity: 1;
             pointer-events: auto;
@@ -271,7 +277,7 @@
             line-height: 1.6; 
         }
         
-        /* ★通常ボタン用アニメーション★ */
+        /* ボタンアニメーション定義 */
         @keyframes pulse-primary {
             0% { box-shadow: 0 0 10px rgba(132, 7, 222, 0.5), 0 0 5px rgba(132, 7, 222, 0.3); }
             50% { box-shadow: 0 0 25px rgba(132, 7, 222, 0.8), 0 0 15px rgba(132, 7, 222, 0.5); }
@@ -310,7 +316,7 @@
             animation: pulse-blue-fast 1.0s infinite ease-in-out; 
         }
 
-        /* --- フッターレイアウト --- */
+        /* --- フッター --- */
         footer { 
             padding: 20px; 
             font-size: 13px; 
@@ -318,12 +324,11 @@
             text-align: center; 
             width: 100%; 
             word-break: break-all;
-            /* PC: 相対配置で中の絶対配置の基準にする */
             position: relative;
             display: flex;
-            justify-content: center; /* テキストは中央 */
+            justify-content: center; 
             align-items: center;
-            min-height: 80px; /* セレクトボックスが入る高さを確保 */
+            min-height: 80px;
         }
         .footer-link { 
             color: white; 
@@ -331,7 +336,7 @@
             border-bottom: 1px dotted white; 
         }
 
-        /* --- 言語選択 オーバーレイ --- */
+        /* --- 初回言語選択 オーバーレイ --- */
         #langSelectionOverlay {
             position: fixed; 
             top: 0; 
@@ -363,16 +368,16 @@
             grid-column: span 2;
         }
 
-        /* --- ★管理者ログイン画面 --- */
+        /* --- 管理者ログイン画面 --- */
         #adminLoginOverlay {
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%;
-            background: #000000; /* 完全な黒背景 */
-            z-index: 10000; /* 言語選択(10001)より下、メインより上 */
-            display: none; /* 初期は非表示 */
+            background: #000000; 
+            z-index: 10000; 
+            display: none; 
             justify-content: center; 
             align-items: center; 
             padding: 20px;
@@ -386,7 +391,7 @@
             border-radius: 20px;
             padding: 40px;
             width: 100%;
-            max-width: 550px; /* ★幅を広げました */
+            max-width: 550px; 
             text-align: center;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             position: relative;
@@ -442,7 +447,7 @@
         .login-btn {
             width: 100%;
             padding: 14px;
-            background: #8407de; /* 指定の紫 */
+            background: #8407de;
             color: white;
             border: none;
             border-radius: 12px;
@@ -464,7 +469,6 @@
             cursor: wait;
         }
 
-        /* ログイン画面内の言語選択（右上・変更可能） */
         .login-lang-select {
             position: absolute;
             top: 20px;
@@ -486,7 +490,6 @@
             color: white;
             border-color: #555;
         }
-        /* オプションの背景色 */
         .login-lang-select option {
             background: #111;
             color: white;
@@ -534,7 +537,7 @@
         }
         
         /* ------------------------------------------------------------- */
-        /* ★アニメーション定義★ */
+        /* ★ アニメーション定義 ★ */
         /* ------------------------------------------------------------- */
         
         /* 1. 緑色アニメーション (デフォルト) */
@@ -613,7 +616,32 @@
         #modalContainer.wide-mode.sync-blue-mode {
             /* !importantで確実に適用 */
             animation: anim-box-blue-purple 3s infinite ease-in-out !important;
-            border-color: #0066ff !important; /* 初期値を鮮やかな青に */
+            border-color: #0066ff !important;
+        }
+
+        /* ★ Instagramモーダル専用スタイル（発光設定修正） */
+        #instagramModalContainer {
+            /* デフォルト：枠線のみ（ガラス風）、発光なし */
+            border: 1px solid var(--glass-border);
+            animation: none; 
+            transition: border-color 0.3s ease;
+        }
+        
+        /* Instagramボタン（デフォルト状態：発光なし） */
+        #instaConfirm {
+            animation: none !important;
+        }
+
+        /* ★ Instagramモーダル 成功時（クラス付与時）：緑色発光 */
+        #instagramModalContainer.auth-success {
+            border: 2px solid var(--success-green-light);
+            animation: anim-green 3s infinite ease-in-out;
+        }
+
+        /* ★ Instagramモーダル 成功時かつホバー時：青色発光 */
+        #instagramModalContainer.auth-success.sync-blue-mode {
+            animation: anim-box-blue-purple 3s infinite ease-in-out !important;
+            border-color: #0066ff !important;
         }
 
         .modal-close {
@@ -901,7 +929,7 @@
             border-color: #fff; 
         }
 
-        /* --- ★サポートモーダル専用スタイル (大幅改修) --- */
+        /* --- ★サポートモーダル専用スタイル --- */
         .modal-container.wide-support-mode {
             max-width: 900px; /* PC幅確保 */
             padding: 30px; /* 余白調整 */
@@ -1003,7 +1031,7 @@
 
             /* ★スマホ用：モーダルのタイトルをさらに小さくして改行崩れを防ぐ */
             .modal-title {
-                font-size: 18px !important; /* 20px -> 18px */
+                font-size: 18px !important; 
             }
 
             header { 
@@ -1014,7 +1042,7 @@
                 font-size: 20px; 
             }
             .container { 
-                padding: 0 15px; /* ここが15px */
+                padding: 0 15px; 
             }
             .grid-menu { 
                 gap: 20px; 
@@ -1140,9 +1168,6 @@
             .login-title {
                 /* スマホでは文字サイズを小さくする (PCは24px) */
                 font-size: 18px !important;
-                
-                /* 強制的に改行させない指定 */
-                /* white-space: nowrap;  ← 【削除】タイトルが切れるのを防ぐため */
             }
         }
 
@@ -1150,6 +1175,7 @@
             margin-top: 15px; 
             font-size: 14px; 
         }
+        
         /* ★エラーメッセージ用のクラス：赤色・太字を強制適用 */
         .error-msg { 
             color: #ff2a2a !important; /* ★赤色固定 */
@@ -1159,6 +1185,8 @@
             gap: 5px; 
             font-weight: bold; /* ★太字で強調 */
             margin-top: 10px;
+            font-size: 14px;
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.3);
         }
 
         /* --- 近未来的なローディングスピナー --- */
@@ -1214,27 +1242,24 @@
         @keyframes dot-steps { 0% { content: '.'; } 33% { content: '..'; } 67% { content: '...'; } }
 
         /* =========================================
-           ★ニュースリスト用スタイル (最終修正版)
+           ★ニュースリスト用スタイル
            ========================================= */
         
-        /* ニュース表示エリアのコンテナ（黒いボックスは残す） */
+        /* ニュース表示エリアのコンテナ */
         .news-container {
             text-align: left;
-            /* 黒っぽい背景を維持 */
             background: rgba(0, 0, 0, 0.3) !important;
-            /* padding: 20px;  <-- ここを変更 */
-            padding: 20px 20px 10px 20px; /* 下の余白を減らす */
+            padding: 20px 20px 10px 20px; 
             border-radius: 16px;
-            margin-bottom: 0 !important; /* ★変更: 下の余白をなくす */
+            margin-bottom: 0 !important; 
             max-height: 400px;
             overflow-y: auto;
-            /* 枠線は薄い白系で維持 */
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
-        /* ニュースモーダル全体の余白調整 (閉じるボタン削除に伴い) */
+        /* ニュースモーダル全体の余白調整 */
         #newsModal .modal-container {
-            padding-bottom: 20px !important; /* コンテナの下部パディングを30px->20pxへ調整 */
+            padding-bottom: 20px !important; 
         }
 
         .news-container::-webkit-scrollbar { width: 6px; }
@@ -1247,15 +1272,13 @@
             margin: 0;
         }
 
-        /* ニュースアイテム (個別の紫ボックスは完全に削除) */
+        /* ニュースアイテム */
         .news-item {
-            /* ★重要：背景色、枠線、影をすべて削除（透明） */
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            
-            padding: 10px 0; /* 上下余白のみ確保 */
-            margin-bottom: 15px; /* アイテム間の距離 */
+            padding: 10px 0; 
+            margin-bottom: 15px; 
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -1263,91 +1286,43 @@
             overflow: visible;
         }
         
-        /* ★追加: 最後のアイテムの下マージンを削除して余白を詰める */
         .news-item:last-child {
             margin-bottom: 0 !important;
         }
 
-        /* ホバー時も何も表示させない */
         .news-item:hover {
             background: transparent !important;
             transform: none !important;
             box-shadow: none !important;
         }
         
-        /* 左端のアクセントラインも削除 */
         .news-item::before {
             display: none !important;
         }
 
-        /* --- 日付デザイン修正 --- */
-        .news-date {
-            color: #ffffff;      /* 白色 */
-            font-size: 20px;     /* 本文(14px)より大きく */
-            font-weight: bold;
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
-            text-align: left;    /* 左寄せ */
-            display: block;
-        }
-
-       /* ニュース本文 */
+        /* ニュース本文 */
         .news-content-text {
             font-size: 14px;
             line-height: 1.6;
             color: #f0f0f0;
-            padding-left: 0;     /* 左端 */
-            white-space: pre-wrap; /* ★この行を追加：改行コードを反映させる */
+            padding-left: 0;      
+            white-space: pre-wrap; 
         }
-        /* =========================================
-           ★スマホ表示修正用 (追加コード)
-           ========================================= */
-        @media (max-width: 768px) {
-            /* 1. アクティベーション完了画面のタイトル「有効化されたコンテンツ」を小さくする */
-            .success-title-main {
-                font-size: 20px; /* PCの28pxから20pxへ縮小 */
-                line-height: 1.4;
-                margin-bottom: 15px;
-            }
-
-            /* 2. ニュースモーダルの余白（パディング）を小さくする */
-            
-            /* (A) 外側のガラスパネルの余白 */
-            #newsModal .modal-container {
-                /* 上下20px, 左右15px に縮小 (PCは40px) */
-                padding: 20px 15px !important; 
-                width: 95%; /* 横幅を画面いっぱいに近づける */
-            }
-
-            /* (B) 内側の黒い背景部分の余白 */
-            .news-container {
-                /* 上15px, 右10px, 下10px, 左10px に縮小 (PCは20px) */
-                padding: 15px 10px 10px 10px !important;
-            }
-        }
-            /* =========================================
-           ★PCニュース表示用 (文字数に合わせて幅自動調整)
-           ========================================= */
+        
+        /* PCニュース表示用 */
         @media (min-width: 769px) {
             #newsModal .modal-container.news-wide-mode {
-                /* 幅を「中身（文字量）に合わせる」設定に変更 */
                 width: fit-content !important;
-                width: -moz-fit-content !important; /* Firefox用 */
-                
-                /* 最小・最大の制限 */
-                min-width: 480px;            /* 文字が少なくてもこれより小さくならない（読み込み時と同じ幅） */
-                max-width: 900px !important; /* 文字が多くてもこれ以上は広がらない */
-                
-                /* アニメーション */
+                width: -moz-fit-content !important; 
+                min-width: 480px;            
+                max-width: 900px !important; 
                 transition: all 0.4s ease; 
             }
 
-            /* コンテナ自体が縮んだ時に中身が崩れないようにする */
             .news-container {
                 width: 100%;
             }
             
-            /* 長すぎる単語があっても枠内に収める */
             .news-content-text {
                 word-break: break-word;
             }
@@ -1357,12 +1332,37 @@
         .status-ok {
             color: var(--neon-green) !important;
             text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+            font-weight: bold;
         }
         .status-no {
-            color: #ff2a2a !important; /* ★赤色固定 */
+            color: #ff2a2a !important; 
             text-shadow: 0 0 10px rgba(255, 42, 42, 0.5);
             font-weight: bold;
         }
+
+        /* Instagram Success Layout (Modified) */
+        #instaSuccessPhase {
+            display: none;
+            text-align: center;
+        }
+        #instaResultAccount {
+            display: none; /* ★ユーザー名は表示しない */
+        }
+        /* Message below button */
+        #instaSuccessMessage {
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-top: 10px; /* Small margin from button */
+            margin-bottom: 0;
+        }
+        /* Button style in success phase */
+        #instaSuccessButton {
+            margin-bottom: 5px;
+            margin-top: 5px;
+            width: 100%;
+        }
+
     </style>
 </head>
 <body>
@@ -1567,12 +1567,12 @@
                 <div id="instaStatusContainer" style="margin-top:15px; font-size:14px;"></div>
             </div>
             
-            <div id="instaSuccessPhase" style="display:none;">
-                <div id="instaResultAccount" style="font-size: 24px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px;"></div>
-                
-                <p id="instaSuccessMessage" style="margin-bottom:20px; font-size:16px; line-height:1.5; font-weight:bold;"></p>
+            <div id="instaSuccessPhase">
+                <div id="instaResultAccount" style="font-size: 24px; font-weight: bold; letter-spacing: 1px;"></div>
                 
                 <a href="https://www.instagram.com/kiryu_sensya" target="_blank" id="instaSuccessButton" class="btn-confirm" style="text-decoration:none;" data-translate="insta_success_btn">Open Instagram</a>
+                
+                <p id="instaSuccessMessage"></p>
             </div>
         </div>
     </div>
@@ -2073,8 +2073,11 @@
             instaInput.classList.remove('error-glow');
             instaConfirm.classList.remove('error-glow');
             instaResultAccount.innerHTML = "";
-            // クラスリセット
             instaSuccessMessage.className = "";
+            
+            // ★ 初期状態リセット（緑発光を解除）
+            instagramModalContainer.classList.remove('auth-success');
+            instagramModalContainer.classList.remove('sync-blue-mode');
             
             instaInput.focus();
         });
@@ -2103,7 +2106,7 @@
             // ローディング (翻訳対応 + アニメーション)
             instaInput.disabled = true;
             instaConfirm.disabled = true;
-            instaConfirm.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px;"></span> ${t.insta_btn_verifying}<span class="loading-dots"></span>`;
+            instaConfirm.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px;"></span> ${t.insta_btn_verifying}`;
             instaStatusContainer.innerHTML = "";
 
             try {
@@ -2111,53 +2114,59 @@
                 const response = await fetch(requestUrl);
                 const data = await response.json();
 
-                // ★判定ロジックの修正: statusType: 'NO' の場合もエラー（入力画面維持）扱いにする
-                if(data.success && data.statusType !== 'NO') {
-                    // OK または デフォルト: 成功画面へ遷移
+                // ★判定: statusTypeが'OK'の場合のみ成功画面へ。それ以外はすべてエラー表示（入力画面維持）。
+                if(data.success && data.statusType === 'OK') {
+                    // OK: 成功画面へ遷移
                     instaInputPhase.style.display = 'none';
                     instaSuccessPhase.style.display = 'block';
                     
-                    // アカウント名表示
-                    instaResultAccount.textContent = account;
-
-                    // メッセージ表示
-                    instaSuccessMessage.textContent = data.message;
+                    // ★ 成功時のみ発光クラスを付与
+                    instagramModalContainer.classList.add('auth-success');
                     
-                    // 色設定 (OKなら緑)
-                    if(data.statusType === 'OK') {
-                        instaSuccessMessage.className = 'status-ok';
-                    } else {
-                        instaSuccessMessage.className = '';
-                    }
+                    // ★ ご指示通り、ユーザー名は非表示（または空）にする
+                    // instaResultAccount.textContent = account; // 削除またはコメントアウト
+                    instaResultAccount.style.display = 'none';
+
+                    // メッセージ表示 (緑色)
+                    instaSuccessMessage.textContent = data.message;
+                    instaSuccessMessage.className = 'status-ok'; 
 
                     // ボタン表示
                     instaSuccessButton.style.display = 'inline-flex';
                     instaSuccessButton.textContent = data.buttonLabel;
 
                 } else {
-                    // 失敗時（NO または success: false）
-                    // サーバーからのメッセージがあればそれを優先、なければ翻訳テキスト
-                    const errorText = data.message || t.insta_error_user;
-
+                    // 失敗時（NO, ERROR, BANNED などすべて）
                     // 入力状態に戻す
                     instaInput.disabled = false;
                     instaConfirm.disabled = false;
                     instaConfirm.innerHTML = t.insta_btn; // ボタン戻す
                     
+                    // エラーメッセージの決定ロジック
+                    let showMsg = data.message;
+                    // メッセージが無い、または "User not found" (英語) が含まれる場合は翻訳データを使う
+                    if (!showMsg || showMsg.toLowerCase().includes("user not found")) {
+                        showMsg = t.insta_error_user;
+                    }
+
                     // エラー表示 (赤文字 & 太字)
-                    instaStatusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="16"></i> ${errorText}</span>`;
+                    instaStatusContainer.innerHTML = `<div class="error-msg"><i data-lucide="alert-circle" size="16"></i> ${showMsg}</div>`;
                     lucide.createIcons();
 
-                    // エラーアニメーション (シェイク)
+                    // ★ エラーアニメーション (シェイク + 赤発光 3秒)
                     instagramModalContainer.animate([ { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' } ], { duration: 300 });
+                    
+                    // 赤色クラス付与
                     instagramModalContainer.classList.add('modal-error-border');
                     instaInput.classList.add('error-glow');
                     instaConfirm.classList.add('error-glow');
+                    
+                    // ★ 3秒後に赤色クラスを削除
                     setTimeout(() => {
                         instagramModalContainer.classList.remove('modal-error-border');
                         instaInput.classList.remove('error-glow');
                         instaConfirm.classList.remove('error-glow');
-                    }, 1800);
+                    }, 3000);
                 }
             } catch (e) {
                 console.error(e);
@@ -2165,23 +2174,40 @@
                 instaConfirm.disabled = false;
                 instaConfirm.innerHTML = t.insta_btn; // 元に戻す
                 
-                // エラーメッセージ翻訳 (赤字 & 太字)
-                instaStatusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="16"></i> ${t.insta_error_user}</span>`;
+                // 通信エラーなどの場合
+                instaStatusContainer.innerHTML = `<div class="error-msg"><i data-lucide="alert-circle" size="16"></i> Connection Error</div>`;
                 lucide.createIcons();
                 
-                // エラーアニメーション
-                instagramModalContainer.animate([ { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' } ], { duration: 300 });
+                // 赤色クラス付与
                 instagramModalContainer.classList.add('modal-error-border');
                 instaInput.classList.add('error-glow');
                 instaConfirm.classList.add('error-glow');
+                
+                // ★ 3秒後に赤色クラスを削除
                 setTimeout(() => {
                     instagramModalContainer.classList.remove('modal-error-border');
                     instaInput.classList.remove('error-glow');
                     instaConfirm.classList.remove('error-glow');
-                }, 1800);
+                }, 3000);
             }
         });
     }
+
+    // ホバー時の青色発光制御 (Instagram Modal) - ★成功時のみ有効にするため条件分岐
+    const instaActionBtns = [document.getElementById('instaConfirm'), document.getElementById('instaSuccessButton')];
+    instaActionBtns.forEach(btn => {
+        if(btn){
+            btn.addEventListener('mouseenter', () => {
+                // auth-success クラスがある場合のみ青色発光クラスを付与
+                if(instagramModalContainer.classList.contains('auth-success')) {
+                    instagramModalContainer.classList.add('sync-blue-mode');
+                }
+            });
+            btn.addEventListener('mouseleave', () => {
+                instagramModalContainer.classList.remove('sync-blue-mode');
+            });
+        }
+    });
 
 
     // --- 入力フォーマット制御 ---
