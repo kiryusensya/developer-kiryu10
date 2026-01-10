@@ -940,7 +940,7 @@
         }
         
         /* FontAwesomeアイコン */
-        .support-item i { 
+        .support-item i, .support-item img { 
             font-size: 48px; 
             margin-top: 20px; /* 上部の余白も少し調整 */
             margin-bottom: 10px; 
@@ -960,7 +960,7 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); 
         }
         /* ホバー時のアイコン：色は変えず、少し拡大のみ */
-        .support-item:hover i { 
+        .support-item:hover i, .support-item:hover img { 
             transform: scale(1.1); 
         }
 
@@ -1514,7 +1514,7 @@
                     <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_discord">問い合わせ</a>
                 </div>
                 <div class="support-item">
-                    <i class="fa-solid fa-star" style="color: #fcaf17;"></i>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Rockstar_Games_Logo.svg" alt="Rockstar Games" style="width: 48px; height: 48px; margin-top: 20px; margin-bottom: 10px;">
                     <span>Rockstar Games</span>
                     <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_rockstar">問い合わせ</a>
                 </div>
@@ -1592,7 +1592,7 @@
             login_placeholder_user: "身分証明書番号", login_placeholder_pass: "パスワード",
             // Instagram Modal
             insta_title: "Instagram 問い合わせ",
-            insta_sub: "ユーザーID(@xxx)を入力してください",
+            insta_sub: "instagramで問い合わせするには、アカウント認証が必要です。<br>ユーザーID(@xxx)を入力してください",
             insta_placeholder: "@ユーザー名",
             insta_btn: "認証する",
             insta_btn_verifying: "確認中",
@@ -1626,7 +1626,7 @@
             login_placeholder_user: "ID Number", login_placeholder_pass: "Password",
             // Instagram Modal
             insta_title: "Instagram Inquiry",
-            insta_sub: "Please enter your User ID (@xxx)",
+            insta_sub: "To contact us via Instagram, account verification is required.<br>Please enter your Username (@xxx)",
             insta_placeholder: "@username",
             insta_btn: "Verify",
             insta_btn_verifying: "Checking",
@@ -1660,8 +1660,8 @@
             login_placeholder_user: "身份证号", login_placeholder_pass: "密码",
             // Instagram Modal
             insta_title: "Instagram 咨询",
-            insta_sub: "请输入您的用户ID（@xxx）",
-            insta_placeholder: "@用户名",
+            insta_sub: "在Instagram上进行咨询时，需要进行账号认证。<br>请输入您的账号（@xxx）",
+            insta_placeholder: "@账号",
             insta_btn: "验证",
             insta_btn_verifying: "正在验证",
             insta_success_btn: "打开 Instagram",
@@ -1725,7 +1725,7 @@
             insta_sub: "Введите ваш User ID (@xxx)",
             insta_placeholder: "@username",
             insta_btn: "Проверить",
-            insta_btn_verifying: "Проверка",
+            insta_btn_verifying: "Проверка...",
             insta_success_btn: "Открыть Instagram",
             insta_error_user: "Пользователь не найден"
         }
