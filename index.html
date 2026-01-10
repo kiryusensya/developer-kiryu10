@@ -979,6 +979,8 @@
             transition: all 0.2s; 
             width: 100%; 
             max-width: 120px; 
+            cursor: pointer;
+            text-align: center;
         }
         .btn-inquiry-small:hover {
             background: var(--primary-color); 
@@ -1495,7 +1497,27 @@
                 <div class="support-item"><i class="fa-brands fa-xbox" style="color: #107C10;"></i><span>Xbox</span><a href="#" class="btn-inquiry-small" data-translate="btn_inquiry">問い合わせ</a></div>
                 <div class="support-item"><i class="fa-brands fa-discord" style="color: #5865F2;"></i><span>Discord</span><a href="#" class="btn-inquiry-small" data-translate="btn_inquiry">問い合わせ</a></div>
                 <div class="support-item"><i class="fa-brands fa-github" style="color: #ffffff;"></i><span>GitHub</span><a href="#" class="btn-inquiry-small" data-translate="btn_inquiry">問い合わせ</a></div>
-                <div class="support-item"><i class="fa-brands fa-instagram" style="color: #E4405F;"></i><span>Instagram</span><a href="https://www.instagram.com/kiryu_sensya" class="btn-inquiry-small" data-translate="btn_inquiry">問い合わせ</a></div>
+                <div class="support-item"><i class="fa-brands fa-instagram" style="color: #E4405F;"></i><span>Instagram</span><button id="btnOpenInstagram" class="btn-inquiry-small" data-translate="btn_inquiry">問い合わせ</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="instagramAuthModal" class="modal-overlay">
+        <div class="modal-container glass-panel" id="instagramModalContainer">
+            <div class="modal-close" id="instagramCloseBtn"><i data-lucide="x"></i></div>
+            <div id="instaInputPhase">
+                <h2 class="modal-title" style="margin-bottom:10px;">Instagram Inquiry</h2>
+                <p class="modal-sub" style="margin-bottom:30px;">ユーザーID(@xxx)を入力してください</p>
+                <div class="input-wrapper">
+                    <input type="text" id="instaInput" class="code-input" placeholder="@username" autocomplete="off" style="text-transform:none;">
+                </div>
+                <button id="instaConfirm" class="btn-confirm">認証する</button>
+                <div id="instaStatusContainer" style="margin-top:15px; font-size:14px;"></div>
+            </div>
+            <div id="instaSuccessPhase" style="display:none;">
+                <div class="success-tag"><i data-lucide="circle-check-big" size="23"></i><span>Verified</span></div>
+                <p id="instaSuccessMessage" style="margin-bottom:20px; font-size:16px; line-height:1.5;"></p>
+                <a href="https://www.instagram.com/kiryu_sensya" target="_blank" id="instaSuccessButton" class="btn-confirm" style="text-decoration:none;">Open Instagram</a>
             </div>
         </div>
     </div>
@@ -1503,7 +1525,7 @@
 <script>
     lucide.createIcons();
     // ▼ あなたのGASのURLに書き換えてください
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycby-euxYGL5-ov5Lb-Q_7HFcLvIgfTf354FQAqT0bOsTJFo7l3NDISmFS64dS8wr-DxScA/exec"; 
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzGwoI0ZTRricl4tzqKVpztx0q9-bra9FsWJbHt_Jw_BRaJ75Gcxw09eyhN3m07YzUPhQ/exec"; 
     let CURRENT_LANG = "ja"; 
 
     // --- 翻訳データ ---
@@ -1607,7 +1629,7 @@
 
             // --- ★管理者ログイン (新規追加部分) ---
             login_title: "체계관리원 접속", // 로그인(Log-in) -> 접속(接続)
-            login_desc: "접근권한을 판정합니다.<br>신분번호와 통과암호를 입력하십시오.", 
+            login_desc: "접근권한을 판정합니다。<br>신분번호와 통과암호를 입력하십시오。", 
             // 権限確認->権限判定, ID->身分番号, パスワード->通過暗号
             
             login_label_user: "공민등록번호", // 주민등록번호(住民登録番号) -> 공민등록번호(公民登録番号:北朝鮮のID)
@@ -1925,6 +1947,103 @@
     if(supportCloseX) supportCloseX.addEventListener('click', closeSupportModal);
     if(supportModal) supportModal.addEventListener('click', (e) => { if (e.target === supportModal) closeSupportModal(); });
 
+    // --- Instagramモーダル操作 ---
+    const btnOpenInstagram = document.getElementById('btnOpenInstagram');
+    const instagramAuthModal = document.getElementById('instagramAuthModal');
+    const instagramCloseBtn = document.getElementById('instagramCloseBtn');
+    const instaInput = document.getElementById('instaInput');
+    const instaConfirm = document.getElementById('instaConfirm');
+    const instaStatusContainer = document.getElementById('instaStatusContainer');
+    const instaInputPhase = document.getElementById('instaInputPhase');
+    const instaSuccessPhase = document.getElementById('instaSuccessPhase');
+    const instaSuccessMessage = document.getElementById('instaSuccessMessage');
+    const instaSuccessButton = document.getElementById('instaSuccessButton');
+    const instagramModalContainer = document.getElementById('instagramModalContainer');
+
+    if(btnOpenInstagram) {
+        btnOpenInstagram.addEventListener('click', () => {
+            // サポートモーダルを閉じる
+            supportModal.classList.remove('active');
+            // Instagramモーダルを開く
+            instagramAuthModal.classList.add('active');
+            // リセット
+            instaInput.value = "";
+            instaInput.disabled = false;
+            instaConfirm.disabled = false;
+            instaConfirm.innerHTML = "認証する";
+            instaStatusContainer.innerHTML = "";
+            instaInputPhase.style.display = 'block';
+            instaSuccessPhase.style.display = 'none';
+            instagramModalContainer.classList.remove('modal-error-border');
+            instaInput.classList.remove('error-glow');
+            instaConfirm.classList.remove('error-glow');
+            instaInput.focus();
+        });
+    }
+
+    if(instagramCloseBtn) {
+        instagramCloseBtn.addEventListener('click', () => {
+            instagramAuthModal.classList.remove('active');
+        });
+    }
+
+    if(instagramAuthModal) {
+        instagramAuthModal.addEventListener('click', (e) => {
+            if(e.target === instagramAuthModal) instagramAuthModal.classList.remove('active');
+        });
+    }
+
+    // Instagram認証処理
+    if(instaConfirm) {
+        instaConfirm.addEventListener('click', async () => {
+            const account = instaInput.value.trim();
+            if(!account) return;
+
+            // ローディング
+            instaInput.disabled = true;
+            instaConfirm.disabled = true;
+            instaConfirm.innerHTML = `<span class="cyber-spinner" style="width:16px; height:16px;"></span> Checking...`;
+            instaStatusContainer.innerHTML = "";
+
+            try {
+                const requestUrl = `${GAS_API_URL}?type=instagram_auth&account=${encodeURIComponent(account)}&lang=${CURRENT_LANG}`;
+                const response = await fetch(requestUrl);
+                const data = await response.json();
+
+                if(data.success) {
+                    // 成功時
+                    instaInputPhase.style.display = 'none';
+                    instaSuccessPhase.style.display = 'block';
+                    instaSuccessMessage.textContent = data.message;
+                    instaSuccessButton.textContent = data.buttonLabel;
+                    // アニメーション
+                    instaSuccessPhase.animate([ { opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' } ], { duration: 500 });
+                } else {
+                    // 失敗時
+                    throw new Error(data.message || "Invalid account");
+                }
+            } catch (e) {
+                console.error(e);
+                instaInput.disabled = false;
+                instaConfirm.disabled = false;
+                instaConfirm.innerHTML = "認証する";
+                instaStatusContainer.innerHTML = `<span class="error-msg"><i data-lucide="alert-circle" size="14"></i> ユーザーが見つかりません</span>`;
+                lucide.createIcons();
+                
+                // エラーアニメーション
+                instagramModalContainer.animate([ { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' } ], { duration: 300 });
+                instagramModalContainer.classList.add('modal-error-border');
+                instaInput.classList.add('error-glow');
+                instaConfirm.classList.add('error-glow');
+                setTimeout(() => {
+                    instagramModalContainer.classList.remove('modal-error-border');
+                    instaInput.classList.remove('error-glow');
+                    instaConfirm.classList.remove('error-glow');
+                }, 1800);
+            }
+        });
+    }
+
 
     // --- 入力フォーマット制御 ---
     codeInput.addEventListener('input', (e) => {
@@ -2000,29 +2119,29 @@
                     const dateSource = data.releaseDateIso || data.releaseDateStr;
 
                     if (dateSource) {
-                         let parseableDate = dateSource;
-                         // ISO形式がない場合（古いキャッシュなど）の予備処理: ドットやハイフンをスラッシュに統一
-                         if (!data.releaseDateIso && typeof dateSource === 'string') {
+                          let parseableDate = dateSource;
+                          // ISO形式がない場合（古いキャッシュなど）の予備処理: ドットやハイフンをスラッシュに統一
+                          if (!data.releaseDateIso && typeof dateSource === 'string') {
                             parseableDate = dateSource.replace(/\./g, '/').replace(/-/g, '/');
-                         }
-                         
-                         const targetDate = new Date(parseableDate); 
-                         const now = new Date();
-                         
-                         // ターゲットまでのミリ秒数計算
-                         let diff = targetDate.getTime() - now.getTime();
-                         
-                         // ログで確認（PCのF12ツール用）
-                         console.log("Timer Target:", targetDate, "Diff:", diff);
+                          }
+                          
+                          const targetDate = new Date(parseableDate); 
+                          const now = new Date();
+                          
+                          // ターゲットまでのミリ秒数計算
+                          let diff = targetDate.getTime() - now.getTime();
+                          
+                          // ログで確認（PCのF12ツール用）
+                          console.log("Timer Target:", targetDate, "Diff:", diff);
 
-                         // 24時間以内の未来ならタイマーセット
-                         if (diff > 0 && diff < 86400000) { 
-                             // バッファとして3秒(3000ms)追加して再実行
-                             setTimeout(() => {
-                                 console.log("Auto-reloading...");
-                                 performAuth(code, true); 
-                             }, diff + 3000);
-                         }
+                          // 24時間以内の未来ならタイマーセット
+                          if (diff > 0 && diff < 86400000) { 
+                              // バッファとして3秒(3000ms)追加して再実行
+                              setTimeout(() => {
+                                  console.log("Auto-reloading...");
+                                  performAuth(code, true); 
+                              }, diff + 3000);
+                          }
                     }
 
                 } else {
