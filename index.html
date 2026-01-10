@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>kiryu-sensya</title>
+        <title>kityu-sensya</title>
     <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1333,6 +1333,16 @@
                 word-break: break-word;
             }
         }
+        
+        /* ★ Instagram用のステータスカラー ★ */
+        .status-ok {
+            color: var(--neon-green) !important;
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+        .status-no {
+            color: var(--neon-red) !important;
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -1515,8 +1525,10 @@
                 <div id="instaStatusContainer" style="margin-top:15px; font-size:14px;"></div>
             </div>
             <div id="instaSuccessPhase" style="display:none;">
-                <div class="success-tag"><i data-lucide="circle-check-big" size="23"></i><span>Verified</span></div>
-                <p id="instaSuccessMessage" style="margin-bottom:20px; font-size:16px; line-height:1.5;"></p>
+                <div id="instaResultAccount" style="font-size: 24px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px;"></div>
+                
+                <p id="instaSuccessMessage" style="margin-bottom:20px; font-size:16px; line-height:1.5; font-weight:bold;"></p>
+                
                 <a href="https://www.instagram.com/kiryu_sensya" target="_blank" id="instaSuccessButton" class="btn-confirm" style="text-decoration:none;" data-translate="insta_success_btn">Open Instagram</a>
             </div>
         </div>
@@ -1962,6 +1974,7 @@
     const instaSuccessMessage = document.getElementById('instaSuccessMessage');
     const instaSuccessButton = document.getElementById('instaSuccessButton');
     const instagramModalContainer = document.getElementById('instagramModalContainer');
+    const instaResultAccount = document.getElementById('instaResultAccount');
 
     if(btnOpenInstagram) {
         btnOpenInstagram.addEventListener('click', () => {
@@ -1981,6 +1994,10 @@
             instagramModalContainer.classList.remove('modal-error-border');
             instaInput.classList.remove('error-glow');
             instaConfirm.classList.remove('error-glow');
+            instaResultAccount.innerHTML = "";
+            // クラスリセット
+            instaSuccessMessage.className = "";
+            
             instaInput.focus();
         });
     }
@@ -2020,7 +2037,23 @@
                     // 成功時
                     instaInputPhase.style.display = 'none';
                     instaSuccessPhase.style.display = 'block';
+                    
+                    // アカウント名表示
+                    instaResultAccount.textContent = account;
+
+                    // メッセージ表示
                     instaSuccessMessage.textContent = data.message;
+                    
+                    // GASから受け取ったステータスで色分け (OK=Green, NO=Red)
+                    if(data.statusType === 'OK') {
+                        instaSuccessMessage.className = 'status-ok';
+                    } else if(data.statusType === 'NO') {
+                        instaSuccessMessage.className = 'status-no';
+                    } else {
+                        // デフォルト(指定なし)は白など
+                        instaSuccessMessage.className = '';
+                    }
+
                     instaSuccessButton.textContent = data.buttonLabel;
                     // アニメーション
                     instaSuccessPhase.animate([ { opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' } ], { duration: 500 });
