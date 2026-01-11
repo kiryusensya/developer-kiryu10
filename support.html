@@ -13,7 +13,7 @@
 
     <style>
         /* =========================================
-           基本設定 (index.htmlと統一)
+           基本設定
            ========================================= */
         :root {
             --primary-color: #8407de; 
@@ -64,15 +64,16 @@
             background: var(--hover-blue); transform: scale(1.05);
         }
 
-        /* ヘッダー設定 (index.htmlと完全に一致させる) */
+        /* ヘッダー設定 */
         header {
             width: 100%; 
             max-width: 1200px; 
             padding: 20px; 
             display: flex; 
-            justify-content: space-between; /* ロゴ左、ボタン右 */
+            justify-content: space-between;
             align-items: center; 
-            margin-bottom: 40px; /* index.htmlの余白感に合わせる */
+            /* ヘッダー下の余白を少し減らす */
+            margin-bottom: 10px;
         }
         .logo { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
 
@@ -102,19 +103,21 @@
         }
         .btn-back:hover { background: rgba(255,255,255,0.2); }
 
-        /* メインコンテナ設定 (★上詰め配置に変更) */
+        /* メインコンテナ */
         .container { 
             width: 100%; 
             max-width: 1000px; 
             padding: 0 20px; 
-            flex: 1; 
+            flex: 1; /* 余白を埋める */
             display: flex; 
             flex-direction: column; 
             align-items: center;
             
-            /* 中央揃えをやめて上詰めにし、余白で位置調整 */
-            justify-content: flex-start; 
-            padding-top: 40px; /* ヘッダー下の余白調整 */
+            /* ★ここを変更: コンテンツを縦方向中央に配置 */
+            justify-content: center;
+            
+            /* ★少し上に寄せるための調整（下の余白を多くして重心を上げる） */
+            padding-bottom: 80px; 
         }
         
         .page-title { font-size: 32px; font-weight: bold; margin-bottom: 30px; text-align: center; }
@@ -127,14 +130,23 @@
         .support-item {
             display: flex; flex-direction: column; align-items: center; justify-content: space-between;
             padding: 30px 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            border-radius: 24px; color: white; transition: 0.3s; height: 280px; text-align: center;
+            border-radius: 24px; color: white; transition: 0.3s;
+            height: 280px; 
+            text-align: center;
             min-width: 160px; scroll-snap-align: center;
         }
         .support-item:hover {
             background: rgba(255,255,255,0.15); transform: translateY(-5px);
             border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
-        .support-item i, .support-item img { font-size: 48px; margin-bottom: 15px; width: 48px; height: 48px; object-fit: contain; }
+        /* アイコン画像 */
+        .support-item i, .support-item img { 
+            font-size: 48px; 
+            margin-bottom: 15px; 
+            width: 48px; 
+            height: 48px; 
+            object-fit: contain; 
+        }
         .support-item span { font-size: 16px; font-weight: bold; margin-bottom: auto; }
 
         .btn-inquiry-small {
@@ -146,6 +158,12 @@
         .btn-inquiry-small:hover {
             background: var(--primary-color); border-color: var(--primary-color);
             box-shadow: 0 0 10px rgba(132, 7, 222, 0.5);
+        }
+        
+        /* ボタンなし用スペーサー */
+        .no-btn-spacer {
+            height: 40px; 
+            width: 100%;
         }
 
         /* Instagramモーダル */
@@ -173,22 +191,22 @@
         .cyber-spinner { width: 16px; height: 16px; border: 2px solid transparent; border-top-color: #00f7ff; border-radius: 50%; animation: spin 1s linear infinite; display:inline-block; margin-right:5px;}
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* フッター (★index.htmlと統一) */
+        /* フッター */
         footer { 
             width: 100%;
             padding: 20px; 
             color: var(--text-muted); 
             text-align: center; 
             font-size: 13px;
-            position: relative; /* 絶対配置の基準点 */
+            position: relative;
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 80px;
-            margin-top: auto;
+            /* margin-top: auto; はflexで下部に配置されるため、ここは自然な配置に任せる */
         }
 
-        /* 言語選択メニュー (★右下固定) */
+        /* 言語選択メニュー */
         .lang-select {
             background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: white;
             padding: 10px 20px; border-radius: 30px; outline: none; cursor: pointer;
@@ -208,7 +226,6 @@
             .status-text { display: none; }
             .status-badge { padding: 8px; border-radius: 50%; }
 
-            /* スマホでは縦並び・言語選択も自然な配置に */
             footer { flex-direction: column; justify-content: center; gap: 10px; padding-bottom: 30px; }
             .lang-select { position: static; align-self: flex-end; margin-right: 10px; }
         }
@@ -231,31 +248,37 @@
         <h2 class="page-title" data-translate="support_page_title">サポート</h2>
         
         <div class="support-grid">
+            
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-instagram" style="color: #E1306C;"></i>
                 <span>Instagram</span>
                 <button id="btnOpenInstagram" class="btn-inquiry-small" data-translate="btn_inquiry_insta">問い合わせ</button>
             </div>
+
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-discord" style="color: #5865F2;"></i>
                 <span>Discord</span>
                 <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_discord">問い合わせ</a>
             </div>
+
             <div class="support-item glass-panel">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Rockstar_Games_Logo.svg" alt="Rockstar Games">
-                <span>Rockstar Games</span>
-                <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_rockstar">問い合わせ</a>
+                <img src="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png" alt="Web Page" style="border-radius: 50%;">
+                <span data-translate="item_web">Web Page</span>
+                <div class="no-btn-spacer"></div>
             </div>
+
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-xbox" style="color: #107C10;"></i>
                 <span>Xbox</span>
                 <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_xbox">問い合わせ</a>
             </div>
+
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-playstation" style="color: #0070D1;"></i>
                 <span>PlayStation</span>
                 <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_ps">問い合わせ</a>
             </div>
+
         </div>
     </div>
 
@@ -301,33 +324,38 @@
         const TRANSLATIONS = {
             ja: {
                 support_page_title: "サポート",
+                item_web: "Webサイト",
                 insta_title: "Instagram 問い合わせ", insta_sub: "Instagramで問い合わせするには<br>アカウント認証が必要です。",
                 insta_btn: "認証する", insta_btn_verifying: "確認中", insta_success_btn: "Instagramを開く", insta_error_user: "ユーザーが見つかりません",
-                btn_inquiry_insta: "問い合わせ", btn_inquiry_discord: "問い合わせ", btn_inquiry_rockstar: "問い合わせ", btn_inquiry_xbox: "問い合わせ", btn_inquiry_ps: "問い合わせ"
+                btn_inquiry_insta: "問い合わせ", btn_inquiry_discord: "問い合わせ", btn_inquiry_xbox: "問い合わせ", btn_inquiry_ps: "問い合わせ"
             },
             en: {
                 support_page_title: "Support",
+                item_web: "Web Page",
                 insta_title: "Instagram Inquiry", insta_sub: "Account verification is required<br>to contact via Instagram.",
                 insta_btn: "Verify", insta_btn_verifying: "Checking", insta_success_btn: "Open Instagram", insta_error_user: "User not found",
-                btn_inquiry_insta: "Contact Us", btn_inquiry_discord: "Contact Us", btn_inquiry_rockstar: "Contact Us", btn_inquiry_xbox: "Contact Us", btn_inquiry_ps: "Contact Us"
+                btn_inquiry_insta: "Contact Us", btn_inquiry_discord: "Contact Us", btn_inquiry_xbox: "Contact Us", btn_inquiry_ps: "Contact Us"
             },
             zh: {
                 support_page_title: "支持",
+                item_web: "网站",
                 insta_title: "Instagram 咨询", insta_sub: "在Instagram上进行咨询时，<br>需要进行账号认证。",
                 insta_btn: "验证", insta_btn_verifying: "正在验证", insta_success_btn: "打开 Instagram", insta_error_user: "未找到用户",
-                btn_inquiry_insta: "联系我们", btn_inquiry_discord: "联系我们", btn_inquiry_rockstar: "联系我们", btn_inquiry_xbox: "联系我们", btn_inquiry_ps: "联系我们"
+                btn_inquiry_insta: "联系我们", btn_inquiry_discord: "联系我们", btn_inquiry_xbox: "联系我们", btn_inquiry_ps: "联系我们"
             },
             ko: {
                 support_page_title: "기술협조",
+                item_web: "웹 사이트",
                 insta_title: "Instagram 문의", insta_sub: "Instagram에서 문의하려면<br>계정 인증이 필요합니다.",
                 insta_btn: "확인", insta_btn_verifying: "검토중", insta_success_btn: "인스타그램 열기", insta_error_user: "사용자를 찾을 수 없습니다",
-                btn_inquiry_insta: "질문", btn_inquiry_discord: "질문", btn_inquiry_rockstar: "질문", btn_inquiry_xbox: "질문", btn_inquiry_ps: "질문"
+                btn_inquiry_insta: "질문", btn_inquiry_discord: "질문", btn_inquiry_xbox: "질문", btn_inquiry_ps: "질문"
             },
             ru: {
                 support_page_title: "Поддержка",
+                item_web: "Веб-сайт",
                 insta_title: "Instagram Запрос", insta_sub: "Для связи через Instagram<br>требуется проверка аккаунта.",
                 insta_btn: "Проверить", insta_btn_verifying: "Проверка", insta_success_btn: "Открыть Instagram", insta_error_user: "Пользователь не найден",
-                btn_inquiry_insta: "Связаться", btn_inquiry_discord: "Связаться", btn_inquiry_rockstar: "Связаться", btn_inquiry_xbox: "Связаться", btn_inquiry_ps: "Связаться"
+                btn_inquiry_insta: "Связаться", btn_inquiry_discord: "Связаться", btn_inquiry_xbox: "Связаться", btn_inquiry_ps: "Связаться"
             }
         };
 
@@ -338,7 +366,6 @@
                 const key = el.getAttribute('data-translate');
                 if(t[key]) el.innerHTML = t[key];
             });
-            // セレクトボックスの値を更新
             const switcher = document.getElementById('languageSwitcher');
             if(switcher) switcher.value = CURRENT_LANG;
         }
@@ -405,7 +432,6 @@
                 } else {
                     statusContainer.innerHTML = `<div class="error-msg"><i data-lucide="alert-circle" size="16"></i> ${data.message || "Error"}</div>`;
                     lucide.createIcons();
-                    // リセット
                     instaInput.disabled = false;
                     instaConfirm.disabled = false;
                     const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS['en'];
