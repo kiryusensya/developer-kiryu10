@@ -12,7 +12,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* 基本設定 */
+        /* =========================================
+           基本設定 (index.htmlと統一)
+           ========================================= */
         :root {
             --primary-color: #8407de; 
             --hover-blue: #3b82f6; 
@@ -62,9 +64,15 @@
             background: var(--hover-blue); transform: scale(1.05);
         }
 
-        /* ヘッダー */
+        /* ヘッダー設定 (index.htmlと完全に一致させる) */
         header {
-            width: 100%; max-width: 1200px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+            width: 100%; 
+            max-width: 1200px; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: space-between; /* ロゴ左、ボタン右 */
+            align-items: center; 
+            margin-bottom: 40px; /* index.htmlの余白感に合わせる */
         }
         .logo { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
 
@@ -94,8 +102,21 @@
         }
         .btn-back:hover { background: rgba(255,255,255,0.2); }
 
-        /* メインコンテナ */
-        .container { width: 100%; max-width: 1000px; padding: 0 20px; flex: 1; display: flex; flex-direction: column; align-items: center; }
+        /* メインコンテナ設定 (★上詰め配置に変更) */
+        .container { 
+            width: 100%; 
+            max-width: 1000px; 
+            padding: 0 20px; 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            
+            /* 中央揃えをやめて上詰めにし、余白で位置調整 */
+            justify-content: flex-start; 
+            padding-top: 40px; /* ヘッダー下の余白調整 */
+        }
+        
         .page-title { font-size: 32px; font-weight: bold; margin-bottom: 30px; text-align: center; }
 
         /* サポートグリッド */
@@ -127,7 +148,7 @@
             box-shadow: 0 0 10px rgba(132, 7, 222, 0.5);
         }
 
-        /* Instagramモーダル用 */
+        /* Instagramモーダル */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
@@ -152,14 +173,22 @@
         .cyber-spinner { width: 16px; height: 16px; border: 2px solid transparent; border-top-color: #00f7ff; border-radius: 50%; animation: spin 1s linear infinite; display:inline-block; margin-right:5px;}
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* フッター */
+        /* フッター (★index.htmlと統一) */
         footer { 
-            margin-top: auto; padding: 20px; color: var(--text-muted); text-align: center; font-size: 13px;
-            position: relative; /* 言語選択の位置合わせ用 */
-            display: flex; justify-content: center; align-items: center; min-height: 80px;
+            width: 100%;
+            padding: 20px; 
+            color: var(--text-muted); 
+            text-align: center; 
+            font-size: 13px;
+            position: relative; /* 絶対配置の基準点 */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 80px;
+            margin-top: auto;
         }
 
-        /* 言語選択メニュー */
+        /* 言語選択メニュー (★右下固定) */
         .lang-select {
             background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: white;
             padding: 10px 20px; border-radius: 30px; outline: none; cursor: pointer;
@@ -179,7 +208,7 @@
             .status-text { display: none; }
             .status-badge { padding: 8px; border-radius: 50%; }
 
-            /* フッター調整 (スマホでは縦並び) */
+            /* スマホでは縦並び・言語選択も自然な配置に */
             footer { flex-direction: column; justify-content: center; gap: 10px; padding-bottom: 30px; }
             .lang-select { position: static; align-self: flex-end; margin-right: 10px; }
         }
