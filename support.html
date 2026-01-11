@@ -55,11 +55,67 @@
             background: var(--hover-blue); transform: scale(1.05);
         }
 
-        /* ヘッダー */
-        header {
-            width: 100%; max-width: 1200px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+       <header>
+        <a href="/" class="logo"><i data-lucide="user-round" style="color: #8407de;"></i>kiryu-sensya</a>
+        
+        <div class="status-badge" id="serviceStatus">
+            <span class="status-indicator"></span>
+            <span class="status-text">All Systems Operational</span>
+        </div>
+
+        <a href="/" class="btn-back"><i data-lucide="arrow-left"></i> Home</a>
+    </header>
+
+        /* --- サービスステータス用スタイル --- */
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            transition: 0.3s;
+            /* 画面が狭いときは非表示にするか、小さくする設定 */
         }
-        .logo { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
+        
+        /* 点滅するドット */
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-green); /* 緑色 */
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-green);
+            animation: pulse-status 2s infinite ease-in-out;
+        }
+
+        /* 異常時の赤色用クラス (JSで切り替える場合用) */
+        .status-badge.error .status-indicator {
+            background-color: var(--neon-red);
+            box-shadow: 0 0 8px var(--neon-red);
+            animation: pulse-error 2s infinite ease-in-out;
+        }
+
+        /* アニメーション定義 */
+        @keyframes pulse-status {
+            0% { opacity: 1; box-shadow: 0 0 5px var(--neon-green); }
+            50% { opacity: 0.5; box-shadow: 0 0 15px var(--neon-green); }
+            100% { opacity: 1; box-shadow: 0 0 5px var(--neon-green); }
+        }
+        @keyframes pulse-error {
+            0% { opacity: 1; box-shadow: 0 0 5px var(--neon-red); }
+            50% { opacity: 0.5; box-shadow: 0 0 15px var(--neon-red); }
+            100% { opacity: 1; box-shadow: 0 0 5px var(--neon-red); }
+        }
+
+        /* スマホ対応: 画面が狭いときはテキストを消してドットだけにする */
+        @media (max-width: 600px) {
+            .status-text { display: none; }
+            .status-badge { padding: 8px; border-radius: 50%; }
+        }
         
         /* 戻るボタン */
         .btn-back {
@@ -298,6 +354,38 @@
                 instaConfirm.disabled = false;
                 instaConfirm.textContent = "Verify";
             }
+
+            onst STATUS_API_URL = "/api/proxy";
+
+            async function updateServiceStatus() {
+    const badge = document.getElementById('serviceStatus');
+    const text = badge.querySelector('.status-text');
+
+    try {
+        const response = await fetch(STATUS_API_URL);
+        const data = await response.json();
+
+        if (data.status === "Operational") {
+            // 正常時
+            badge.classList.remove('error');
+            text.textContent = "All Systems Operational";
+        } else {
+            // メンテナンス・異常時
+            badge.classList.add('error');
+            text.textContent = "System Maintenance";
+        }
+    } catch (error) {
+        console.error("Status check failed:", error);
+        // 通信エラー時も一応エラー表示にする
+        badge.classList.add('error');
+        text.textContent = "Status Check Failed";
+    }
+}
+
+   // ページ読み込み時に実行
+updateServiceStatus() ;
+            // 1分ごとに自動更新したい場合は以下を追加
+         // setInterval(updateServiceStatus, 60000);
         });
     </script>
 </body>
