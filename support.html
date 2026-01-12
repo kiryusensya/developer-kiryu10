@@ -66,18 +66,13 @@
 
         /* ヘッダー設定 */
         header {
-            width: 100%; 
-            max-width: 1200px; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: space-between;
-            align-items: center; 
-            /* ヘッダー下の余白を少し減らす */
+            width: 100%; max-width: 1200px; padding: 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
             margin-bottom: 10px;
         }
         .logo { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
 
-        /* サービスステータス */
+        /* サービスステータス (ヘッダー用) */
         .status-badge {
             display: flex; align-items: center; gap: 8px; padding: 8px 16px;
             background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.15);
@@ -105,19 +100,9 @@
 
         /* メインコンテナ */
         .container { 
-            width: 100%; 
-            max-width: 1000px; 
-            padding: 0 20px; 
-            flex: 1; /* 余白を埋める */
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            
-            /* ★ここを変更: コンテンツを縦方向中央に配置 */
-            justify-content: center;
-            
-            /* ★少し上に寄せるための調整（下の余白を多くして重心を上げる） */
-            padding-bottom: 80px; 
+            width: 100%; max-width: 1000px; padding: 0 20px; 
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding-bottom: 80px; 
         }
         
         .page-title { font-size: 32px; font-weight: bold; margin-bottom: 30px; text-align: center; }
@@ -131,7 +116,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: space-between;
             padding: 30px 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
             border-radius: 24px; color: white; transition: 0.3s;
-            height: 280px; 
+            height: 320px; /* ステータス追加分高さを調整 */
             text-align: center;
             min-width: 160px; scroll-snap-align: center;
         }
@@ -141,16 +126,39 @@
         }
         /* アイコン画像 */
         .support-item i, .support-item img { 
-            font-size: 48px; 
-            margin-bottom: 15px; 
-            width: 48px; 
-            height: 48px; 
-            object-fit: contain; 
+            font-size: 48px; margin-bottom: 10px; 
+            width: 48px; height: 48px; object-fit: contain; 
         }
-        .support-item span { font-size: 16px; font-weight: bold; margin-bottom: auto; }
+        .support-item span { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+
+        /* ▼ 新規追加: ユーザーIDのスタイル ▼ */
+        .user-id {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: monospace; /* IDっぽく等幅フォント */
+            margin-bottom: auto; /* 余白自動調整 */
+            letter-spacing: 0.5px;
+        }
+
+        /* ▼ 新規追加: 個別ステータス表示のスタイル ▼ */
+        .platform-status {
+            display: flex; align-items: center; justify-content: center;
+            gap: 6px; font-size: 12px; margin-bottom: 15px; 
+            padding: 6px 14px; border-radius: 20px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .status-dot-small {
+            width: 8px; height: 8px; border-radius: 50%;
+            background-color: #555; /* デフォルトグレー */
+        }
+        /* ステータスの色定義 */
+        .status-green { background-color: var(--neon-green); box-shadow: 0 0 6px var(--neon-green); }
+        .status-red { background-color: var(--neon-red); box-shadow: 0 0 6px var(--neon-red); }
+        .status-yellow { background-color: #ffcc00; box-shadow: 0 0 6px #ffcc00; }
 
         .btn-inquiry-small {
-            margin-top: 15px; display: inline-block; padding: 10px 20px; border-radius: 30px;
+            margin-top: 5px; display: inline-block; padding: 10px 20px; border-radius: 30px;
             background: rgba(255,255,255,0.1); color: white; text-decoration: none;
             font-size: 13px; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);
             transition: all 0.2s; width: 100%; max-width: 120px; cursor: pointer; text-align: center;
@@ -161,10 +169,7 @@
         }
         
         /* ボタンなし用スペーサー */
-        .no-btn-spacer {
-            height: 40px; 
-            width: 100%;
-        }
+        .no-btn-spacer { height: 40px; width: 100%; }
 
         /* Instagramモーダル */
         .modal-overlay {
@@ -193,17 +198,9 @@
 
         /* フッター */
         footer { 
-            width: 100%;
-            padding: 20px; 
-            color: var(--text-muted); 
-            text-align: center; 
-            font-size: 13px;
-            position: relative;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 80px;
-            /* margin-top: auto; はflexで下部に配置されるため、ここは自然な配置に任せる */
+            width: 100%; padding: 20px; color: var(--text-muted); 
+            text-align: center; font-size: 13px; position: relative;
+            display: flex; justify-content: center; align-items: center; min-height: 80px;
         }
 
         /* 言語選択メニュー */
@@ -225,7 +222,6 @@
             }
             .status-text { display: none; }
             .status-badge { padding: 8px; border-radius: 50%; }
-
             footer { flex-direction: column; justify-content: center; gap: 10px; padding-bottom: 30px; }
             .lang-select { position: static; align-self: flex-end; margin-right: 10px; }
         }
@@ -238,7 +234,7 @@
         
         <div class="status-badge" id="serviceStatus">
             <span class="status-indicator"></span>
-            <span class="status-text">All Systems Operational</span>
+            <span class="status-text">Checking Status...</span>
         </div>
 
         <a href="/" class="btn-back"><i data-lucide="arrow-left"></i> Home</a>
@@ -252,30 +248,55 @@
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-instagram" style="color: #E1306C;"></i>
                 <span>Instagram</span>
+                <div class="user-id">@_.k__yu.10</div>
+                <div class="platform-status" id="status-Instagram">
+                    <span class="status-dot-small"></span>
+                    <span class="status-val">Loading...</span>
+                </div>
                 <button id="btnOpenInstagram" class="btn-inquiry-small" data-translate="btn_inquiry_insta">問い合わせ</button>
             </div>
 
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-discord" style="color: #5865F2;"></i>
                 <span>Discord</span>
+                <div class="user-id">kiryu_server</div>
+                <div class="platform-status" id="status-Discord">
+                    <span class="status-dot-small"></span>
+                    <span class="status-val">Loading...</span>
+                </div>
                 <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_discord">問い合わせ</a>
             </div>
 
             <div class="support-item glass-panel">
                 <img src="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png" alt="Web Page" style="border-radius: 50%;">
                 <span data-translate="item_web">Web Page</span>
+                <div class="user-id">kiryu10.vercel.app</div>
+                <div class="platform-status" id="status-System">
+                    <span class="status-dot-small"></span>
+                    <span class="status-val">Loading...</span>
+                </div>
                 <div class="no-btn-spacer"></div>
             </div>
 
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-xbox" style="color: #107C10;"></i>
                 <span>Xbox</span>
+                <div class="user-id">Gamertag_Here</div>
+                <div class="platform-status" id="status-Xbox">
+                    <span class="status-dot-small"></span>
+                    <span class="status-val">Loading...</span>
+                </div>
                 <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_xbox">問い合わせ</a>
             </div>
 
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-playstation" style="color: #0070D1;"></i>
                 <span>PlayStation</span>
+                <div class="user-id">PSN_ID_Here</div>
+                <div class="platform-status" id="status-PlayStation">
+                    <span class="status-dot-small"></span>
+                    <span class="status-val">Loading...</span>
+                </div>
                 <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_ps">問い合わせ</a>
             </div>
 
@@ -316,7 +337,11 @@
 
     <script>
         lucide.createIcons();
-        const GAS_API_URL = "/api/proxy";
+        
+        // ★★★ ここにご自身のGASウェブアプリのURLを入力してください ★★★
+        const GAS_API_URL = "YOUR_GAS_DEPLOYMENT_URL"; 
+        // 例: "https://script.google.com/macros/s/xxxxxxxxx/exec"
+
         let CURRENT_LANG = localStorage.getItem('user_lang') || "ja";
         document.documentElement.lang = CURRENT_LANG;
 
@@ -446,21 +471,60 @@
             }
         });
 
-        // サービスステータスチェック機能
+        // サービスステータスチェック機能 (全体 + 個別ID下)
         async function updateServiceStatus() {
             const badge = document.getElementById('serviceStatus');
             const text = badge.querySelector('.status-text');
 
             try {
+                // GASからステータス一覧を取得
                 const response = await fetch(`${GAS_API_URL}?type=service_status`);
                 const data = await response.json();
 
-                if (data.status === "Operational") {
-                    badge.classList.remove('error');
-                    text.textContent = "All Systems Operational";
-                } else {
-                    badge.classList.add('error');
-                    text.textContent = "System Maintenance";
+                if (data.success && data.statuses) {
+                    const statuses = data.statuses;
+
+                    // 1. ヘッダーの全体ステータス (System) の反映
+                    const sysStatus = statuses["System"] || "Operational";
+                    if (sysStatus === "Operational" || sysStatus === "Available") {
+                        badge.classList.remove('error');
+                        text.textContent = "All Systems Operational";
+                    } else {
+                        badge.classList.add('error');
+                        text.textContent = sysStatus; 
+                    }
+
+                    // 2. 個別ステータスの反映関数
+                    const updatePlatform = (id, status) => {
+                        const el = document.getElementById(id);
+                        if (!el) return;
+                        const dot = el.querySelector('.status-dot-small');
+                        const val = el.querySelector('.status-val');
+                        
+                        // テキスト更新
+                        val.textContent = status;
+
+                        // 色クラスのリセット
+                        dot.className = 'status-dot-small';
+
+                        // ステータスに応じた色分けロジック
+                        const s = String(status).toLowerCase();
+                        if (s === 'available' || s === 'online' || s === 'operational') {
+                            dot.classList.add('status-green');
+                        } else if (s === 'busy' || s === 'slow') {
+                            dot.classList.add('status-yellow');
+                        } else {
+                            dot.classList.add('status-red'); // Offline, Maintenanceなど
+                        }
+                    };
+
+                    // 各プラットフォームへ反映 (HTMLのIDとスプレッドシートのA列名を一致させる)
+                    updatePlatform('status-System', statuses["System"] || "Unknown");
+                    updatePlatform('status-Instagram', statuses["Instagram"] || "Offline");
+                    updatePlatform('status-Discord', statuses["Discord"] || "Offline");
+                    updatePlatform('status-Xbox', statuses["Xbox"] || "Offline");
+                    updatePlatform('status-PlayStation', statuses["PlayStation"] || "Offline");
+
                 }
             } catch (error) {
                 console.error("Status check failed:", error);
