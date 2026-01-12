@@ -114,7 +114,9 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
         .support-item {
-            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            display: flex; flex-direction: column; align-items: center; 
+            /* ★ここを変更: space-betweenからflex-startに変更し、上詰めで配置 */
+            justify-content: flex-start;
             padding: 20px 15px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
             border-radius: 20px; color: white; transition: 0.3s;
             height: 260px;
@@ -137,7 +139,8 @@
             font-size: 12px;
             color: rgba(255, 255, 255, 0.6);
             font-weight: 500;
-            margin-bottom: auto; 
+            /* ★ここを変更: autoをやめて固定値(15px)にすることで、ステータス位置を揃える */
+            margin-bottom: 15px; 
             letter-spacing: 0.5px;
         }
 
@@ -158,7 +161,7 @@
         .status-red { background-color: var(--neon-red); box-shadow: 0 0 5px var(--neon-red); }
         .status-yellow { background-color: #ffcc00; box-shadow: 0 0 5px #ffcc00; }
 
-        /* ローディングアニメーション (. -> .. -> ...) */
+        /* ローディングアニメーション */
         .loading-animate::after {
             content: '';
             animation: dots 1.5s steps(4, end) infinite;
@@ -173,8 +176,13 @@
             80%, 100% { content: '...'; }
         }
 
+        /* ★ここを変更: ボタンとスペーサーを一番下に配置 */
+        .btn-inquiry-small, .no-btn-spacer {
+            margin-top: auto;
+        }
+
         .btn-inquiry-small {
-            margin-top: 5px; display: inline-block; padding: 8px 18px; border-radius: 30px;
+            display: inline-block; padding: 8px 18px; border-radius: 30px;
             background: rgba(255,255,255,0.1); color: white; text-decoration: none;
             font-size: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);
             transition: all 0.2s; width: 100%; max-width: 110px; cursor: pointer; text-align: center;
@@ -253,7 +261,7 @@
             <span class="status-text loading-animate" data-translate="status_checking">Checking Status</span>
         </div>
 
-        <a href="/" class="btn-back"><i data-lucide="arrow-left"></i>Home</a>
+        <a href="/" class="btn-back"><i data-lucide="arrow-left"></i> Home</a>
     </header>
 
     <div class="container">
@@ -308,12 +316,12 @@
             <div class="support-item glass-panel">
                 <i class="fa-brands fa-playstation" style="color: #0070D1;"></i>
                 <span>PlayStation</span>
-                <div class="user-id">kiryu-sensya</div>
+                <div class="user-id">kiryu_sensya</div>
                 <div class="platform-status" id="status-PlayStation">
                     <span class="status-dot-small"></span>
                     <span class="status-val loading-animate" data-translate="status_loading">Loading</span>
                 </div>
-                <a href="https://profile.playstation.com/kiryu-sensya" class="btn-inquiry-small" data-translate="btn_inquiry_ps">問い合わせ</a>
+                <a href="#" class="btn-inquiry-small" data-translate="btn_inquiry_ps">問い合わせ</a>
             </div>
 
         </div>
@@ -335,7 +343,7 @@
             <div class="modal-close" id="instagramCloseBtn"><i data-lucide="x"></i></div>
             
             <h2 class="modal-title" style="margin-bottom:10px; font-size:24px; font-weight:bold;" data-translate="insta_title">Instagram Inquiry</h2>
-            <p class="modal-sub" style="margin-bottom:30px; color:rgba(255,255,255,0.7);" data-translate="insta_sub">ユーザーID(@xxx)を入力してください</p>
+            <p class="modal-sub" style="margin-bottom:30px; color:rgba(255,255,255,0.7);" data-translate="insta_sub">ユーザーネームを入力してください</p>
 
             <div id="instaInputPhase">
                 <input type="text" id="instaInput" class="code-input" placeholder="@username" autocomplete="off" style="text-transform:none;">
@@ -366,7 +374,7 @@
         const TRANSLATIONS = {
             ja: {
                 support_page_title: "サポート",
-                item_web: "Webサイト",
+                item_web: "Web",
                 insta_title: "Instagram 問い合わせ", insta_sub: "Instagramで問い合わせするには<br>アカウント認証が必要です。",
                 insta_btn: "認証する", insta_btn_verifying: "確認中", insta_success_btn: "Instagramを開く", insta_error_user: "ユーザーが見つかりません",
                 btn_inquiry_insta: "問い合わせ", btn_inquiry_discord: "問い合わせ", btn_inquiry_xbox: "問い合わせ", btn_inquiry_ps: "問い合わせ",
@@ -538,7 +546,6 @@
 
             const statuses = currentStatusData.statuses;
 
-            // 1. 全体ステータス (ヘッダー)
             const sysStatus = statuses["System"] || "Operational";
             
             if (sysStatus === "Operational" || sysStatus === "Available") {
@@ -547,7 +554,6 @@
                 badge.classList.add('error');
             }
 
-            // ★ここでローディングアニメーションのクラスを削除
             text.classList.remove('loading-animate');
             text.removeAttribute('data-translate');
             
@@ -557,7 +563,6 @@
                 text.textContent = "Checked just now";
             }
 
-            // 2. 個別ステータス反映
             const updatePlatform = (id, rawStatus) => {
                 const el = document.getElementById(id);
                 if (!el) return;
