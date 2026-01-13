@@ -1894,9 +1894,26 @@
         card.animate([ { transform: 'translateX(0)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' } ], { duration: 300 });
     }
 
+    // メイン表示関数
     function showMainContent() {
         mainContainer.classList.add('logged-in');
         lucide.createIcons();
+
+        // ★追加: URLパラメータに 'code' があるかチェックして自動実行
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlCode = urlParams.get('code');
+
+        if (urlCode) {
+            // 少しだけ待ってから実行（アニメーションやDOMの準備待ち）
+            setTimeout(() => {
+                // 1. モーダルを開く
+                openAuthModal();
+                // 2. 入力欄にコードを入れる
+                codeInput.value = urlCode;
+                // 3. 認証を実行する
+                performAuth(urlCode);
+            }, 800); // 0.8秒後に実行
+        }
     }
 
     document.getElementById('languageSwitcher').addEventListener('change', (e) => {
