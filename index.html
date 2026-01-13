@@ -1908,10 +1908,22 @@
             setTimeout(() => {
                 // 1. モーダルを開く
                 openAuthModal();
-                // 2. 入力欄にコードを入れる
-                codeInput.value = urlCode;
-                // 3. 認証を実行する
-                performAuth(urlCode);
+
+                // 2. ★修正: 手入力と同じ整形ロジックを通す
+                // (小文字を大文字にし、不要な文字を消し、ハイフンを入れる)
+                let val = urlCode.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                let chunkSize = (val.length >= 25) ? 5 : 4;
+                let formatted = '';
+                for(let i=0; i<val.length; i++){
+                    if(i>0 && i % chunkSize === 0) formatted += '-';
+                    formatted += val[i];
+                }
+
+                // 3. 整形されたコードを入力欄にセット
+                codeInput.value = formatted;
+
+                // 4. 整形されたコードで認証を実行する
+                performAuth(formatted);
             }, 800); // 0.8秒後に実行
         }
     }
