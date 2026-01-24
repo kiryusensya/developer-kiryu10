@@ -1390,7 +1390,7 @@ function updateAccountUI() {
         const li = document.createElement('li');
         li.className = 'lib-item-card';
 
-        // ★修正: アイコン名をアイテムから取得（なければ download）
+        // ★アイコン設定
         const iconName = item.icon || 'download';
 
         const img = item.imageUrl && item.imageUrl.startsWith('http') 
@@ -1413,13 +1413,6 @@ function updateAccountUI() {
       });
       lucide.createIcons();
     }
-  } else {
-    els.loggedOutView.style.display = 'block';
-    els.loggedInView.style.display = 'none';
-    const mode = document.querySelector('.auth-tab.active')?.dataset.tab || 'login';
-    els.btnAuthAction.textContent = mode === 'login' ? t.btn_login_action : t.btn_signup_action;
-  }
-}
   } else {
     els.loggedOutView.style.display = 'block';
     els.loggedInView.style.display = 'none';
