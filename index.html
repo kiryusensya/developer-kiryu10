@@ -412,7 +412,17 @@ header { padding: 24px 0; display: flex; justify-content: space-between; align-i
 footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font-size: 12px; }
 [data-theme="dark"] footer { color: #888; }
 
-.loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(128,128,128,0.2); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loading-spinner {
+  display: inline-block;  /* ★これを追加！ */
+  vertical-align: middle; /* ★ついでにこれも入れると文字と高さが揃って綺麗になります */
+  width: 24px;            /* 30pxだと少し大きいかもしれないので調整（お好みで） */
+  height: 24px;
+  border: 3px solid rgba(128,128,128,0.2);
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;      /* 文字との間隔を空ける */
+}
 @keyframes spin { to{transform: rotate(360deg);} }
 
 /* --- ACCOUNT DROPDOWN STYLES (NEW) --- */
