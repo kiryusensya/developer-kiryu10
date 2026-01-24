@@ -45,7 +45,7 @@
   --rgl-green: #04CF22;
   
   /* Additional Variables for Account System */
-  --dropdown-bg: rgba(255, 255, 255, 0.9);
+  --dropdown-bg: rgba(255, 255, 255, 0.95);
   --modal-bg-standard: #FFFFFF;
 }
 :root:lang(ja) { --font-stack: 'HarmonyOS Sans', 'Noto Sans JP', sans-serif; }
@@ -68,7 +68,7 @@
   --shadow-soft: 0 15px 40px rgba(0,0,0,0.4);
   
   /* Additional Variables for Account System */
-  --dropdown-bg: rgba(30, 30, 30, 0.95);
+  --dropdown-bg: rgba(20, 20, 20, 0.98);
   --modal-bg-standard: #1A1A1A;
 }
 
@@ -412,14 +412,6 @@ header { padding: 24px 0; display: flex; justify-content: space-between; align-i
 footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font-size: 12px; }
 [data-theme="dark"] footer { color: #888; }
 
-.lang-fab { position: fixed; bottom: 30px; right: 30px; background: var(--modal-text-main); color: var(--bg-color); padding: 12px 20px; border-radius: 30px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; gap: 8px; align-items: center; z-index: 50; transition: 0.3s; }
-[data-theme="dark"] .lang-fab { background: #fff; color: #000; }
-.lang-list { position: fixed; bottom: 90px; right: 30px; background: var(--card-bg); backdrop-filter: blur(20px); padding: 10px; border-radius: 20px; list-style: none; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 49; }
-.lang-list.open { display: block; animation: popIn 0.3s; }
-.lang-list li { padding: 10px 20px; cursor: pointer; border-radius: 12px; color: var(--modal-text-main); font-size: 14px; font-family: var(--font-stack); }
-[data-theme="dark"] .lang-list li { color: #fff; }
-@keyframes popIn { from{opacity:0; transform:scale(0.8);} to{opacity:1; transform:scale(1);} }
-
 .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(128,128,128,0.2); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to{transform: rotate(360deg);} }
 
@@ -441,7 +433,8 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   pointer-events: none;
   transition: all 0.3s var(--spring-ease);
   transform-origin: top right;
-  text-align: left; /* Ensure text alignment */
+  text-align: left; 
+  display: flex; flex-direction: column;
 }
 .account-dropdown.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 
@@ -451,11 +444,12 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 }
 
 /* Header inside Dropdown */
-.account-mini-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(128,128,128,0.1); }
-.mini-avatar { width: 48px; height: 48px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
-.mini-user-info { display: flex; flex-direction: column; }
-.label-logged-in { font-size: 10px; font-weight: 700; opacity: 0.6; margin-bottom: 2px; }
-.mini-user-id { font-size: 16px; font-weight: 800; color: var(--modal-text-main); font-family: monospace; letter-spacing: -0.5px; }
+.account-mini-header { 
+  display: flex; flex-direction: column; align-items: flex-start;
+  margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(128,128,128,0.1); 
+}
+.label-logged-in { font-size: 10px; font-weight: 700; opacity: 0.6; margin-bottom: 2px; text-transform: uppercase; }
+.mini-user-id { font-size: 16px; font-weight: 800; color: var(--modal-text-main); font-family: monospace; letter-spacing: -0.5px; word-break: break-all;}
 
 /* Menu List inside Dropdown */
 .menu-list { display: flex; flex-direction: column; gap: 4px; }
@@ -478,6 +472,20 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 .form-label { font-size: 11px; font-weight: 700; margin-bottom: 4px; display: block; opacity: 0.7; color: var(--modal-text-main); font-family: var(--font-stack); }
 .form-input { width: 100%; height: 44px; border-radius: 10px; border: 1px solid rgba(128,128,128,0.2); background: transparent; padding: 0 12px; color: var(--modal-text-main); font-family: inherit; outline: none; font-size: 14px; font-weight: 500; }
 .form-input:focus { border-color: var(--primary); background: rgba(128,128,128,0.05); }
+
+/* --- Integrated Language Selector (Fixed Bottom Right) --- */
+.lang-fab { position: fixed; bottom: 30px; right: 30px; background: var(--modal-text-main); color: var(--bg-color); padding: 12px 20px; border-radius: 30px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; gap: 8px; align-items: center; z-index: 50; transition: 0.3s; }
+[data-theme="dark"] .lang-fab { background: #fff; color: #000; }
+.lang-list { position: fixed; bottom: 90px; right: 30px; background: var(--card-bg); backdrop-filter: blur(20px); padding: 10px; border-radius: 20px; list-style: none; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 49; }
+.lang-list.open { display: block; animation: popIn 0.3s; }
+.lang-list li { padding: 10px 20px; cursor: pointer; border-radius: 12px; color: var(--modal-text-main); font-size: 14px; font-family: var(--font-stack); }
+[data-theme="dark"] .lang-list li { color: #fff; }
+
+/* スマホ用調整: フッターと重ならないように位置を上げる */
+@media (max-width: 600px) {
+  .lang-fab { bottom: 80px; right: 20px; }
+  .lang-list { bottom: 140px; right: 20px; }
+}
 
 /* --- LIBRARY MODAL (Center, Large) --- */
 #libraryModal .modal-sheet {
@@ -574,11 +582,10 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
       <div id="accountDropdown" class="account-dropdown">
         <div id="loggedInView" style="display:none;">
           <div class="account-mini-header">
-            <div class="mini-avatar"><i data-lucide="user"></i></div>
-            <div class="mini-user-info">
-              <span class="label-logged-in" data-translate="label_logged_in">USER ID</span>
-              <span class="mini-user-id" id="displayUserId">-</span>
-            </div>
+            <span class="label-logged-in" data-translate="label_logged_in">USER ID</span>
+            <span class="mini-user-id" id="displayUserId" style="margin-bottom:10px;">-</span>
+            <span class="label-logged-in" style="opacity:0.5;">Account</span>
+            <span class="mini-user-id" id="displayUserEmail" style="font-size:14px; font-weight:600;">-</span>
           </div>
           <div class="menu-list">
              <button class="menu-btn" id="btnShowLibrary">
@@ -673,18 +680,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   </div>
 </div>
 
-<div class="custom-lang-wrapper">
-  <div class="lang-fab" id="langTrigger"><i data-lucide="globe" size="18"></i> <span id="currentLangLabel">日本語</span></div>
-  <ul class="lang-list" id="langMenu">
-    <li class="lang-option" data-value="ja">日本語</li>
-    <li class="lang-option" data-value="en">English</li>
-    <li class="lang-option" data-value="zh">简体中文</li>
-    <li class="lang-option" data-value="zh-TW">繁體中文</li>
-    <li class="lang-option" data-value="ko">한국어</li>
-    <li class="lang-option" data-value="ru">Русский</li>
-  </ul>
-</div>
-
 <div id="langSwitchingOverlay" style="position:fixed; inset:0; background:var(--bg-color); z-index:9999; display:none; align-items:center; justify-content:center;">
   <div class="loading-spinner"></div>
 </div>
@@ -737,6 +732,18 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   </div>
 </div>
 
+<div class="custom-lang-wrapper">
+  <div class="lang-fab" id="langTrigger"><i data-lucide="globe" size="18"></i> <span id="currentLangLabel">日本語</span></div>
+  <ul class="lang-list" id="langMenu">
+    <li class="lang-option" data-value="ja">日本語</li>
+    <li class="lang-option" data-value="en">English</li>
+    <li class="lang-option" data-value="zh">简体中文</li>
+    <li class="lang-option" data-value="zh-TW">繁體中文</li>
+    <li class="lang-option" data-value="ko">한국어</li>
+    <li class="lang-option" data-value="ru">Русский</li>
+  </ul>
+</div>
+
 <script>
 lucide.createIcons();
 // ★★★ ここにデプロイしたGASのURLを貼り付けてください ★★★
@@ -755,7 +762,7 @@ const TRANSLATIONS={
   msg_verifying:"確認中",msg_success_btn:"成功",
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました",
   success_badge:"コードが認証されました。",
-  success_title_preview:"コンテンツの確認", success_title_final:"認証成功",
+  success_title_preview:"コンテンツの確認", success_title_final:"認証成功!!",
   btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード",news_title:"最新情報",news_label:"履歴",news_loading:"更新を確認中",
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント",
@@ -773,7 +780,7 @@ const TRANSLATIONS={
   msg_verifying:"Checking",msg_success_btn:"Success",
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred",
   success_badge:"Code Verified",
-  success_title_preview:"Confirm Content", success_title_final:"Activation Successful",
+  success_title_preview:"Confirm Content", success_title_final:"Activation Successful!!",
   btn_close:"Close",btn_continue:"Confirm",btn_download:"Download",news_title:"News",news_label:"Log",news_loading:"Checking for updates",
   footer_admin:"Enforcement Administrator",
   menu_login: "Login", menu_account: "Account",
@@ -791,7 +798,7 @@ const TRANSLATIONS={
   msg_verifying:"正在检查",msg_success_btn:"成功", 
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
   success_badge:"代码已检查",
-  success_title_preview:"确认内容", success_title_final:"激活完成",
+  success_title_preview:"确认内容", success_title_final:"激活完成!!",
   btn_close:"关闭",btn_continue:"确认",btn_download:"下载",news_title:"最新消息",news_label:"日志",news_loading:"正在检查更新", 
   footer_admin:"系统管理长",
   menu_login: "登录", menu_account: "账户",
@@ -809,7 +816,7 @@ const TRANSLATIONS={
   msg_verifying:"正在檢查",msg_success_btn:"成功", 
   msg_invalid:"該程式碼無效。",msg_used:"該程式碼已被使用。",msg_error:"錯誤", 
   success_badge:"代碼已檢查",
-  success_title_preview:"確認內容", success_title_final:"激活完成",
+  success_title_preview:"確認內容", success_title_final:"激活完成!!",
   btn_close:"關閉",btn_continue:"確認",btn_download:"下載",news_title:"最新消息",news_label:"日誌",news_loading:"正在檢查更新", 
   footer_admin:"系統管理長",
   menu_login: "登入", menu_account: "帳戶",
@@ -827,7 +834,7 @@ const TRANSLATIONS={
   msg_verifying:"확인 중",msg_success_btn:"성공", 
   msg_invalid:"잘못된 코드",msg_used:"사용된 코드",msg_error:"오류", 
   success_badge:"코드 인증됨",
-  success_title_preview:"콘텐츠 확인", success_title_final:"활성화 완료",
+  success_title_preview:"콘텐츠 확인", success_title_final:"활성화 완료!!",
   btn_close:"닫기",btn_continue:"확인",btn_download:"다운로드",news_title:"뉴스",news_label:"로그",news_loading:"로딩 중", 
   footer_admin:"시스템 관리자",
   menu_login: "로그인", menu_account: "계정",
@@ -845,7 +852,7 @@ const TRANSLATIONS={
       msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
       msg_invalid:"Неверный код",msg_used:"Использован",msg_error:"Ошибка", 
       success_badge:"Подтверждено", 
-      success_title_preview:"Проверка контента", success_title_final:"Успешно",
+      success_title_preview:"Проверка контента", success_title_final:"Успешно!!",
       btn_close:"Закрыть",btn_continue:"обмен",btn_download:"Скачать",news_title:"Новости",news_label:"Лог",news_loading:"Загрузка", 
       footer_admin:"Администратор",
       menu_login: "Вход", menu_account: "Аккаунт",
@@ -869,7 +876,7 @@ const els={
  langWrapper: gId('customLangWrapper'), langTrigger: gId('langTrigger'), langMenu: gId('langMenu'), currentLangLabel: gId('currentLangLabel'),
  // Account Dropdown
  accountDropdown: gId('accountDropdown'), openAccount: gId('btnOpenAccount'),
- loggedInView: gId('loggedInView'), loggedOutView: gId('loggedOutView'), displayUserId: gId('displayUserId'), 
+ loggedInView: gId('loggedInView'), loggedOutView: gId('loggedOutView'), displayUserId: gId('displayUserId'), displayUserEmail: gId('displayUserEmail'),
  btnLogout: gId('btnLogout'), btnShowLibrary: gId('btnShowLibrary'), 
  // Library Modal
  libraryModal: gId('libraryModal'), libCloseBtn: gId('libCloseBtn'), libraryList: gId('libraryList'),
@@ -981,7 +988,6 @@ function showMainContent(){
      }
      else { 
        // ログイン済み：直接認証を実行
-       // 自動認証時の状態不整合を防ぐため、必ずモーダルリセットを行ってから値をセットする
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
        performAuth(els.code.value); 
@@ -1218,7 +1224,8 @@ async function performAuthAction() {
     const data = await res.json();
 
     if (data.success) {
-      currentUser = { userId: data.userId, history: data.history || [] };
+      // Save email to session
+      currentUser = { userId: data.userId, email: email, history: data.history || [] };
       localStorage.setItem('user_session', JSON.stringify(currentUser));
       updateAccountUI();
       els.email.value = ""; els.pass.value = "";
@@ -1252,6 +1259,8 @@ function updateAccountUI() {
     els.loggedOutView.style.display = 'none';
     els.loggedInView.style.display = 'block';
     els.displayUserId.textContent = currentUser.userId;
+    // Set Email
+    if(els.displayUserEmail) els.displayUserEmail.textContent = currentUser.email || '-';
     
     // Generate Library List
     els.libraryList.innerHTML = "";
