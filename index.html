@@ -43,7 +43,7 @@
   --font-stack: 'HarmonyOS Sans', 'Manrope', sans-serif;
     
   --rgl-green: #04CF22;
-  
+   
   /* Additional Variables for Account System */
   --dropdown-bg: rgba(255, 255, 255, 0.95);
   --modal-bg-standard: #FFFFFF;
@@ -66,7 +66,7 @@
   --btn-close-border: #FFFFFF;
   --btn-close-text: #FFFFFF;
   --shadow-soft: 0 15px 40px rgba(0,0,0,0.4);
-  
+   
   /* Additional Variables for Account System */
   --dropdown-bg: rgba(20, 20, 20, 0.98);
   --modal-bg-standard: #1A1A1A;
@@ -702,7 +702,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     </a>
   </div>
   <footer>
-    <div><span data-translate="footer_admin">Enforcement Administrator</span>: <a href="https://developer-kiryu10.vercel.app/" target="_blank" style="color:inherit;text-decoration:none;font-weight:700;">kiryu-sensya</a></div>
+    <div><span data-translate="footer_admin" id="btnOpenAdmin" style="cursor:pointer;">Enforcement Administrator</span>: <a href="https://developer-kiryu10.vercel.app/" target="_blank" style="color:inherit;text-decoration:none;font-weight:700;">kiryu-sensya</a></div>
     <div style="opacity:0.5; margin-top:5px;">© 2019-2026 kiryu-sensya All Rights Reserved</div>
   </footer>
 </div>
@@ -720,6 +720,31 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     
     <ul id="libraryList" class="lib-list-scroll">
       </ul>
+  </div>
+</div>
+
+<div id="adminModal" class="modal-overlay">
+  <div class="modal-sheet">
+    <div style="position:absolute; top:24px; right:24px; cursor:pointer; opacity:0.6;" id="adminCloseBtn"><i data-lucide="x" size="24"></i></div>
+    <h2 style="font-size:24px; font-weight:800; margin-bottom:20px;">Admin Console</h2>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:12px; font-weight:700; display:block; margin-bottom:5px;">Admin ID</label>
+      <input type="text" id="adminUser" class="form-input" placeholder="111">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:12px; font-weight:700; display:block; margin-bottom:5px;">Admin Pass</label>
+      <input type="password" id="adminPass" class="form-input" placeholder="42A">
+    </div>
+    <div style="margin-bottom:20px; border-top:1px solid rgba(128,128,128,0.2); padding-top:20px;">
+      <label style="font-size:12px; font-weight:700; display:block; margin-bottom:5px;">Target User Email</label>
+      <div style="display:flex; gap:10px;">
+        <input type="email" id="targetUserEmail" class="form-input" placeholder="user@example.com">
+        <button id="btnAdminSearch" class="btn-primary" style="width:100px; margin-top:0;">Search</button>
+      </div>
+    </div>
+    <div id="adminResultArea" style="max-height:300px; overflow-y:auto; border:1px solid rgba(128,128,128,0.1); border-radius:12px; padding:10px;">
+      <p style="text-align:center; opacity:0.5; font-size:12px;">Results will appear here...</p>
+    </div>
   </div>
 </div>
 
@@ -923,7 +948,10 @@ const els={
  btnLogout: gId('btnLogout'), btnShowLibrary: gId('btnShowLibrary'), 
  // Library Modal
  libraryModal: gId('libraryModal'), libCloseBtn: gId('libCloseBtn'), libraryList: gId('libraryList'),
- tabs: document.querySelectorAll('.auth-tab'), email: gId('inputEmail'), pass: gId('inputPass'), btnAuthAction: gId('btnAuthAction'), authStatus: gId('authStatus')
+ tabs: document.querySelectorAll('.auth-tab'), email: gId('inputEmail'), pass: gId('inputPass'), btnAuthAction: gId('btnAuthAction'), authStatus: gId('authStatus'),
+ // Admin Modal
+ btnOpenAdmin: gId('btnOpenAdmin'), adminModal: gId('adminModal'), adminCloseBtn: gId('adminCloseBtn'),
+ adminUser: gId('adminUser'), adminPass: gId('adminPass'), targetUserEmail: gId('targetUserEmail'), btnAdminSearch: gId('btnAdminSearch'), adminResultArea: gId('adminResultArea')
 };
 
 const formatCodeInput = (val) => {
@@ -947,6 +975,12 @@ function setupEventListeners() {
   setListener(els.openNews, 'click', () => els.newsModal.classList.add('active'));
   setListener(els.closeNews, 'click', () => els.newsModal.classList.remove('active'));
   setListener(els.newsModal, 'click', (e) => { if(e.target === els.newsModal) els.newsModal.classList.remove('active'); });
+
+  // Admin Modal
+  setListener(els.btnOpenAdmin, 'click', () => els.adminModal.classList.add('active'));
+  setListener(els.adminCloseBtn, 'click', () => els.adminModal.classList.remove('active'));
+  setListener(els.adminModal, 'click', (e) => { if(e.target === els.adminModal) els.adminModal.classList.remove('active'); });
+  setListener(els.btnAdminSearch, 'click', performAdminSearch);
 
   // Auth Confirm
   setListener(els.confirm, 'click', () => performAuth(els.code.value));
@@ -974,7 +1008,7 @@ function setupEventListeners() {
     if (typeof fetchUserHistory === 'function') {
         fetchUserHistory();
     }
-  }); // 正しく閉じました
+  });
   setListener(els.libCloseBtn, 'click', () => els.libraryModal.classList.remove('active'));
   setListener(els.libraryModal, 'click', (e) => { if(e.target === els.libraryModal) els.libraryModal.classList.remove('active'); });
 
@@ -1079,7 +1113,7 @@ function updateLanguage(lang){
 async function fetchNews(){
  if(!els.newsList)return;
  const t=TRANSLATIONS[CURRENT_LANG];
- els.newsList.innerHTML=`<li style="text-align:center;opacity:0.6;padding:20px;">${t.news_loading||"Loading"}<span class="loading-dots"></span></li>`;
+ els.newsList.innerHTML=`<li style="text-align:center;opacity:0.6;padding:20px;">${t.news_loading||"Loading"}<span class="loading-spinner"></span></li>`;
  try{
  const d = await(await fetch(`${GAS_API_URL}?type=news&lang=${CURRENT_LANG}&_t=${Date.now()}`)).json();
  els.newsList.innerHTML='';
@@ -1105,7 +1139,6 @@ function resetAuthModal(){
   els.sInfoSec.style.display = 'block'; els.sProdDisplay.style.display = 'none'; 
   els.sBadge.classList.remove('visible');
   els.btnRedeem.disabled = false;
-  // 初期化時にボタンをクリーンな状態にする
   const newBtn = els.btnRedeem.cloneNode(true);
   if(els.btnRedeem.parentNode) els.btnRedeem.parentNode.replaceChild(newBtn, els.btnRedeem);
   els.btnRedeem = newBtn;
@@ -1116,10 +1149,12 @@ function resetAuthModal(){
 async function performAuth(code, mode = 'check') {
   const t = TRANSLATIONS[CURRENT_LANG];
   const thisRequestId = currentAuthRequestId;
+  // ★方法1対応: ユーザーIDを取得
+  const uId = currentUser ? currentUser.userId : "GUEST";
 
   if (mode === 'check') {
     els.code.disabled = true; els.confirm.disabled = true;
-    els.confirm.innerHTML = `${t.msg_verifying}<span class="loading-dots"></span>`;
+    els.confirm.innerHTML = `${t.msg_verifying}<span class="loading-spinner"></span>`;
     els.status.innerHTML = "";
   } else if (mode === 'redeem') {
     els.btnRedeem.disabled = true;
@@ -1127,7 +1162,8 @@ async function performAuth(code, mode = 'check') {
   }
 
   try {
-    let url = `${GAS_API_URL}?key=${encodeURIComponent(code)}&lang=${CURRENT_LANG}&mode=${mode}&_t=${Date.now()}`;
+    // URLに &userId=... を追加してログに記録
+    let url = `${GAS_API_URL}?key=${encodeURIComponent(code)}&lang=${CURRENT_LANG}&mode=${mode}&userId=${uId}&_t=${Date.now()}`;
     let d = await (await fetch(url)).json();
     
     if (thisRequestId !== currentAuthRequestId) return;
@@ -1158,8 +1194,6 @@ async function performAuth(code, mode = 'check') {
         els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
         lucide.createIcons();
         els.btnRedeem.disabled = false;
-        // リスナー追加前にクローンしているので重複登録は防げている
-        // 自動認証後の「続行」ボタンでエラーにならないよう、正しいcode変数をクロージャに閉じ込める
         els.btnRedeem.addEventListener('click', (e) => { 
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -1196,7 +1230,7 @@ async function performAuth(code, mode = 'check') {
 
 function setupPreviewUI(d, t) {
  els.sBadge.classList.remove('visible'); els.btnRedeem.style.display = 'flex'; els.btnDownload.style.display = 'none'; 
- els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';               
+ els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                
  els.sTitle.textContent = t.success_title_preview; 
  els.sProdName.textContent = d.bundleLabel; els.sNameDisp.textContent = d.message;        
  els.sExtra.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : ""; 
@@ -1264,7 +1298,7 @@ async function performAuthAction() {
   
   if (!email || !pass) { els.authStatus.textContent = "Please enter email and password."; return; }
 
-  els.btnAuthAction.disabled = true; els.btnAuthAction.innerHTML = `<span class="loading-dots"></span>`;
+  els.btnAuthAction.disabled = true; els.btnAuthAction.innerHTML = `<span class="loading-spinner"></span>`;
 
   try {
     const actionType = mode === 'login' ? 'user_login' : 'register';
@@ -1306,7 +1340,6 @@ function updateAccountUI() {
   if (currentUser) {
     els.loggedOutView.style.display = 'none';
     els.loggedInView.style.display = 'block';
-    // Remove displayUserId logic since elements removed
     if(els.displayUserEmail) els.displayUserEmail.textContent = currentUser.email || '-';
     
     // Generate Library List
@@ -1436,6 +1469,52 @@ async function refreshLibraryTitles() {
     updateAccountUI();
     // サーバーにも最新状態(タイトル等更新済み)を同期
     syncHistoryToServer();
+}
+
+// ★追加機能: 管理者検索
+async function performAdminSearch() {
+  const adUser = els.adminUser.value.trim();
+  const adPass = els.adminPass.value.trim();
+  const target = els.targetUserEmail.value.trim();
+  
+  if(!adUser || !adPass || !target) {
+    alert("Please fill all admin fields."); return;
+  }
+  
+  els.btnAdminSearch.disabled = true;
+  els.btnAdminSearch.textContent = "...";
+  els.adminResultArea.innerHTML = `<div style="text-align:center; padding:20px;"><span class="loading-spinner"></span></div>`;
+  
+  try {
+    const res = await fetch(`${GAS_API_URL}?type=admin_search&adminUser=${adUser}&adminPass=${adPass}&targetEmail=${target}&_t=${Date.now()}`);
+    const d = await res.json();
+    
+    if(d.success) {
+      if(!d.history || d.history.length === 0) {
+        els.adminResultArea.innerHTML = `<p style="text-align:center; opacity:0.6;">No history found for this user.</p>`;
+      } else {
+        let html = `<div style="margin-bottom:10px; font-weight:700; font-size:12px;">User ID: ${d.userId}</div>`;
+        html += `<ul style="list-style:none; padding:0;">`;
+        d.history.forEach(h => {
+          html += `
+            <li style="background:rgba(128,128,128,0.05); padding:10px; border-radius:8px; margin-bottom:5px; font-size:13px;">
+              <div style="font-weight:700;">${h.title}</div>
+              <div style="opacity:0.6; font-size:11px;">${h.code} / ${h.date}</div>
+            </li>
+          `;
+        });
+        html += `</ul>`;
+        els.adminResultArea.innerHTML = html;
+      }
+    } else {
+      els.adminResultArea.innerHTML = `<p style="color:red; text-align:center;">${d.message}</p>`;
+    }
+  } catch(e) {
+    els.adminResultArea.innerHTML = `<p style="color:red; text-align:center;">Network Error</p>`;
+  } finally {
+    els.btnAdminSearch.disabled = false;
+    els.btnAdminSearch.textContent = "Search";
+  }
 }
 
 function initThemeAndParticles() {
