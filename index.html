@@ -959,7 +959,12 @@ function setupEventListeners() {
   setListener(els.btnShowLibrary, 'click', () => {
     toggleDropdown(false);
     els.libraryModal.classList.add('active');
-  });
+    
+    // ライブラリを開いたときにサーバーから最新の履歴を取得
+    if (typeof fetchUserHistory === 'function') {
+        fetchUserHistory();
+    }
+  }); // 正しく閉じました
   setListener(els.libCloseBtn, 'click', () => els.libraryModal.classList.remove('active'));
   setListener(els.libraryModal, 'click', (e) => { if(e.target === els.libraryModal) els.libraryModal.classList.remove('active'); });
 
@@ -1333,8 +1338,10 @@ function logout() {
   toggleDropdown(false); updateAccountUI();
 }
 
-function saveUnlockedItem(data, code) {
+// saveUnlockedItem関数内の末尾を変更
+async function saveUnlockedItem(data, code) {
   if (!data.actionUrl || !currentUser) return; 
+  
   const newItem = {
     code: code,
     title: data.bundleLabel || data.message || "Unknown Content",
@@ -1344,18 +1351,53 @@ function saveUnlockedItem(data, code) {
     lang: CURRENT_LANG,
     imageUrl: data.imageUrl 
   };
+
+  // 重複チェックなどは既存のまま
   const existingIndex = currentUser.history.findIndex(h => h.code === code);
   if (existingIndex > -1) { currentUser.history[existingIndex] = newItem; } 
   else { currentUser.history.unshift(newItem); }
+  
+  // 1. まずローカル保存（UIの即時反映のため）
   localStorage.setItem('user_session', JSON.stringify(currentUser));
+  
+  // 2. サーバーへ同期（awaitはしないが、裏で走らせる）
+  syncHistoryToServer();
 }
-
+// ★ 履歴をサーバーに送信（保存）
 async function syncHistoryToServer() {
   if (!currentUser) return;
   try {
     const jsonHistory = JSON.stringify(currentUser.history);
+    // 送信して完了を待つ
     await fetch(`${GAS_API_URL}?type=sync&userId=${currentUser.userId}&history=${encodeURIComponent(jsonHistory)}`);
-  } catch(e) {}
+    console.log("History synced to server.");
+  } catch(e) {
+    console.error("Sync failed:", e);
+  }
+}
+
+// ★ サーバーから最新の履歴を取得（新規追加）
+async function fetchUserHistory() {
+  if (!currentUser) return;
+  
+  // ライブラリリストを一時的にローディング表示に
+  els.libraryList.innerHTML = `<li style="text-align:center;padding:20px;opacity:0.5;"><span class="loading-spinner"></span> Updating...</li>`;
+
+  try {
+    const res = await fetch(`${GAS_API_URL}?type=get_history&userId=${currentUser.userId}&_t=${Date.now()}`);
+    const data = await res.json();
+
+    if (data.success && Array.isArray(data.history)) {
+      // サーバーのデータを正としてローカルを更新
+      currentUser.history = data.history;
+      localStorage.setItem('user_session', JSON.stringify(currentUser));
+      updateAccountUI(); // UI再描画
+    }
+  } catch (e) {
+    console.error("Failed to fetch history:", e);
+    // 失敗してもローカルデータでUIは復旧させる
+    updateAccountUI();
+  }
 }
 
 async function refreshLibraryTitles() {
