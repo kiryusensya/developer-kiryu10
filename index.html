@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>_.k__yu.10//Enhanced</title>
+<title>_.k__yu.10//Developers</title>
 <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,6 +43,10 @@
   --font-stack: 'HarmonyOS Sans', 'Manrope', sans-serif;
     
   --rgl-green: #04CF22;
+  
+  /* Additional Variables for Account System */
+  --dropdown-bg: rgba(255, 255, 255, 0.9);
+  --modal-bg-standard: #FFFFFF;
 }
 :root:lang(ja) { --font-stack: 'HarmonyOS Sans', 'Noto Sans JP', sans-serif; }
 :root:lang(zh) { --font-stack: 'HarmonyOS Sans SC', 'HarmonyOS Sans', sans-serif; }
@@ -62,6 +66,10 @@
   --btn-close-border: #FFFFFF;
   --btn-close-text: #FFFFFF;
   --shadow-soft: 0 15px 40px rgba(0,0,0,0.4);
+  
+  /* Additional Variables for Account System */
+  --dropdown-bg: rgba(30, 30, 30, 0.95);
+  --modal-bg-standard: #1A1A1A;
 }
 
 /* Scrollbar Customization */
@@ -132,7 +140,7 @@ header { padding: 24px 0; display: flex; justify-content: space-between; align-i
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   word-break: keep-all;
-  padding-right: 0.2em; /* 【修正】文字が見切れるのを防ぐ余白 */
+  padding-right: 0.2em;
 }
 
 @media (max-width: 480px) {
@@ -157,7 +165,7 @@ header { padding: 24px 0; display: flex; justify-content: space-between; align-i
   transition: 0.4s var(--spring-ease); cursor: pointer; position: relative; overflow: hidden;
   color: var(--modal-text-main);
   font-family: var(--font-stack);
-  text-decoration: none; /* 【修正】aタグ化に伴う下線削除 */
+  text-decoration: none;
 }
 [data-theme="dark"] .widget { color: #fff; }
 .widget:hover { transform: scale(1.02); box-shadow: 0 20px 50px -10px rgba(0,0,0,0.15); }
@@ -181,7 +189,7 @@ header { padding: 24px 0; display: flex; justify-content: space-between; align-i
 }
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-/* --- HARMONYOS INTRO DESIGN (PURE) --- */
+/* --- INTRO DESIGN --- */
 .intro-theme-btn {
   position: absolute; top: 40px; right: 40px; z-index: 10002;
   border-color: var(--card-border);
@@ -204,7 +212,6 @@ header { padding: 24px 0; display: flex; justify-content: space-between; align-i
   opacity: 0.5; font-weight: 700; 
   margin-bottom: 16px; display: block; 
   color: var(--modal-text-main);
-  /* 修正: 文字間隔と大文字変換を削除 */
 }
 
 .intro-title {
@@ -249,7 +256,7 @@ header { padding: 24px 0; display: flex; justify-content: space-between; align-i
 .font-kr { font-family: 'Noto Sans KR', sans-serif; }
 .font-ru { font-family: 'HarmonyOS Sans', sans-serif; }
 
-/* --- MODAL SYSTEM --- */
+/* --- MODAL SYSTEM (Base) --- */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px);
   z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -416,7 +423,114 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(128,128,128,0.2); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to{transform: rotate(360deg);} }
 
-/* --- モバイル・スマホ専用の調整 --- */
+/* --- ACCOUNT DROPDOWN STYLES (NEW) --- */
+.account-dropdown {
+  position: absolute;
+  top: 80px; 
+  right: 0;
+  width: 320px; 
+  background: var(--dropdown-bg);
+  backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(128,128,128,0.2);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  padding: 24px;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  pointer-events: none;
+  transition: all 0.3s var(--spring-ease);
+  transform-origin: top right;
+  text-align: left; /* Ensure text alignment */
+}
+.account-dropdown.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+/* Mobile Adjustment */
+@media (max-width: 600px) {
+  .account-dropdown { width: 92vw; right: -10px; top: 75px; }
+}
+
+/* Header inside Dropdown */
+.account-mini-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(128,128,128,0.1); }
+.mini-avatar { width: 48px; height: 48px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+.mini-user-info { display: flex; flex-direction: column; }
+.label-logged-in { font-size: 10px; font-weight: 700; opacity: 0.6; margin-bottom: 2px; }
+.mini-user-id { font-size: 16px; font-weight: 800; color: var(--modal-text-main); font-family: monospace; letter-spacing: -0.5px; }
+
+/* Menu List inside Dropdown */
+.menu-list { display: flex; flex-direction: column; gap: 4px; }
+.menu-btn {
+  background: transparent; border: none; text-align: left;
+  padding: 14px 12px; font-size: 16px; font-weight: 700;
+  color: var(--modal-text-main); cursor: pointer;
+  border-radius: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: background 0.2s; font-family: var(--font-stack);
+}
+.menu-btn:hover { background: rgba(128,128,128,0.08); }
+.menu-btn i { opacity: 0.5; }
+
+/* Login Form inside Dropdown */
+.auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom:10px; }
+.auth-tab { flex: 1; text-align: center; padding: 8px; cursor: pointer; font-weight: 700; opacity: 0.5; transition: 0.3s; color: var(--modal-text-main); font-size: 14px; font-family: var(--font-stack); }
+.auth-tab.active { opacity: 1; border-bottom: 2px solid var(--primary); color: var(--primary); }
+.form-group { text-align: left; margin-bottom: 12px; }
+.form-label { font-size: 11px; font-weight: 700; margin-bottom: 4px; display: block; opacity: 0.7; color: var(--modal-text-main); font-family: var(--font-stack); }
+.form-input { width: 100%; height: 44px; border-radius: 10px; border: 1px solid rgba(128,128,128,0.2); background: transparent; padding: 0 12px; color: var(--modal-text-main); font-family: inherit; outline: none; font-size: 14px; font-weight: 500; }
+.form-input:focus { border-color: var(--primary); background: rgba(128,128,128,0.05); }
+
+/* --- LIBRARY MODAL (Center, Large) --- */
+#libraryModal .modal-sheet {
+  background: var(--modal-bg-standard);
+  border-radius: 28px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+  width: 90%; max-width: 600px;
+  padding: 40px;
+  text-align: left;
+}
+
+.lib-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 30px;
+}
+.lib-header-left { display: flex; align-items: center; gap: 16px; }
+.lib-header-icon {
+  width: 56px; height: 56px; background: #007DFF; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center; color: white;
+  box-shadow: 0 10px 25px rgba(0, 125, 255, 0.25);
+}
+.lib-header-title { font-size: 32px; font-weight: 800; color: var(--modal-text-main); line-height: 1; letter-spacing: -1px; }
+
+.lib-list-scroll { list-style: none; padding: 0; margin: 0; max-height: 450px; overflow-y: auto; }
+
+/* Library Card Item */
+.lib-item-card {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(128, 128, 128, 0.04);
+  border: 1px solid rgba(128, 128, 128, 0.08);
+  border-radius: 20px; padding: 16px; margin-bottom: 12px;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.lib-item-card:hover { transform: translateY(-2px); background: rgba(128, 128, 128, 0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+.lib-card-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+.lib-card-thumb {
+  width: 72px; height: 72px; border-radius: 14px; object-fit: cover;
+  background: #eee; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.lib-card-info { display: flex; flex-direction: column; overflow: hidden; justify-content: center; }
+.lib-card-meta { font-size: 12px; color: var(--modal-text-sub); font-weight: 600; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+.lib-card-title { font-size: 18px; font-weight: 800; color: var(--modal-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+
+.lib-card-btn {
+  width: 48px; height: 48px; background: #000000; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; color: #ffffff;
+  text-decoration: none; transition: all 0.2s; flex-shrink: 0;
+}
+[data-theme="dark"] .lib-card-btn { background: #ffffff; color: #000000; }
+.lib-card-btn:hover { transform: scale(1.05); opacity: 0.9; }
+
+/* --- Mobile Adjustment --- */
 @media (max-width: 600px) {
   .modal-title { font-size: 20px; }
   .content-title { font-size: 22px; margin-bottom: 16px; }
@@ -435,17 +549,14 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 <div id="langSelectionOverlay" class="modal-overlay active" style="opacity:1; background:var(--bg-color); z-index:10000;">
   <div class="theme-pill intro-theme-btn" id="introThemeToggle"><i data-lucide="sun" id="introThemeIcon"></i></div>
   <div class="intro-container">
-    <div class="intro-header">
-      <span class="intro-brand">Harmony Enhanced</span>
-      <h2 class="intro-title">Select Language</h2>
-    </div>
+    <div class="intro-header"><span class="intro-brand">kiryu10 - Developrt</span><h2 class="intro-title">Select Language</h2></div>
     <div class="lang-grid">
-      <div class="lang-card font-jp" onclick="setInitialLanguage('ja')" style="--delay:0.1s"><div class="lang-name">日本語</div></div>
-      <div class="lang-card font-en" onclick="setInitialLanguage('en')" style="--delay:0.2s"><div class="lang-name">English</div></div>
-      <div class="lang-card font-cn-s" onclick="setInitialLanguage('zh')" style="--delay:0.3s"><div class="lang-name">简体中文</div></div>
-      <div class="lang-card font-cn-t" onclick="setInitialLanguage('zh-TW')" style="--delay:0.4s"><div class="lang-name">繁體中文</div></div>
-      <div class="lang-card font-kr" onclick="setInitialLanguage('ko')" style="--delay:0.5s"><div class="lang-name">한국어</div></div>
-      <div class="lang-card font-ru" onclick="setInitialLanguage('ru')" style="--delay:0.6s"><div class="lang-name">Русский</div></div>
+      <div class="lang-card font-jp" onclick="setInitialLanguage('ja')"><div class="lang-name">日本語</div></div>
+      <div class="lang-card font-en" onclick="setInitialLanguage('en')"><div class="lang-name">English</div></div>
+      <div class="lang-card font-cn-s" onclick="setInitialLanguage('zh')"><div class="lang-name">简体中文</div></div>
+      <div class="lang-card font-cn-t" onclick="setInitialLanguage('zh-TW')"><div class="lang-name">繁體中文</div></div>
+      <div class="lang-card font-kr" onclick="setInitialLanguage('ko')"><div class="lang-name">한국어</div></div>
+      <div class="lang-card font-ru" onclick="setInitialLanguage('ru')"><div class="lang-name">Русский</div></div>
     </div>
   </div>
 </div>
@@ -453,12 +564,64 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 <div class="wrapper" id="mainContainer" style="opacity:0;">
   <header>
     <div class="brand"><i data-lucide="graduation-cap"></i> <span data-translate="header_brand">kiryu-sensya</span></div>
-    <div class="theme-pill" id="themeToggle"><i data-lucide="sun" id="themeIcon"></i></div>
+    
+    <div style="display:flex; gap:10px; position:relative;">
+      <div class="theme-pill" id="btnOpenAccount" style="width:auto; padding:0 20px; border-radius:50px; gap:8px;">
+        <i data-lucide="user" size="18"></i> 
+        <span id="accountLabel" style="font-size:14px; font-weight:700;" data-translate="menu_login">Login</span>
+      </div>
+      <div class="theme-pill" id="themeToggle"><i data-lucide="sun" id="themeIcon"></i></div>
+
+      <div id="accountDropdown" class="account-dropdown">
+        <div id="loggedInView" style="display:none;">
+          <div class="account-mini-header">
+            <div class="mini-avatar"><i data-lucide="user"></i></div>
+            <div class="mini-user-info">
+              <span class="label-logged-in" data-translate="label_logged_in">USER ID</span>
+              <span class="mini-user-id" id="displayUserId">-</span>
+            </div>
+          </div>
+          <div class="menu-list">
+             <button class="menu-btn" id="btnShowLibrary">
+               <span data-translate="label_library">Library</span> <i data-lucide="package-open" size="18"></i>
+             </button>
+             <button class="menu-btn" id="btnLogout" style="color:#FF3B30;">
+               <span data-translate="btn_logout">Log Out</span> <i data-lucide="log-out" size="18"></i>
+             </button>
+          </div>
+        </div>
+
+        <div id="loggedOutView">
+          <div style="text-align:center; margin-bottom:20px;">
+            <h2 style="margin:0; font-size:20px; color:var(--modal-text-main);" data-translate="label_welcome">Welcome</h2>
+            <p style="color:var(--modal-text-sub); margin:4px 0 0 0; font-size:12px;" data-translate="label_sync_desc">Login to sync.</p>
+          </div>
+          <div class="auth-tabs">
+            <div class="auth-tab active" data-tab="login" data-translate="tab_login">Login</div>
+            <div class="auth-tab" data-tab="register" data-translate="tab_signup">Sign Up</div>
+          </div>
+          <div style="text-align:left;">
+            <div class="form-group">
+              <label class="form-label" data-translate="form_email">Email</label>
+              <input type="email" id="inputEmail" class="form-input" placeholder="Admin1234">
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-translate="form_pass">Password</label>
+              <input type="password" id="inputPass" class="form-input" placeholder="PASSWARD">
+            </div>
+            <div id="authStatus" style="color:#FF3B30; font-size:11px; margin-top:10px; min-height:16px; text-align:center;"></div>
+            <button id="btnAuthAction" class="btn-primary" style="height:44px; margin-top:10px;" data-translate="btn_login_action">Login</button>
+          </div>
+        </div>
+      </div>
+      </div>
   </header>
+
   <div class="hero-text">
     <h1 class="hero-title" data-translate="hero_title">System<br>Activation</h1>
     <div class="hero-sub" data-translate="hero_sub">Manage your access and resources.</div>
   </div>
+
   <div class="bento-grid">
     <div class="widget widget-hero" id="btnOpenModal">
       <div class="icon-bubble"><i data-lucide="ticket-check" size="32"></i></div>
@@ -478,7 +641,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         <p style="font-size:12px;" data-translate="card2_desc">Check updates.</p>
       </div>
     </div>
-    
     <a href="support.html" class="widget widget-support">
       <div style="display:flex; justify-content:space-between;">
         <div style="background:#E8F0FE; color:#1967D2; width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center;"><i data-lucide="search-alert" size="24"></i></div>
@@ -489,12 +651,27 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         <p style="font-size:12px;" data-translate="card3_desc">Contact us.</p>
       </div>
     </a>
-
   </div>
   <footer>
     <div><span data-translate="footer_admin">Enforcement Administrator</span>: <a href="https://developer-kiryu10.vercel.app/" target="_blank" style="color:inherit;text-decoration:none;font-weight:700;">kiryu-sensya</a></div>
     <div style="opacity:0.5; margin-top:5px;">© 2019-2026 kiryu-sensya All Rights Reserved</div>
   </footer>
+</div>
+
+<div id="libraryModal" class="modal-overlay">
+  <div class="modal-sheet">
+    <div style="position:absolute; top:24px; right:24px; cursor:pointer; opacity:0.6;" id="libCloseBtn"><i data-lucide="x" size="24"></i></div>
+    
+    <div class="lib-modal-header">
+      <div class="lib-header-left">
+        <div class="lib-header-icon"><i data-lucide="package-open" size="28"></i></div>
+        <div class="lib-header-title" data-translate="label_library">Library</div>
+      </div>
+    </div>
+    
+    <ul id="libraryList" class="lib-list-scroll">
+      </ul>
+  </div>
 </div>
 
 <div class="custom-lang-wrapper">
@@ -516,7 +693,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 <div id="authModal" class="modal-overlay">
   <div class="modal-sheet" id="modalContainer">
     <div style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.6; z-index:10;" id="modalCloseBtn"><i data-lucide="x" size="24"></i></div>
-
     <div id="inputPhase">
       <h2 class="modal-title" data-translate="modal_title">Activation</h2>
       <p class="modal-sub" data-translate="modal_sub">Enter access code</p>
@@ -524,7 +700,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
       <button id="btnConfirm" class="btn-primary" data-translate="modal_btn_auth">CHECK</button>
       <div id="statusContainer"></div>
     </div>
-
     <div id="successPhase">
       <div class="success-container">
         <div class="success-visual">
@@ -532,42 +707,24 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         </div>
         <div class="success-details">
           <div style="flex:1;">
-              
-            <div class="success-badge" id="successBadge">
-              <i data-lucide="check" size="14"></i> <span data-translate="success_badge">Code Verifiyed</span>
-            </div>
-              
+            <div class="success-badge" id="successBadge"><i data-lucide="check" size="14"></i> <span data-translate="success_badge">Code Verified</span></div>
             <h3 id="successTitle" class="content-title"></h3>
-
             <div id="infoSection">
                <div id="successNameDisplay" class="message-title">...</div>
-               <div class="info-box">
-                 <div id="successExtraInfo" class="info-extra"></div>
-               </div>
+               <div class="info-box"><div id="successExtraInfo" class="info-extra"></div></div>
             </div>
-
             <div id="productDisplay" class="product-display" style="display:none;">
-               <div class="product-name-row">
-                 <span id="productName">...</span>
-                 <i data-lucide="check" size="26" style="color:var(--rgl-green);"></i>
-               </div>
+               <div class="product-name-row"><span id="productName">...</span><i data-lucide="check" size="26" style="color:var(--rgl-green);"></i></div>
             </div>
-
           </div>
-            
           <div class="action-row">
             <button id="modalCloseSub" class="btn-close-sub" data-translate="btn_close">Close</button>
-            <button id="btnRedeem" class="btn-action">
-              <span data-translate="btn_continue">CONTINUE</span> <i data-lucide="arrow-right" size="18"></i>
-            </button>
-            <a href="#" id="btnDownload" class="btn-action">
-              <span data-translate="btn_download">Download</span> <i data-lucide="download" size="18"></i>
-            </a>
+            <button id="btnRedeem" class="btn-action"><span data-translate="btn_continue">CONTINUE</span> <i data-lucide="arrow-right" size="18"></i></button>
+            <a href="#" id="btnDownload" class="btn-action"><span data-translate="btn_download">Download</span> <i data-lucide="download" size="18"></i></a>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -583,12 +740,14 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 
 <script>
 lucide.createIcons();
+// ★★★ ここにデプロイしたGASのURLを貼り付けてください ★★★
 const GAS_API_URL="api/proxy"; 
 let CURRENT_LANG="ja";
+let currentUser = null; 
 
 const TRANSLATIONS={
  ja:{
-  header_brand:"_.k__yu.10", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理",
+  header_brand:"kiryu10 開発者", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理",
   card1_title:"アクティベーション",card1_desc:"コードでコンテンツを解除",card1_btn:"引き換える",
   card2_title:"ニュース",card2_desc:"最新情報を確認",card2_btn:"確認",
   card3_title:"サポート",card3_desc:"お問い合わせはこちら",card3_btn:"接続",
@@ -596,12 +755,17 @@ const TRANSLATIONS={
   msg_verifying:"確認中",msg_success_btn:"成功",
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました",
   success_badge:"コードが認証されました。",
-  success_title_preview:"コンテンツの確認", success_title_final:"アクティベーション完了",
-  btn_close:"閉じる",btn_continue:"認証",btn_download:"ダウンロード",news_title:"最新情報",news_label:"履歴",news_loading:"更新を確認中",
-  footer_admin:"システム管理者"
+  success_title_preview:"コンテンツの確認", success_title_final:"認証成功",
+  btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード",news_title:"最新情報",news_label:"履歴",news_loading:"更新を確認中",
+  footer_admin:"システム管理者",
+  menu_login: "ログイン", menu_account: "アカウント",
+  label_logged_in: "ユーザーID", label_library: "ライブラリ", label_welcome: "ようこそ", label_sync_desc: "ログインして同期を開始",
+  tab_login: "ログイン", tab_signup: "新規登録", form_email: "身分番号", form_pass: "パスワード",
+  btn_login_action: "ログイン", btn_signup_action: "登録する", btn_logout: "ログアウト",
+  btn_open: "開く", msg_empty_lib: "コンテンツがありません"
  },
  en:{
-  header_brand:"_.k__yu.10", hero_title:"Activation", hero_sub:"Manage your access and resources.",
+  header_brand:"kiryu10 Developer", hero_title:"Activation", hero_sub:"Manage your access and resources.",
   card1_title:"Activation",card1_desc:"Unlock content via code",card1_btn:"Redeem",
   card2_title:"News",card2_desc:"Check updates",card2_btn:"View",
   card3_title:"Support",card3_desc:"Contact us",card3_btn:"Connect",
@@ -609,12 +773,17 @@ const TRANSLATIONS={
   msg_verifying:"Checking",msg_success_btn:"Success",
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred",
   success_badge:"Code Verified",
-  success_title_preview:"Confirm Content", success_title_final:"Activation Complete",
-  btn_close:"Close",btn_continue:"REDEEM",btn_download:"Download",news_title:"News",news_label:"Log",news_loading:"Checking for updates",
-  footer_admin:"Enforcement Administrator"
+  success_title_preview:"Confirm Content", success_title_final:"Activation Successful",
+  btn_close:"Close",btn_continue:"Confirm",btn_download:"Download",news_title:"News",news_label:"Log",news_loading:"Checking for updates",
+  footer_admin:"Enforcement Administrator",
+  menu_login: "Login", menu_account: "Account",
+  label_logged_in: "USER ID", label_library: "Library", label_welcome: "Welcome", label_sync_desc: "Login to sync content.",
+  tab_login: "Login", tab_signup: "Sign Up", form_email: "ID number", form_pass: "Password",
+  btn_login_action: "Login", btn_signup_action: "Sign Up", btn_logout: "Log Out",
+  btn_open: "Open", msg_empty_lib: "No content yet"
  },
  zh:{ 
-  header_brand:"_.k__yu.10", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。", 
+  header_brand:"kiryu10开发者", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。", 
   card1_title:"激活",card1_desc:"解锁内容",card1_btn:"兑换代码", 
   card2_title:"新闻",card2_desc:"查看更新",card2_btn:"查看", 
   card3_title:"支持",card3_desc:"联系我们",card3_btn:"联系", 
@@ -623,11 +792,16 @@ const TRANSLATIONS={
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
   success_badge:"代码已检查",
   success_title_preview:"确认内容", success_title_final:"激活完成",
-  btn_close:"关闭",btn_continue:"兑换",btn_download:"下载",news_title:"最新消息",news_label:"日志",news_loading:"正在检查更新", 
-  footer_admin:"系统管理长" 
+  btn_close:"关闭",btn_continue:"确认",btn_download:"下载",news_title:"最新消息",news_label:"日志",news_loading:"正在检查更新", 
+  footer_admin:"系统管理长",
+  menu_login: "登录", menu_account: "账户",
+  label_logged_in: "用户ID", label_library: "我的库", label_welcome: "欢迎", label_sync_desc: "登录以同步内容",
+  tab_login: "登录", tab_signup: "注册", form_email: "身份证号", form_pass: "密码",
+  btn_login_action: "登录", btn_signup_action: "注册", btn_logout: "登出",
+  btn_open: "打开", msg_empty_lib: "暂无内容"
  },
  "zh-TW":{ 
-  header_brand:"_.k__yu.10", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。", 
+  header_brand:"kiryu10開發者", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。", 
   card1_title:"激活",card1_desc:"解鎖內容",card1_btn:"兌換代碼", 
   card2_title:"新聞",card2_desc:"查看更新",card2_btn:"查看", 
   card3_title:"支援",card3_desc:"聯絡我們",card3_btn:"聯絡", 
@@ -636,11 +810,16 @@ const TRANSLATIONS={
   msg_invalid:"該程式碼無效。",msg_used:"該程式碼已被使用。",msg_error:"錯誤", 
   success_badge:"代碼已檢查",
   success_title_preview:"確認內容", success_title_final:"激活完成",
-  btn_close:"關閉",btn_continue:"兌換",btn_download:"下載",news_title:"最新消息",news_label:"日誌",news_loading:"正在檢查更新", 
-  footer_admin:"系統管理長" 
+  btn_close:"關閉",btn_continue:"確認",btn_download:"下載",news_title:"最新消息",news_label:"日誌",news_loading:"正在檢查更新", 
+  footer_admin:"系統管理長",
+  menu_login: "登入", menu_account: "帳戶",
+  label_logged_in: "用戶ID", label_library: "我的庫", label_welcome: "歡迎", label_sync_desc: "登入以同步內容",
+  tab_login: "登入", tab_signup: "註冊", form_email: "身份號碼", form_pass: "密碼",
+  btn_login_action: "登入", btn_signup_action: "註冊", btn_logout: "登出",
+  btn_open: "開啟", msg_empty_lib: "暫無內容"
  },
  ko:{ 
-  header_brand:"_.k__yu.10", hero_title:"시스템 인증 포털", hero_sub:"액세스 권한 및 리소스 관리", 
+  header_brand:"kiryu10 개발자", hero_title:"시스템 인증 포털", hero_sub:"액세스 권한 및 리소스 관리", 
   card1_title:"활성화",card1_desc:"콘텐츠 잠금 해제",card1_btn:"코드 교환", 
   card2_title:"뉴스",card2_desc:"최신 정보",card2_btn:"보기", 
   card3_title:"지원",card3_desc:"문의하기",card3_btn:"연결", 
@@ -649,11 +828,16 @@ const TRANSLATIONS={
   msg_invalid:"잘못된 코드",msg_used:"사용된 코드",msg_error:"오류", 
   success_badge:"코드 인증됨",
   success_title_preview:"콘텐츠 확인", success_title_final:"활성화 완료",
-  btn_close:"닫기",btn_continue:"사용",btn_download:"다운로드",news_title:"뉴스",news_label:"로그",news_loading:"로딩 중", 
-  footer_admin:"시스템 관리자" 
+  btn_close:"닫기",btn_continue:"확인",btn_download:"다운로드",news_title:"뉴스",news_label:"로그",news_loading:"로딩 중", 
+  footer_admin:"시스템 관리자",
+  menu_login: "로그인", menu_account: "계정",
+  label_logged_in: "사용자 ID", label_library: "라이브러리", label_welcome: "환영합니다", label_sync_desc: "동기화하려면 로그인",
+  tab_login: "로그인", tab_signup: "가입", form_email: "신분 번호", form_pass: "비밀번호",
+  btn_login_action: "로그인", btn_signup_action: "가입", btn_logout: "로그아웃",
+  btn_open: "열기", msg_empty_lib: "콘텐츠 없음"
  },
  ru:{ 
-  header_brand:"_.k__yu.10", hero_title:"Активация", hero_sub:"Управление доступом и ресурсами", 
+  header_brand:"kiryu10-Разработчик", hero_title:"Активация", hero_sub:"Управление доступом и ресурсами", 
       card1_title:"Активация",card1_desc:"Разблокировка",card1_btn:"Активируйте код", 
       card2_title:"Новости",card2_desc:"Обновления",card2_btn:"См.", 
       card3_title:"Поддержка",card3_desc:"Связь",card3_btn:"Связь", 
@@ -661,9 +845,14 @@ const TRANSLATIONS={
       msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
       msg_invalid:"Неверный код",msg_used:"Использован",msg_error:"Ошибка", 
       success_badge:"Подтверждено",
-      success_title_preview:"Подтверждение", success_title_final:"Готово",
-      btn_close:"Закрыть",btn_continue:"Погасить",btn_download:"Скачать",news_title:"Новости",news_label:"Лог",news_loading:"Загрузка", 
-      footer_admin:"Администратор" 
+      success_title_preview:"Проверка контента", success_title_final:"Успешно",
+      btn_close:"Закрыть",btn_continue:"обмен",btn_download:"Скачать",news_title:"Новости",news_label:"Лог",news_loading:"Загрузка", 
+      footer_admin:"Администратор",
+      menu_login: "Вход", menu_account: "Аккаунт",
+      label_logged_in: "ID пользователя", label_library: "Библиотека", label_welcome: "Привет", label_sync_desc: "Войдите для синхронизации",
+      tab_login: "Вход", tab_signup: "Регистрация", form_email: "Код счета", form_pass: "Пароль",
+      btn_login_action: "Войти", btn_signup_action: "Создать", btn_logout: "Выйти",
+      btn_open: "Открыть", msg_empty_lib: "Нет контента"
  }
 };
 
@@ -677,8 +866,14 @@ const els={
  sInfoSec: gId('infoSection'), sNameDisp: gId('successNameDisplay'), sExtra: gId('successExtraInfo'), sBadge: gId('successBadge'), 
  btnRedeem: gId('btnRedeem'), btnDownload: gId('btnDownload'),
  newsList: gId('newsList'), newsModal: gId('newsModal'), openNews: gId('btnOpenNews'), closeNews: gId('newsCloseX'),
- // Support Elements Removed
- langWrapper: gId('customLangWrapper'), langTrigger: gId('langTrigger'), langMenu: gId('langMenu'), currentLangLabel: gId('currentLangLabel')
+ langWrapper: gId('customLangWrapper'), langTrigger: gId('langTrigger'), langMenu: gId('langMenu'), currentLangLabel: gId('currentLangLabel'),
+ // Account Dropdown
+ accountDropdown: gId('accountDropdown'), openAccount: gId('btnOpenAccount'), accountLabel: gId('accountLabel'),
+ loggedInView: gId('loggedInView'), loggedOutView: gId('loggedOutView'), displayUserId: gId('displayUserId'), 
+ btnLogout: gId('btnLogout'), btnShowLibrary: gId('btnShowLibrary'), 
+ // Library Modal
+ libraryModal: gId('libraryModal'), libCloseBtn: gId('libCloseBtn'), libraryList: gId('libraryList'),
+ tabs: document.querySelectorAll('.auth-tab'), email: gId('inputEmail'), pass: gId('inputPass'), btnAuthAction: gId('btnAuthAction'), authStatus: gId('authStatus')
 };
 
 const formatCodeInput = (val) => {
@@ -688,35 +883,85 @@ const formatCodeInput = (val) => {
  return res;
 };
 
-// ▼▼▼ 修正: イベントリスナー設定関数 (入力フォーマット適用含む) ▼▼▼
 function setupEventListeners() {
-  // アクティベーションモーダル開閉
-  setListener(els.openAuth, 'click', openAuthModal);
+  // Unlock Modal
+  setListener(els.openAuth, 'click', () => {
+    if(!currentUser) { toggleDropdown(true); return; }
+    openAuthModal();
+  });
   setListener(els.closeAuth, 'click', closeAuthModal);
   setListener(els.closeSub, 'click', closeAuthModal);
   setListener(els.authModal, 'click', (e) => { if(e.target === els.authModal) closeAuthModal(); });
 
-  // ニュースモーダル開閉
+  // News Modal
   setListener(els.openNews, 'click', () => els.newsModal.classList.add('active'));
   setListener(els.closeNews, 'click', () => els.newsModal.classList.remove('active'));
   setListener(els.newsModal, 'click', (e) => { if(e.target === els.newsModal) els.newsModal.classList.remove('active'); });
 
-  // 認証実行アクション
+  // Auth Confirm
   setListener(els.confirm, 'click', () => performAuth(els.code.value));
   setListener(els.code, 'keydown', (e) => { if(e.key === 'Enter') els.confirm.click(); });
-  
-  // ★重要: ここで入力制限と自動ハイフンを適用
   setListener(els.code, 'input', (e) => { els.code.value = formatCodeInput(els.code.value); });
+
+  // Account Dropdown Toggle
+  setListener(els.openAccount, 'click', (e) => {
+    e.stopPropagation();
+    updateAccountUI();
+    toggleDropdown();
+  });
+  document.addEventListener('click', (e) => {
+    if (!els.accountDropdown.contains(e.target) && !els.openAccount.contains(e.target)) {
+        toggleDropdown(false);
+    }
+  });
+
+  // Library Modal
+  setListener(els.btnShowLibrary, 'click', () => {
+    toggleDropdown(false);
+    els.libraryModal.classList.add('active');
+  });
+  setListener(els.libCloseBtn, 'click', () => els.libraryModal.classList.remove('active'));
+  setListener(els.libraryModal, 'click', (e) => { if(e.target === els.libraryModal) els.libraryModal.classList.remove('active'); });
+
+  setListener(els.btnLogout, 'click', logout);
+
+  // Tabs
+  els.tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      els.tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const mode = tab.dataset.tab;
+      const t = TRANSLATIONS[CURRENT_LANG];
+      els.btnAuthAction.textContent = mode === 'login' ? t.btn_login_action : t.btn_signup_action;
+      els.authStatus.textContent = '';
+    });
+  });
+
+  // Auth Action
+  setListener(els.btnAuthAction, 'click', performAuthAction);
 }
-// ▲▲▲ 追加ここまで ▲▲▲
 
 document.addEventListener('DOMContentLoaded',()=>{
  const sLang = localStorage.getItem('user_lang');
+ const sUser = localStorage.getItem('user_session');
+ if(sUser) currentUser = JSON.parse(sUser);
+
  initThemeAndParticles(); 
  initCustomDropdown();
- setupEventListeners(); // ★イベントリスナー起動
+ setupEventListeners();
  if(sLang) setInitialLanguage(sLang, true); else fetchNews();
+ updateAccountUI();
 });
+
+function toggleDropdown(forceState) {
+    if (forceState === undefined) {
+        els.accountDropdown.classList.toggle('open');
+    } else if (forceState) {
+        els.accountDropdown.classList.add('open');
+    } else {
+        els.accountDropdown.classList.remove('open');
+    }
+}
 
 function setInitialLanguage(lang, immediate = false){
  localStorage.setItem('user_lang',lang); updateLanguage(lang); 
@@ -728,7 +973,10 @@ function showMainContent(){
  gId('mainContainer').style.opacity = '1'; lucide.createIcons();
  const urlCode = new URLSearchParams(window.location.search).get('code');
  if(urlCode) {
-   setTimeout(()=>{ openAuthModal(); els.code.value = formatCodeInput(urlCode); performAuth(els.code.value); }, 800);
+   setTimeout(()=>{ 
+     if(!currentUser) { toggleDropdown(true); }
+     else { openAuthModal(); els.code.value = formatCodeInput(urlCode); performAuth(els.code.value); }
+   }, 800);
    setTimeout(fetchNews, 3000);
  } else fetchNews();
 }
@@ -754,11 +1002,15 @@ function updateLanguage(lang){
  CURRENT_LANG=lang; document.documentElement.lang=lang; const t=TRANSLATIONS[lang]; if(!t)return;
  document.querySelectorAll('[data-translate]').forEach(el=>{ const k=el.getAttribute('data-translate'); if(k!=='news_content'&&t[k]) el.innerHTML=t[k]; });
  
- const langMap = {
-   ja: '日本語', en: 'English', zh: '简体中文', 'zh-TW': '繁體中文', ko: '한국어', ru: 'Русский'
- };
+ const langMap = { ja: '日本語', en: 'English', zh: '简体中文', 'zh-TW': '繁體中文', ko: '한국어', ru: 'Русский' };
  if(els.currentLangLabel) els.currentLangLabel.textContent = langMap[lang] || 'Language';
  if(t.modal_placeholder) els.code.placeholder=t.modal_placeholder;
+ updateAccountUI();
+ 
+ // ★★★ 追加: 言語切り替え時にライブラリのタイトルを更新 ★★★
+ if(currentUser && currentUser.history && currentUser.history.length > 0) {
+   refreshLibraryTitles();
+ }
 }
 
 async function fetchNews(){
@@ -781,34 +1033,23 @@ let currentAuthRequestId = 0;
 
 function resetAuthModal(){
   currentAuthRequestId++; 
-
   els.inputPh.style.display='flex'; els.inputPh.style.opacity='1';
   els.successPh.style.display='none'; els.successPh.style.opacity='0';
-  els.code.value=""; 
-  els.code.disabled=false; 
-  els.confirm.disabled=false;
+  els.code.value=""; els.code.disabled=false; els.confirm.disabled=false;
   els.confirm.textContent=TRANSLATIONS[CURRENT_LANG].modal_btn_auth;
-  els.status.innerHTML=""; 
-  els.modalCon.classList.remove('is-success');
-  els.sImg.src="";
-  
-  els.sTitle.style.display = ''; 
-  els.sInfoSec.style.display = 'block'; 
-  els.sProdDisplay.style.display = 'none'; 
+  els.status.innerHTML=""; els.modalCon.classList.remove('is-success'); els.sImg.src="";
+  els.sTitle.style.display = ''; els.sTitle.style.color = '';
+  els.sInfoSec.style.display = 'block'; els.sProdDisplay.style.display = 'none'; 
   els.sBadge.classList.remove('visible');
-
-  // ▼▼▼ ボタン強制リセット ▼▼▼
   els.btnRedeem.disabled = false;
   els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${TRANSLATIONS[CURRENT_LANG].btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
   lucide.createIcons();
 }
 
-// 2. 認証処理関数
 async function performAuth(code, mode = 'check') {
   const t = TRANSLATIONS[CURRENT_LANG];
   const thisRequestId = currentAuthRequestId;
 
-  // UI操作
   if (mode === 'check') {
     els.code.disabled = true; els.confirm.disabled = true;
     els.confirm.innerHTML = `${t.msg_verifying}<span class="loading-dots"></span>`;
@@ -828,7 +1069,6 @@ async function performAuth(code, mode = 'check') {
       if (d.success) {
         els.confirm.innerHTML = `<i data-lucide="check"></i>`;
         lucide.createIcons(); 
-        
         await new Promise(r => setTimeout(r, 600));
         if (thisRequestId !== currentAuthRequestId) return;
         
@@ -843,25 +1083,20 @@ async function performAuth(code, mode = 'check') {
 
         setupPreviewUI(d, t);
         
-        // ボタンをリフレッシュしてリセット
+        if(d.actionUrl) { saveUnlockedItem(d, code); syncHistoryToServer(); }
+
         const newBtn = els.btnRedeem.cloneNode(true);
         els.btnRedeem.parentNode.replaceChild(newBtn, els.btnRedeem);
         els.btnRedeem = newBtn;
-        
-        // ★ここでボタンの表示を強制的に「続行」に戻す
         els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
         lucide.createIcons();
-
         els.btnRedeem.disabled = false;
         els.btnRedeem.addEventListener('click', () => { performAuth(code, 'redeem'); });
 
-      } else {
-        throw new Error(d.message);
-      }
+      } else { throw new Error(d.message); }
     } else if (mode === 'redeem') {
-      if (d.success) {
-        transitionToFinal(d);
-      } else {
+      if (d.success) { transitionToFinal(d); } 
+      else {
         els.btnRedeem.disabled = false;
         els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
         lucide.createIcons();
@@ -870,17 +1105,12 @@ async function performAuth(code, mode = 'check') {
     }
   } catch (e) {
     if (thisRequestId !== currentAuthRequestId) return;
-
     if (mode === 'check') {
-      els.code.disabled = false; 
-      els.confirm.disabled = false; 
-      els.confirm.textContent = t.modal_btn_auth;
-      
+      els.code.disabled = false; els.confirm.disabled = false; els.confirm.textContent = t.modal_btn_auth;
       let msg = e.message || "Error";
       let errorText = t.msg_error;
-      if (msg === "This code has already been used." || msg.includes("used")) errorText = t.msg_used;
-      else if (msg === "Invalid code" || msg === "This code is disabled." || msg.includes("Invalid")) errorText = t.msg_invalid;
-      
+      if (msg.includes("used")) errorText = t.msg_used;
+      else if (msg.includes("Invalid") || msg.includes("disabled")) errorText = t.msg_invalid;
       els.status.innerHTML = `<span style="color:#FF3B30; font-size:13px; font-weight:700;">${errorText}</span>`;
     } else {
       els.btnRedeem.disabled = false;
@@ -888,56 +1118,32 @@ async function performAuth(code, mode = 'check') {
       lucide.createIcons();
       alert(t.msg_error);
     }
-    console.error(e);
   }
 }
 
 function setupPreviewUI(d, t) {
- els.sBadge.classList.remove('visible'); 
- els.btnRedeem.style.display = 'flex';      
- els.btnDownload.style.display = 'none'; 
- els.sProdDisplay.style.display = 'none'; 
- els.sInfoSec.style.display = 'block';      
- els.sTitle.style.display = '';             
-  
+ els.sBadge.classList.remove('visible'); els.btnRedeem.style.display = 'flex'; els.btnDownload.style.display = 'none'; 
+ els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';               
  els.sTitle.textContent = t.success_title_preview; 
- els.sProdName.textContent = d.bundleLabel; 
- els.sNameDisp.textContent = d.message;        
+ els.sProdName.textContent = d.bundleLabel; els.sNameDisp.textContent = d.message;        
  els.sExtra.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : ""; 
-  
- if(d.imageUrl && d.imageUrl.startsWith("http")){ els.sImg.src=d.imageUrl; } 
- else { els.sImg.src="https://placehold.co/600x400/000000/00E050?text=Protected"; } 
-  
+ if(d.imageUrl && d.imageUrl.startsWith("http")){ els.sImg.src=d.imageUrl; } else { els.sImg.src="https://placehold.co/600x400/000000/00E050?text=Protected"; } 
  lucide.createIcons();
 }
 
 function transitionToFinal(d) {
- els.btnDownload.style.display = 'flex';
- els.btnDownload.style.pointerEvents = 'none'; 
- els.btnDownload.style.opacity = '0.6';
- els.btnDownload.removeAttribute('href');
- els.btnDownload.innerHTML = `<div class="loading-spinner"></div>`;
-
- els.btnRedeem.style.display = 'none';
- els.sInfoSec.style.display = 'none'; 
- els.sTitle.style.display = 'none'; 
- els.sBadge.classList.add('visible');
- els.sProdDisplay.style.display = 'block'; 
-
- checkDownloadUrl(d);
-}
-
-function showError(msg, t) {
- let errorText = t.msg_error;
- if (msg === "This code has already been used.") errorText = t.msg_used;
- else if (msg === "Invalid code" || msg === "This code is disabled.") errorText = t.msg_invalid;
- els.status.innerHTML = `<span style="color:#FF3B30; font-size:13px; font-weight:700;">${errorText}</span>`;
+  const t = TRANSLATIONS[CURRENT_LANG];
+  els.btnDownload.style.display = 'flex'; els.btnDownload.style.pointerEvents = 'none'; els.btnDownload.style.opacity = '0.6';
+  els.btnDownload.removeAttribute('href'); els.btnDownload.innerHTML = `<div class="loading-spinner"></div>`;
+  els.btnRedeem.style.display = 'none'; els.sInfoSec.style.display = 'none'; els.sBadge.classList.remove('visible');
+  els.sTitle.style.display = 'block'; els.sTitle.textContent = t.success_title_final; els.sTitle.style.color = "#04CF22";
+  els.sProdDisplay.style.display = 'block'; 
+  checkDownloadUrl(d);
 }
 
 function checkDownloadUrl(initialData) {
  let isFetching = false;
  let currentData = initialData; 
-
  const updateUI = async () => {
    const now = Date.now();
    const targetTime = currentData.releaseDateIso ? new Date(currentData.releaseDateIso).getTime() : 0;
@@ -952,6 +1158,8 @@ function checkDownloadUrl(initialData) {
      const iconType = currentData.btnIcon === 'arrow-up-right' ? 'arrow-up-right' : 'download';
      els.btnDownload.innerHTML = `<span>${labelText}</span> <i data-lucide="${iconType}" size="18"></i>`;
      lucide.createIcons();
+     saveUnlockedItem(currentData, els.code.value.trim());
+     syncHistoryToServer();
      return; 
    } 
 
@@ -963,14 +1171,8 @@ function checkDownloadUrl(initialData) {
          const code = els.code.value.trim();
          const res = await fetch(`${GAS_API_URL}?key=${encodeURIComponent(code)}&lang=${CURRENT_LANG}&mode=poll&_t=${Date.now()}`);
          const retryD = await res.json();
-         if (retryD.success && retryD.actionUrl) {
-           currentData = retryD;
-         }
-       } catch(e) {
-         console.error("Auto-fetch failed", e);
-       } finally {
-         isFetching = false; 
-       }
+         if (retryD.success && retryD.actionUrl) { currentData = retryD; }
+       } catch(e) {} finally { isFetching = false; }
      }
    } else {
      const m = Math.floor(diff / (1000 * 60));
@@ -978,10 +1180,143 @@ function checkDownloadUrl(initialData) {
      els.btnDownload.innerHTML = `<span style="font-feature-settings:'tnum';">${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</span>`;
    }
  };
-
  const timerId = setInterval(updateUI, 1000);
  updateUI();
 }
+
+async function performAuthAction() {
+  const mode = document.querySelector('.auth-tab.active').dataset.tab; 
+  const email = els.email.value.trim();
+  const pass = els.pass.value.trim();
+  
+  if (!email || !pass) { els.authStatus.textContent = "Please enter email and password."; return; }
+
+  els.btnAuthAction.disabled = true; els.btnAuthAction.innerHTML = `<span class="loading-dots"></span>`;
+
+  try {
+    const actionType = mode === 'login' ? 'user_login' : 'register';
+    const res = await fetch(`${GAS_API_URL}?type=${actionType}&email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`);
+    const data = await res.json();
+
+    if (data.success) {
+      currentUser = { userId: data.userId, history: data.history || [] };
+      localStorage.setItem('user_session', JSON.stringify(currentUser));
+      updateAccountUI();
+      els.email.value = ""; els.pass.value = "";
+    } else { els.authStatus.textContent = data.message || "Error occurred."; }
+  } catch (e) { els.authStatus.textContent = "Network Error."; } 
+  finally { 
+    els.btnAuthAction.disabled = false; 
+    els.btnAuthAction.textContent = mode==='login'?TRANSLATIONS[CURRENT_LANG].btn_login_action:TRANSLATIONS[CURRENT_LANG].btn_signup_action;
+  }
+}
+
+function updateAccountUI() {
+  const t = TRANSLATIONS[CURRENT_LANG];
+  if (currentUser) {
+    els.accountLabel.textContent = t.menu_account;
+    els.loggedOutView.style.display = 'none';
+    els.loggedInView.style.display = 'block';
+    els.displayUserId.textContent = currentUser.userId;
+    
+    // Generate Library List
+    els.libraryList.innerHTML = "";
+    if (currentUser.history.length === 0) {
+      els.libraryList.innerHTML = `<li style='text-align:center; opacity:0.5; padding:20px; font-size:13px;'>${t.msg_empty_lib}</li>`;
+    } else {
+      currentUser.history.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'lib-item-card';
+        const img = item.imageUrl && item.imageUrl.startsWith('http') 
+          ? `<img src="${item.imageUrl}" class="lib-card-thumb">` 
+          : `<div class="lib-card-thumb" style="display:flex;align-items:center;justify-content:center;color:#999;"><i data-lucide="image"></i></div>`;
+        
+        li.innerHTML = `
+          <div class="lib-card-left">
+            ${img}
+            <div class="lib-card-info">
+              <div class="lib-card-meta">${item.date} • ${item.code}</div>
+              <div class="lib-card-title">${item.title}</div>
+            </div>
+          </div>
+          <a href="${item.url}" target="_blank" class="lib-card-btn"><i data-lucide="download" size="20"></i></a>
+        `;
+        els.libraryList.appendChild(li);
+      });
+      lucide.createIcons();
+    }
+  } else {
+    els.accountLabel.textContent = t.menu_login;
+    els.loggedOutView.style.display = 'block';
+    els.loggedInView.style.display = 'none';
+    const mode = document.querySelector('.auth-tab.active')?.dataset.tab || 'login';
+    els.btnAuthAction.textContent = mode === 'login' ? t.btn_login_action : t.btn_signup_action;
+  }
+}
+
+function logout() {
+  localStorage.removeItem('user_session'); currentUser = null; 
+  toggleDropdown(false); updateAccountUI();
+}
+
+function saveUnlockedItem(data, code) {
+  if (!data.actionUrl || !currentUser) return; 
+  const newItem = {
+    code: code,
+    title: data.bundleLabel || data.message || "Unknown Content",
+    url: data.actionUrl,
+    date: new Date().toLocaleDateString(),
+    icon: data.btnIcon || 'download',
+    lang: CURRENT_LANG,
+    imageUrl: data.imageUrl 
+  };
+  const existingIndex = currentUser.history.findIndex(h => h.code === code);
+  if (existingIndex > -1) { currentUser.history[existingIndex] = newItem; } 
+  else { currentUser.history.unshift(newItem); }
+  localStorage.setItem('user_session', JSON.stringify(currentUser));
+}
+
+async function syncHistoryToServer() {
+  if (!currentUser) return;
+  try {
+    const jsonHistory = JSON.stringify(currentUser.history);
+    await fetch(`${GAS_API_URL}?type=sync&userId=${currentUser.userId}&history=${encodeURIComponent(jsonHistory)}`);
+  } catch(e) {}
+}
+
+// ★★★ 追加: ライブラリ内のアイテムを最新の言語でリフレッシュする関数 ★★★
+async function refreshLibraryTitles() {
+    if (!currentUser || !currentUser.history || currentUser.history.length === 0) return;
+
+    // 非同期で全ての履歴アイテムの最新情報を取得
+    const promises = currentUser.history.map(async (item) => {
+        try {
+            // 現在の言語設定(CURRENT_LANG)で再問い合わせ
+            const res = await fetch(`${GAS_API_URL}?key=${encodeURIComponent(item.code)}&lang=${CURRENT_LANG}&mode=check&_t=${Date.now()}`);
+            const data = await res.json();
+            
+            if (data.success) {
+                // タイトルと画像を更新
+                item.title = data.bundleLabel || data.message;
+                if(data.imageUrl) item.imageUrl = data.imageUrl;
+                item.lang = CURRENT_LANG;
+            }
+        } catch (e) {
+            // エラー時は更新しない（古いタイトルを維持）
+        }
+    });
+
+    // 全ての更新が完了するのを待つ（UIブロックを避けるためPromise.allを使用）
+    await Promise.all(promises);
+
+    // 更新後のデータを保存して再描画
+    localStorage.setItem('user_session', JSON.stringify(currentUser));
+    updateAccountUI();
+    
+    // 更新内容をサーバーへも同期（オプション）
+    syncHistoryToServer();
+}
+
 function initThemeAndParticles() {
   const htmlEl = document.documentElement;
   const toggleBtns = [gId('themeToggle'), gId('introThemeToggle')];
@@ -989,25 +1324,15 @@ function initThemeAndParticles() {
   let particleHue = 210;
 
   function updateParticleStyle(isLight) { particleHue = isLight ? 210 : 220; }
-    
   function applyTheme(theme) {
-    if (theme === 'light') { 
-        htmlEl.setAttribute('data-theme', 'light');
-        icons.forEach(ic => { if(ic) ic.setAttribute('data-lucide', 'sun'); });
-        updateParticleStyle(true); 
-    } else { 
-        htmlEl.setAttribute('data-theme', 'dark'); 
-        icons.forEach(ic => { if(ic) ic.setAttribute('data-lucide', 'moon'); });
-        updateParticleStyle(false); 
-    }
+    if (theme === 'light') { htmlEl.setAttribute('data-theme', 'light'); icons.forEach(ic => { if(ic) ic.setAttribute('data-lucide', 'sun'); }); updateParticleStyle(true); } 
+    else { htmlEl.setAttribute('data-theme', 'dark'); icons.forEach(ic => { if(ic) ic.setAttribute('data-lucide', 'moon'); }); updateParticleStyle(false); }
     lucide.createIcons();
   }
 
   const savedTheme = localStorage.getItem('user_theme');
   const systemQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-  if (savedTheme) { applyTheme(savedTheme); } 
-  else { applyTheme(systemQuery.matches ? 'dark' : 'light'); }
+  if (savedTheme) { applyTheme(savedTheme); } else { applyTheme(systemQuery.matches ? 'dark' : 'light'); }
 
   systemQuery.addEventListener('change', (e) => {
     const newTheme = e.matches ? 'dark' : 'light';
