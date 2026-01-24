@@ -964,12 +964,14 @@ const formatCodeInput = (val) => {
 // バリデーション関数（正規表現）は削除されました
 
 function setupEventListeners() {
-  // Unlock Modal
-  setListener(els.openAuth, 'click', () => {
+ // Unlock Modal (Activation Card)
+  setListener(els.openAuth, 'click', (e) => { // ★引数 (e) を追加
     if(!currentUser) { 
-      pendingAction = 'open_activation'; // ★フラグを立てる
+      // ★ここが重要：クリックイベントが document まで伝わらないように止める
+      e.stopPropagation(); 
+      
+      pendingAction = 'open_activation'; 
       toggleDropdown(true); 
-      // ユーザービリティ向上のため入力欄にフォーカス
       setTimeout(() => els.email.focus(), 300);
       return; 
     }
