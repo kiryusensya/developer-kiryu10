@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>_.k__yu.10//Account System</title>
+<title>_.k__yu.10//Developers</title>
 <link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -549,7 +549,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 <div id="langSelectionOverlay" class="modal-overlay active" style="opacity:1; background:var(--bg-color); z-index:10000;">
   <div class="theme-pill intro-theme-btn" id="introThemeToggle"><i data-lucide="sun" id="introThemeIcon"></i></div>
   <div class="intro-container">
-    <div class="intro-header"><span class="intro-brand">Harmony Enhanced</span><h2 class="intro-title">Select Language</h2></div>
+    <div class="intro-header"><span class="intro-brand">kiryu10 Developers</span><h2 class="intro-title">Select Language</h2></div>
     <div class="lang-grid">
       <div class="lang-card font-jp" onclick="setInitialLanguage('ja')"><div class="lang-name">日本語</div></div>
       <div class="lang-card font-en" onclick="setInitialLanguage('en')"><div class="lang-name">English</div></div>
@@ -566,9 +566,8 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     <div class="brand"><i data-lucide="graduation-cap"></i> <span data-translate="header_brand">kiryu-sensya</span></div>
     
     <div style="display:flex; gap:10px; position:relative;">
-      <div class="theme-pill" id="btnOpenAccount" style="width:auto; padding:0 20px; border-radius:50px; gap:8px;">
-        <i data-lucide="user" size="18"></i> 
-        <span id="accountLabel" style="font-size:14px; font-weight:700;" data-translate="menu_login">Login</span>
+      <div class="theme-pill" id="btnOpenAccount">
+        <i data-lucide="user-round"></i> 
       </div>
       <div class="theme-pill" id="themeToggle"><i data-lucide="sun" id="themeIcon"></i></div>
 
@@ -603,11 +602,11 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
           <div style="text-align:left;">
             <div class="form-group">
               <label class="form-label" data-translate="form_email">Email</label>
-              <input type="email" id="inputEmail" class="form-input" placeholder="hello@example.com">
+              <input type="email" id="inputEmail" class="form-input" placeholder="">
             </div>
             <div class="form-group">
               <label class="form-label" data-translate="form_pass">Password</label>
-              <input type="password" id="inputPass" class="form-input" placeholder="••••••••">
+              <input type="password" id="inputPass" class="form-input" placeholder="">
             </div>
             <div id="authStatus" style="color:#FF3B30; font-size:11px; margin-top:10px; min-height:16px; text-align:center;"></div>
             <button id="btnAuthAction" class="btn-primary" style="height:44px; margin-top:10px;" data-translate="btn_login_action">Login</button>
@@ -741,14 +740,14 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 <script>
 lucide.createIcons();
 // ★★★ ここにデプロイしたGASのURLを貼り付けてください ★★★
-const GAS_API_URL="https://script.google.com/macros/s/AKfycbzGwoI0ZTRricl4tzqKVpztx0q9-bra9FsWJbHt_Jw_BRaJ75Gcxw09eyhN3m07YzUPhQ/exec"; 
+const GAS_API_URL="api/proxy"; 
 let CURRENT_LANG="ja";
 let currentUser = null; 
 let pendingActivationCode = null; // 未ログイン時のコード保持用
 
 const TRANSLATIONS={
  ja:{
-  header_brand:"_.k__yu.10", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理",
+  header_brand:"kr_開発者版", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理",
   card1_title:"アクティベーション",card1_desc:"コードでコンテンツを解除",card1_btn:"引き換える",
   card2_title:"ニュース",card2_desc:"最新情報を確認",card2_btn:"確認",
   card3_title:"サポート",card3_desc:"お問い合わせはこちら",card3_btn:"接続",
@@ -761,12 +760,12 @@ const TRANSLATIONS={
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント",
   label_logged_in: "ユーザーID", label_library: "ライブラリ", label_welcome: "ようこそ", label_sync_desc: "ログインして同期を開始",
-  tab_login: "ログイン", tab_signup: "新規登録", form_email: "メールアドレス", form_pass: "パスワード",
+  tab_login: "ログイン", tab_signup: "新規登録", form_email: "ユーザー名", form_pass: "パスワード",
   btn_login_action: "ログイン", btn_signup_action: "登録する", btn_logout: "ログアウト",
   btn_open: "開く", msg_empty_lib: "コンテンツがありません"
  },
  en:{
-  header_brand:"_.k__yu.10", hero_title:"Activation", hero_sub:"Manage your access and resources.",
+  header_brand:"kr_Dev E", hero_title:"Activation", hero_sub:"Manage your access and resources.",
   card1_title:"Activation",card1_desc:"Unlock content via code",card1_btn:"Redeem",
   card2_title:"News",card2_desc:"Check updates",card2_btn:"View",
   card3_title:"Support",card3_desc:"Contact us",card3_btn:"Connect",
@@ -779,12 +778,12 @@ const TRANSLATIONS={
   footer_admin:"Enforcement Administrator",
   menu_login: "Login", menu_account: "Account",
   label_logged_in: "USER ID", label_library: "Library", label_welcome: "Welcome", label_sync_desc: "Login to sync content.",
-  tab_login: "Login", tab_signup: "Sign Up", form_email: "Email", form_pass: "Password",
+  tab_login: "Login", tab_signup: "Sign Up", form_email: "User Number", form_pass: "Password",
   btn_login_action: "Login", btn_signup_action: "Sign Up", btn_logout: "Log Out",
   btn_open: "Open", msg_empty_lib: "No content yet"
  },
  zh:{ 
-  header_brand:"_.k__yu.10", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。", 
+  header_brand:"kr_开发者版", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。", 
   card1_title:"激活",card1_desc:"解锁内容",card1_btn:"兑换代码", 
   card2_title:"新闻",card2_desc:"查看更新",card2_btn:"查看", 
   card3_title:"支持",card3_desc:"联系我们",card3_btn:"联系", 
@@ -797,12 +796,12 @@ const TRANSLATIONS={
   footer_admin:"系统管理长",
   menu_login: "登录", menu_account: "账户",
   label_logged_in: "用户ID", label_library: "我的库", label_welcome: "欢迎", label_sync_desc: "登录以同步内容",
-  tab_login: "登录", tab_signup: "注册", form_email: "电子邮箱", form_pass: "密码",
+  tab_login: "登录", tab_signup: "注册", form_email: "账户名", form_pass: "密码",
   btn_login_action: "登录", btn_signup_action: "注册", btn_logout: "登出",
   btn_open: "打开", msg_empty_lib: "暂无内容"
  },
  "zh-TW":{ 
-  header_brand:"_.k__yu.10", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。", 
+  header_brand:"kr_開發者版", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。", 
   card1_title:"激活",card1_desc:"解鎖內容",card1_btn:"兌換代碼", 
   card2_title:"新聞",card2_desc:"查看更新",card2_btn:"查看", 
   card3_title:"支援",card3_desc:"聯絡我們",card3_btn:"聯絡", 
@@ -815,12 +814,12 @@ const TRANSLATIONS={
   footer_admin:"系統管理長",
   menu_login: "登入", menu_account: "帳戶",
   label_logged_in: "用戶ID", label_library: "我的庫", label_welcome: "歡迎", label_sync_desc: "登入以同步內容",
-  tab_login: "登入", tab_signup: "註冊", form_email: "電子郵件", form_pass: "密碼",
+  tab_login: "登入", tab_signup: "註冊", form_email: "帳號名稱", form_pass: "密碼",
   btn_login_action: "登入", btn_signup_action: "註冊", btn_logout: "登出",
   btn_open: "開啟", msg_empty_lib: "暫無內容"
  },
  ko:{ 
-  header_brand:"_.k__yu.10", hero_title:"시스템 인증 포털", hero_sub:"액세스 권한 및 리소스 관리", 
+  header_brand:"kr_개발자용", hero_title:"시스템 인증 포털", hero_sub:"액세스 권한 및 리소스 관리", 
   card1_title:"활성화",card1_desc:"콘텐츠 잠금 해제",card1_btn:"코드 교환", 
   card2_title:"뉴스",card2_desc:"최신 정보",card2_btn:"보기", 
   card3_title:"지원",card3_desc:"문의하기",card3_btn:"연결", 
@@ -833,12 +832,12 @@ const TRANSLATIONS={
   footer_admin:"시스템 관리자",
   menu_login: "로그인", menu_account: "계정",
   label_logged_in: "사용자 ID", label_library: "라이브러리", label_welcome: "환영합니다", label_sync_desc: "동기화하려면 로그인",
-  tab_login: "로그인", tab_signup: "가입", form_email: "이메일", form_pass: "비밀번호",
+  tab_login: "로그인", tab_signup: "가입", form_email: "계정 이름", form_pass: "비밀번호",
   btn_login_action: "로그인", btn_signup_action: "가입", btn_logout: "로그아웃",
   btn_open: "열기", msg_empty_lib: "콘텐츠 없음"
  },
  ru:{ 
-  header_brand:"_.k__yu.10", hero_title:"Активация", hero_sub:"Управление доступом и ресурсами", 
+  header_brand:"kr_Разработчик", hero_title:"Активация", hero_sub:"Управление доступом и ресурсами", 
       card1_title:"Активация",card1_desc:"Разблокировка",card1_btn:"Активируйте код", 
       card2_title:"Новости",card2_desc:"Обновления",card2_btn:"См.", 
       card3_title:"Поддержка",card3_desc:"Связь",card3_btn:"Связь", 
@@ -851,7 +850,7 @@ const TRANSLATIONS={
       footer_admin:"Администратор",
       menu_login: "Вход", menu_account: "Аккаунт",
       label_logged_in: "ID пользователя", label_library: "Библиотека", label_welcome: "Привет", label_sync_desc: "Войдите для синхронизации",
-      tab_login: "Вход", tab_signup: "Регистрация", form_email: "Email", form_pass: "Пароль",
+      tab_login: "Вход", tab_signup: "Регистрация", form_email: "Название счета", form_pass: "Пароль",
       btn_login_action: "Войти", btn_signup_action: "Создать", btn_logout: "Выйти",
       btn_open: "Открыть", msg_empty_lib: "Нет контента"
  }
@@ -869,7 +868,7 @@ const els={
  newsList: gId('newsList'), newsModal: gId('newsModal'), openNews: gId('btnOpenNews'), closeNews: gId('newsCloseX'),
  langWrapper: gId('customLangWrapper'), langTrigger: gId('langTrigger'), langMenu: gId('langMenu'), currentLangLabel: gId('currentLangLabel'),
  // Account Dropdown
- accountDropdown: gId('accountDropdown'), openAccount: gId('btnOpenAccount'), accountLabel: gId('accountLabel'),
+ accountDropdown: gId('accountDropdown'), openAccount: gId('btnOpenAccount'),
  loggedInView: gId('loggedInView'), loggedOutView: gId('loggedOutView'), displayUserId: gId('displayUserId'), 
  btnLogout: gId('btnLogout'), btnShowLibrary: gId('btnShowLibrary'), 
  // Library Modal
@@ -1241,7 +1240,7 @@ async function performAuthAction() {
 function updateAccountUI() {
   const t = TRANSLATIONS[CURRENT_LANG];
   if (currentUser) {
-    els.accountLabel.textContent = t.menu_account;
+    // els.accountLabel は削除済みのため、テキスト更新処理を削除
     els.loggedOutView.style.display = 'none';
     els.loggedInView.style.display = 'block';
     els.displayUserId.textContent = currentUser.userId;
@@ -1273,7 +1272,7 @@ function updateAccountUI() {
       lucide.createIcons();
     }
   } else {
-    els.accountLabel.textContent = t.menu_login;
+    // els.accountLabel は削除済みのため、テキスト更新処理を削除
     els.loggedOutView.style.display = 'block';
     els.loggedInView.style.display = 'none';
     const mode = document.querySelector('.auth-tab.active')?.dataset.tab || 'login';
