@@ -966,7 +966,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sLang) setInitialLanguage(sLang, true); else fetchNews();
 
   // ★重要: セッション復元 (ID/EmailのみlocalStorageから、履歴はサーバーから)
-  // 以前の user_session は使わず user_session_identity を使用
   const sUser = localStorage.getItem('user_session_identity');
   if (sUser) {
     try {
@@ -1125,13 +1124,6 @@ function updateLanguage(lang){
   if(currentUser) {
     fetchUserHistory();
   }
-}
-
-// ライブラリタイトルのリフレッシュ（サーバーから最新取得）
-async function refreshLibraryTitles() {
-    // サーバーから再取得するだけ
-    if (!currentUser) return;
-    fetchUserHistory();
 }
 
 async function fetchNews(){
@@ -1409,12 +1401,17 @@ function updateAccountUI() {
           ? `<img src="${item.imageUrl}" class="lib-card-thumb">` 
           : `<div class="lib-card-thumb" style="display:flex;align-items:center;justify-content:center;color:#999;"><i data-lucide="image"></i></div>`;
         
+        // ★修正1: ライブラリでのロック判定ロジック
         const releaseTime = item.releaseDateIso ? new Date(item.releaseDateIso).getTime() : 0;
         const isLocked = releaseTime > now;
         
+        // ★修正2: コードのハイフン表示
+        const displayCode = formatCodeInput(item.code);
+
         let btnHtml = '';
         if (isLocked) {
           hasLockedItems = true;
+          // ロック時は押せないボタン(鍵アイコン)を表示
           btnHtml = `
             <div class="lib-card-btn lib-locked-btn" 
                  data-url="${item.url}" 
@@ -1424,6 +1421,7 @@ function updateAccountUI() {
                <i data-lucide="lock" size="20"></i>
             </div>`;
         } else {
+          // 解禁済みなら通常のアクションボタン
           btnHtml = `
             <a href="${item.url}" target="_blank" class="lib-card-btn">
               <i data-lucide="${iconName}" size="20"></i>
@@ -1434,7 +1432,7 @@ function updateAccountUI() {
           <div class="lib-card-left">
             ${img}
             <div class="lib-card-info">
-              <div class="lib-card-meta">${item.date} • ${item.code}</div>
+              <div class="lib-card-meta">${item.date} • ${displayCode}</div>
               <div class="lib-card-title">${item.title}</div>
             </div>
           </div>
@@ -1444,6 +1442,7 @@ function updateAccountUI() {
       });
       lucide.createIcons();
 
+      // ロック中のアイテムがあればタイマー起動
       if (hasLockedItems) {
         startLibraryTimer();
       }
