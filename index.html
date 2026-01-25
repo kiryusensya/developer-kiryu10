@@ -1374,8 +1374,15 @@ async function performAuthAction() {
   }
 }
 
+// updateAccountUI 関数をこれに置き換えてください
+let libraryTimerId = null; // タイマー管理用の変数を追加
+
 function updateAccountUI() {
   const t = TRANSLATIONS[CURRENT_LANG];
+  
+  // 既存のタイマーがあればクリア
+  if (libraryTimerId) { clearInterval(libraryTimerId); libraryTimerId = null; }
+
   if (currentUser) {
     els.loggedOutView.style.display = 'none';
     els.loggedInView.style.display = 'block';
@@ -1386,16 +1393,44 @@ function updateAccountUI() {
     if (currentUser.history.length === 0) {
       els.libraryList.innerHTML = `<li style='text-align:center; opacity:0.5; padding:20px; font-size:13px;'>${t.msg_empty_lib}</li>`;
     } else {
+      const now = Date.now();
+      let hasLockedItems = false;
+
       currentUser.history.forEach(item => {
         const li = document.createElement('li');
         li.className = 'lib-item-card';
 
-        // ★アイコン設定
         const iconName = item.icon || 'download';
-
+        
+        // 画像の生成
         const img = item.imageUrl && item.imageUrl.startsWith('http') 
           ? `<img src="${item.imageUrl}" class="lib-card-thumb">` 
           : `<div class="lib-card-thumb" style="display:flex;align-items:center;justify-content:center;color:#999;"><i data-lucide="image"></i></div>`;
+        
+        // ★解禁判定ロジック
+        const releaseTime = item.releaseDateIso ? new Date(item.releaseDateIso).getTime() : 0;
+        const isLocked = releaseTime > now;
+        
+        let btnHtml = '';
+        if (isLocked) {
+          hasLockedItems = true;
+          // ロック時は href なしの div で表示し、ロックアイコンを表示
+          // data-release 属性に時間を埋め込んでおく
+          btnHtml = `
+            <div class="lib-card-btn lib-locked-btn" 
+                 data-url="${item.url}" 
+                 data-release="${releaseTime}"
+                 data-icon="${iconName}"
+                 style="background:rgba(128,128,128,0.2); cursor:not-allowed; opacity:0.6;">
+               <i data-lucide="lock" size="20"></i>
+            </div>`;
+        } else {
+          // 解禁済みなら通常のリンク
+          btnHtml = `
+            <a href="${item.url}" target="_blank" class="lib-card-btn">
+              <i data-lucide="${iconName}" size="20"></i>
+            </a>`;
+        }
         
         li.innerHTML = `
           <div class="lib-card-left">
@@ -1405,13 +1440,16 @@ function updateAccountUI() {
               <div class="lib-card-title">${item.title}</div>
             </div>
           </div>
-          <a href="${item.url}" target="_blank" class="lib-card-btn">
-            <i data-lucide="${iconName}" size="20"></i>
-          </a>
+          ${btnHtml}
         `;
         els.libraryList.appendChild(li);
       });
       lucide.createIcons();
+
+      // ロックされているアイテムがある場合のみタイマーを始動
+      if (hasLockedItems) {
+        startLibraryTimer();
+      }
     }
   } else {
     els.loggedOutView.style.display = 'block';
@@ -1421,13 +1459,46 @@ function updateAccountUI() {
   }
 }
 
+// ★新規追加: ライブラリ用のリアルタイム監視タイマー
+function startLibraryTimer() {
+  libraryTimerId = setInterval(() => {
+    const lockedBtns = document.querySelectorAll('.lib-locked-btn');
+    if (lockedBtns.length === 0) {
+      clearInterval(libraryTimerId); // 全て解禁されたら停止
+      return;
+    }
+
+    const now = Date.now();
+    lockedBtns.forEach(btn => {
+      const targetTime = parseInt(btn.getAttribute('data-release'), 10);
+      
+      // 時間が来たら要素を書き換える
+      if (now >= targetTime) {
+        const url = btn.getAttribute('data-url');
+        const icon = btn.getAttribute('data-icon') || 'download';
+        
+        // 新しい <a> タグを作成
+        const aTag = document.createElement('a');
+        aTag.href = url;
+        aTag.target = "_blank";
+        aTag.className = "lib-card-btn";
+        aTag.innerHTML = `<i data-lucide="${icon}" size="20"></i>`;
+        
+        // div を a タグに置換
+        btn.parentNode.replaceChild(aTag, btn);
+        lucide.createIcons();
+      }
+    });
+  }, 1000); // 1秒ごとにチェック
+}
+
 function logout() {
   localStorage.removeItem('user_session'); currentUser = null; 
   tempAdminCreds = { user: "", pass: "" }; // メモリクリア
   toggleDropdown(false); updateAccountUI();
 }
 
-// saveUnlockedItem関数内の末尾を変更
+// saveUnlockedItem 関数全体をこれに置き換えてください
 async function saveUnlockedItem(data, code) {
   if (!data.actionUrl || !currentUser) return; 
   
@@ -1438,7 +1509,9 @@ async function saveUnlockedItem(data, code) {
     date: new Date().toLocaleDateString(),
     icon: data.btnIcon || 'download',
     lang: CURRENT_LANG,
-    imageUrl: data.imageUrl 
+    imageUrl: data.imageUrl,
+    // ★ここを追加：解禁時間を保存する
+    releaseDateIso: data.releaseDateIso || null 
   };
 
   const existingIndex = currentUser.history.findIndex(h => h.code === code);
@@ -1492,6 +1565,7 @@ async function refreshLibraryTitles() {
                 item.title = data.bundleLabel || data.message;
                 if(data.imageUrl) item.imageUrl = data.imageUrl;
                 if(data.btnIcon) item.icon = data.btnIcon;
+                if(data.releaseDateIso) item.releaseDateIso = data.releaseDateIso;
                 item.lang = CURRENT_LANG;
             }
         } catch (e) {}
