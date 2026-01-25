@@ -1613,16 +1613,20 @@ async function fetchUserHistory() {
   }
 } // ← ★ここで関数を閉じる
 
-// ★強制翻訳版（判定ロジックを削除）
+// ★読み込み中アニメーション追加版
 async function refreshLibraryTitles() {
     // 履歴がない場合は何もしない
     if (!currentUser || !currentUser.history || currentUser.history.length === 0) return;
 
+    // ▼▼▼ 追加部分: ここで一旦「読み込み中...」を表示します ▼▼▼
+    const t = TRANSLATIONS[CURRENT_LANG];
+    els.libraryList.innerHTML = `<li style="text-align:center; padding:40px 0; opacity:0.6;">
+        <span class="loading-dots" style="font-size:14px; font-weight:700;">${t.lib_updating || "Updating"}</span>
+    </li>`;
+    // ▲▲▲ ここまで ▲▲▲
+
     // 非同期通信の配列を作成
     const promises = currentUser.history.map(async (item) => {
-        // 【削除】ここにあった「if (item.lang === CURRENT_LANG) return;」を消しました。
-        // これにより、どんな状態でも必ず最新の翻訳を取りに行きます。
-
         try {
             // 現在の言語(CURRENT_LANG)を指定してAPIを叩く
             const res = await fetch(`${GAS_API_URL}?key=${encodeURIComponent(item.code)}&lang=${CURRENT_LANG}&mode=check&_t=${Date.now()}`);
@@ -1647,6 +1651,19 @@ async function refreshLibraryTitles() {
             console.error("Translation update failed for:", item.code);
         }
     });
+
+    // 全ての通信が終わるのを待つ
+    await Promise.all(promises);
+
+    // データが更新されたので保存
+    localStorage.setItem('user_session', JSON.stringify(currentUser));
+
+    // 画面を再描画（ここで読み込み中表示が消え、新しいリストが出ます）
+    updateAccountUI();
+
+    // サーバー同期
+    syncHistoryToServer();
+}
 
     // 全ての通信が終わるのを待つ
     await Promise.all(promises);
