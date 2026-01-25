@@ -966,6 +966,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sLang) setInitialLanguage(sLang, true); else fetchNews();
 
   // ★重要: セッション復元 (ID/EmailのみlocalStorageから、履歴はサーバーから)
+  // 以前の user_session は使わず user_session_identity を使用
   const sUser = localStorage.getItem('user_session_identity');
   if (sUser) {
     try {
