@@ -811,6 +811,7 @@ let currentUser = null;
 let pendingActivationCode = null;
 let pendingAction = null;
 let tempAdminCreds = { user: "", pass: "" };
+let libraryTimerId = null;
 
 const TRANSLATIONS={
  ja:{
@@ -956,6 +957,33 @@ const formatCodeInput = (val) => {
  return res;
 };
 
+/* ==========================================================================
+   初期化処理 (EventListeners & Init)
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // 言語設定
+  const sLang = localStorage.getItem('user_lang');
+  if (sLang) setInitialLanguage(sLang, true); else fetchNews();
+
+  // ★重要: セッション復元 (ID/EmailのみlocalStorageから、履歴はサーバーから)
+  // 以前の user_session は使わず user_session_identity を使用
+  const sUser = localStorage.getItem('user_session_identity');
+  if (sUser) {
+    try {
+        const identity = JSON.parse(sUser);
+        currentUser = { userId: identity.userId, email: identity.email, history: [] };
+        updateAccountUI();
+        fetchUserHistory(); // サーバーから履歴取得
+    } catch(e) {
+        console.error(e);
+    }
+  }
+
+  initThemeAndParticles();
+  initCustomDropdown();
+  setupEventListeners();
+});
+
 function setupEventListeners() {
   setListener(els.openAuth, 'click', (e) => {
     if(!currentUser) { 
@@ -997,9 +1025,7 @@ function setupEventListeners() {
   setListener(els.btnShowLibrary, 'click', () => {
     toggleDropdown(false);
     els.libraryModal.classList.add('active');
-    if (typeof fetchUserHistory === 'function') {
-        fetchUserHistory();
-    }
+    fetchUserHistory(); // ★サーバーから最新履歴を取得
   });
   setListener(els.libCloseBtn, 'click', () => els.libraryModal.classList.remove('active'));
   setListener(els.libraryModal, 'click', (e) => { if(e.target === els.libraryModal) els.libraryModal.classList.remove('active'); });
@@ -1023,17 +1049,9 @@ function setupEventListeners() {
   setListener(els.btnAuthAction, 'click', performAuthAction);
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
- const sLang = localStorage.getItem('user_lang');
- const sUser = localStorage.getItem('user_session');
- if(sUser) currentUser = JSON.parse(sUser);
-
- initThemeAndParticles(); 
- initCustomDropdown();
- setupEventListeners();
- if(sLang) setInitialLanguage(sLang, true); else fetchNews();
- updateAccountUI();
-});
+/* ==========================================================================
+   データ取得・更新機能
+   ========================================================================== */
 
 function toggleDropdown(forceState) {
     if (forceState === undefined) {
@@ -1104,43 +1122,16 @@ function updateLanguage(lang){
   
   updateAccountUI();
  
-  if(currentUser && currentUser.history && currentUser.history.length > 0) {
-    refreshLibraryTitles();
+  if(currentUser) {
+    fetchUserHistory();
   }
 }
 
+// ライブラリタイトルのリフレッシュ（サーバーから最新取得）
 async function refreshLibraryTitles() {
-    if (!currentUser || !currentUser.history || currentUser.history.length === 0) return;
-
-    const t = TRANSLATIONS[CURRENT_LANG];
-    if (els.libraryList) {
-        els.libraryList.innerHTML = `<li style="text-align:center; padding:40px 0; opacity:0.6;">
-            <span class="loading-dots" style="font-size:14px; font-weight:700;">${t.lib_updating || "Updating"}</span>
-        </li>`;
-    }
-
-    const promises = currentUser.history.map(async (item) => {
-        try {
-            const res = await fetch(`${GAS_API_URL}?key=${encodeURIComponent(item.code)}&lang=${CURRENT_LANG}&mode=check&_t=${Date.now()}`);
-            const data = await res.json();
-
-            if (data.success) {
-                item.title = data.bundleLabel || data.message;
-                item.lang = CURRENT_LANG;
-                if(data.imageUrl) item.imageUrl = data.imageUrl;
-                if(data.btnIcon) item.icon = data.btnIcon;
-                if(data.releaseDateIso) item.releaseDateIso = data.releaseDateIso;
-                if(data.actionUrl) item.url = data.actionUrl;
-            }
-        } catch (e) {
-            console.error("Translation update failed for:", item.code);
-        }
-    });
-
-    await Promise.all(promises);
-    localStorage.setItem('user_session', JSON.stringify(currentUser));
-    updateAccountUI();
-    syncHistoryToServer();
+    // サーバーから再取得するだけ
+    if (!currentUser) return;
+    fetchUserHistory();
 }
 
 async function fetchNews(){
@@ -1219,8 +1210,8 @@ async function performAuth(code, mode = 'check') {
 
         setupPreviewUI(d, t);
         
+        // ★UI即時反映のためメモリのみ更新（localStorage保存なし、Syncなし）
         saveUnlockedItem(d, safeCode); 
-        syncHistoryToServer();
 
         const newBtn = els.btnRedeem.cloneNode(true);
         els.btnRedeem.parentNode.replaceChild(newBtn, els.btnRedeem);
@@ -1236,7 +1227,11 @@ async function performAuth(code, mode = 'check') {
 
       } else { throw new Error(d.message); }
     } else if (mode === 'redeem') {
-      if (d.success) { transitionToFinal(d); } 
+      if (d.success) { 
+        transitionToFinal(d); 
+        // 念のため再更新
+        saveUnlockedItem(d, safeCode);
+      } 
       else {
         els.btnRedeem.disabled = false;
         els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
@@ -1264,7 +1259,7 @@ async function performAuth(code, mode = 'check') {
 
 function setupPreviewUI(d, t) {
  els.sBadge.classList.remove('visible'); els.btnRedeem.style.display = 'flex'; els.btnDownload.style.display = 'none'; 
- els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                   
+ els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                    
  els.sTitle.textContent = t.success_title_preview; 
  els.sProdName.textContent = d.bundleLabel; els.sNameDisp.textContent = d.message;        
  els.sExtra.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : ""; 
@@ -1300,7 +1295,6 @@ function checkDownloadUrl(initialData) {
      els.btnDownload.innerHTML = `<span>${labelText}</span> <i data-lucide="${iconType}" size="18"></i>`;
      lucide.createIcons();
      saveUnlockedItem(currentData, els.code.value.trim());
-     syncHistoryToServer();
      return; 
    } 
 
@@ -1353,9 +1347,16 @@ async function performAuthAction() {
         return; 
       }
 
+      // ログイン成功: メモリ上には履歴を持たせる
       currentUser = { userId: data.userId, email: email, history: data.history || [] };
-      localStorage.setItem('user_session', JSON.stringify(currentUser));
+      
+      // ★localStorageにはID情報のみ保存
+      localStorage.setItem('user_session_identity', JSON.stringify({ userId: data.userId, email: email }));
+      
       updateAccountUI();
+      // サーバーから最新情報を取得
+      fetchUserHistory();
+      
       els.email.value = ""; els.pass.value = "";
       
       if (pendingActivationCode) {
@@ -1384,9 +1385,6 @@ async function performAuthAction() {
   }
 }
 
-// updateAccountUI 関数
-let libraryTimerId = null;
-
 function updateAccountUI() {
   const t = TRANSLATIONS[CURRENT_LANG];
   if (libraryTimerId) { clearInterval(libraryTimerId); libraryTimerId = null; }
@@ -1397,7 +1395,7 @@ function updateAccountUI() {
     if(els.displayUserEmail) els.displayUserEmail.textContent = currentUser.email || '-';
     
     els.libraryList.innerHTML = "";
-    if (currentUser.history.length === 0) {
+    if (!currentUser.history || currentUser.history.length === 0) {
       els.libraryList.innerHTML = `<li style='text-align:center; opacity:0.5; padding:20px; font-size:13px;'>${t.msg_empty_lib}</li>`;
     } else {
       const now = Date.now();
@@ -1458,12 +1456,58 @@ function updateAccountUI() {
   }
 }
 
+function startLibraryTimer() {
+    if (libraryTimerId) clearInterval(libraryTimerId);
+    
+    // ロックされたアイテムがあるか確認
+    const lockedBtns = document.querySelectorAll('.lib-locked-btn');
+    if (lockedBtns.length === 0) return;
+
+    libraryTimerId = setInterval(() => {
+        const now = Date.now();
+        let stillHasLocked = false;
+        
+        lockedBtns.forEach(btn => {
+            const releaseTime = parseInt(btn.dataset.release);
+            if (releaseTime <= now) {
+                // 時間経過でアンロック: ボタンを書き換える
+                const url = btn.dataset.url;
+                const icon = btn.dataset.icon;
+                
+                // 親要素を取得してボタンを置換
+                const parentLi = btn.parentElement; 
+                if (parentLi) {
+                    const newBtn = document.createElement('a');
+                    newBtn.href = url;
+                    newBtn.target = "_blank";
+                    newBtn.className = "lib-card-btn";
+                    newBtn.innerHTML = `<i data-lucide="${icon}" size="20"></i>`;
+                    
+                    // 古いボタンを削除して新しいボタンを追加
+                    btn.remove();
+                    parentLi.appendChild(newBtn);
+                    lucide.createIcons();
+                }
+            } else {
+                stillHasLocked = true;
+            }
+        });
+
+        if (!stillHasLocked) {
+            clearInterval(libraryTimerId);
+            libraryTimerId = null;
+        }
+    }, 1000);
+}
+
 function logout() {
-  localStorage.removeItem('user_session'); currentUser = null; 
+  localStorage.removeItem('user_session_identity'); // ★ID情報のみ削除
+  currentUser = null; 
   tempAdminCreds = { user: "", pass: "" }; 
   toggleDropdown(false); updateAccountUI();
 }
 
+// メモリ上の履歴のみ更新する（ローカルストレージには保存しない）
 async function saveUnlockedItem(data, code) {
   if (!currentUser) return;
   const newItem = {
@@ -1477,33 +1521,36 @@ async function saveUnlockedItem(data, code) {
     releaseDateIso: data.releaseDateIso || null 
   };
   const existingIndex = currentUser.history.findIndex(h => h.code === code);
-  if (existingIndex > -1) { currentUser.history[existingIndex] = newItem; } 
-  else { currentUser.history.unshift(newItem); }
+  if (existingIndex > -1) { currentUser.history.splice(existingIndex, 1); } 
+  currentUser.history.unshift(newItem);
   
-  localStorage.setItem('user_session', JSON.stringify(currentUser));
-  syncHistoryToServer();
+  // ★localStorage.setItem はしない
+  // ★syncHistoryToServer も呼ばない (サーバー側で完了済み)
+  updateAccountUI();
 }
 
 async function syncHistoryToServer() {
-  if (!currentUser) return;
-  try {
-    const jsonHistory = JSON.stringify(currentUser.history);
-    await fetch(`${GAS_API_URL}?type=sync&userId=${currentUser.userId}&history=${encodeURIComponent(jsonHistory)}`);
-  } catch(e) {}
+  // ★この機能はサーバー側実装により不要になったため、空処理にする
+  return;
 }
 
 async function fetchUserHistory() {
   if (!currentUser) return;
   const t = TRANSLATIONS[CURRENT_LANG]; 
-  els.libraryList.innerHTML = `<li style="text-align:center;padding:20px;opacity:0.5;">
-    <span class="loading-dots">${t.lib_updating}</span>
-  </li>`;
+  // ライブラリ表示中の場合のみローディング表示
+  if(els.libraryList.offsetParent !== null) {
+      els.libraryList.innerHTML = `<li style="text-align:center;padding:20px;opacity:0.5;">
+        <span class="loading-dots">${t.lib_updating}</span>
+      </li>`;
+  }
+
   try { 
-    const res = await fetch(`${GAS_API_URL}?type=get_history&userId=${currentUser.userId}&_t=${Date.now()}`);
+    const res = await fetch(`${GAS_API_URL}?type=get_history&userId=${currentUser.userId}&lang=${CURRENT_LANG}&_t=${Date.now()}`);
     const data = await res.json();
     if (data.success && Array.isArray(data.history)) {
+      // サーバーの履歴を正としてメモリ反映
       currentUser.history = data.history;
-      localStorage.setItem('user_session', JSON.stringify(currentUser));
+      // ★localStorageには保存しない
       updateAccountUI();
     }
   } catch (e) {
