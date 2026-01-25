@@ -1105,18 +1105,45 @@ function initCustomDropdown() {
     document.addEventListener('click', (e) => { if (!els.langWrapper.contains(e.target)) els.langMenu.classList.remove('open'); });
 }
 
-function updateLanguage(lang){
- CURRENT_LANG=lang; document.documentElement.lang=lang; const t=TRANSLATIONS[lang]; if(!t)return;
- document.querySelectorAll('[data-translate]').forEach(el=>{ const k=el.getAttribute('data-translate'); if(k!=='news_content'&&t[k]) el.innerHTML=t[k]; });
- 
- const langMap = { ja: '日本語', en: 'English', zh: '简体中文', 'zh-TW': '繁體中文', ko: '한국어', ru: 'Русский' };
- if(els.currentLangLabel) els.currentLangLabel.textContent = langMap[lang] || 'Language';
- if(t.modal_placeholder) els.code.placeholder=t.modal_placeholder;
- updateAccountUI();
- 
- if(currentUser && currentUser.history && currentUser.history.length > 0) {
-   refreshLibraryTitles();
- }
+// この関数で上書きしてください
+async function refreshLibraryTitles() {
+    // 履歴がない場合は何もしない
+    if (!currentUser || !currentUser.history || currentUser.history.length === 0) return;
+
+    // 非同期通信の配列を作成
+    const promises = currentUser.history.map(async (item) => {
+        try {
+            // ★ポイント: 最新の言語(CURRENT_LANG)を指定してAPIを叩く
+            const res = await fetch(`${GAS_API_URL}?key=${encodeURIComponent(item.code)}&lang=${CURRENT_LANG}&mode=check&_t=${Date.now()}`);
+            const data = await res.json();
+
+            if (data.success) {
+                // 取得した新しい言語のタイトルで上書きする
+                item.title = data.bundleLabel || data.message;
+                
+                // 言語タグも更新しておく
+                item.lang = CURRENT_LANG;
+
+                // 必要であれば画像やアイコンも最新にする
+                if(data.imageUrl) item.imageUrl = data.imageUrl;
+                if(data.btnIcon) item.icon = data.btnIcon;
+            }
+        } catch (e) {
+            console.error("Translation update failed for:", item.code);
+        }
+    });
+
+    // 全ての通信が終わるのを待つ
+    await Promise.all(promises);
+
+    // ★重要: データが更新されたので保存する
+    localStorage.setItem('user_session', JSON.stringify(currentUser));
+
+    // ★最重要: 画面をもう一度更新して、新しいタイトルを表示させる
+    updateAccountUI();
+
+    // 念のためサーバー側の履歴も同期しておく
+    syncHistoryToServer();
 }
 
 async function fetchNews(){
