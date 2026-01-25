@@ -128,8 +128,6 @@ header { padding: 24px 0; display: flex; justify-content: space-between; align-i
 
 /* Hero */
 .hero-text { margin-bottom: 40px; text-align: left; opacity: 0; animation: fadeInUp 0.8s var(--spring-ease) forwards; }
-
-/* 見切れ修正適用 */
 .hero-title {
   font-family: var(--font-stack);
   font-size: clamp(32px, 10vw, 48px); 
@@ -1105,51 +1103,65 @@ function initCustomDropdown() {
     document.addEventListener('click', (e) => { if (!els.langWrapper.contains(e.target)) els.langMenu.classList.remove('open'); });
 }
 
-// この関数で上書きしてください
-async function refreshLibraryTitles() {
-    // 履歴がない場合は何もしない
-    if (!currentUser || !currentUser.history || currentUser.history.length === 0) return;
+// ★言語切り替え時に呼ばれる関数（これが抜けていたため動作しませんでした）
+function updateLanguage(lang){
+  CURRENT_LANG = lang; 
+  document.documentElement.lang = lang; 
+  const t = TRANSLATIONS[lang]; 
+  if(!t) return;
 
-    // 非同期通信の配列を作成
+  // 静的テキストの翻訳適用
+  document.querySelectorAll('[data-translate]').forEach(el => { 
+    const k = el.getAttribute('data-translate'); 
+    if(k !== 'news_content' && t[k]) el.innerHTML = t[k]; 
+  });
+ 
+  // 言語ラベルの更新
+  const langMap = { ja: '日本語', en: 'English', zh: '简体中文', 'zh-TW': '繁體中文', ko: '한국어', ru: 'Русский' };
+  if(els.currentLangLabel) els.currentLangLabel.textContent = langMap[lang] || 'Language';
+  if(t.modal_placeholder && els.code) els.code.placeholder = t.modal_placeholder;
+  
+  // UIの更新（まずは現状のデータで描画）
+  updateAccountUI();
+ 
+  // ★ここが重要：言語切り替え時にライブラリの情報をサーバーから再取得する
+  if(currentUser && currentUser.history && currentUser.history.length > 0) {
+    refreshLibraryTitles();
+  }
+}
+
+// ★ライブラリ情報を更新する関数（完全修正版）
+async function refreshLibraryTitles() {
+    if (!currentUser || !currentUser.history || currentUser.history.length === 0) return;
+    // const t = TRANSLATIONS[CURRENT_LANG];
+    // els.libraryList.innerHTML = `<li style="text-align:center;padding:20px;opacity:0.5;"><span class="loading-dots">${t.lib_updating}</span></li>`;
     const promises = currentUser.history.map(async (item) => {
         try {
-            // ★ポイント: 最新の言語(CURRENT_LANG)を指定してAPIを叩く
             const res = await fetch(`${GAS_API_URL}?key=${encodeURIComponent(item.code)}&lang=${CURRENT_LANG}&mode=check&_t=${Date.now()}`);
             const data = await res.json();
 
             if (data.success) {
-                // 取得した新しい言語のタイトルで上書きする
                 item.title = data.bundleLabel || data.message;
-                
-                // 言語タグも更新しておく
                 item.lang = CURRENT_LANG;
-
-                // 必要であれば画像やアイコンも最新にする
                 if(data.imageUrl) item.imageUrl = data.imageUrl;
                 if(data.btnIcon) item.icon = data.btnIcon;
+                if(data.releaseDateIso) item.releaseDateIso = data.releaseDateIso;
+                if(data.actionUrl) item.url = data.actionUrl;
             }
         } catch (e) {
             console.error("Translation update failed for:", item.code);
         }
     });
 
-    // 全ての通信が終わるのを待つ
     await Promise.all(promises);
-
-    // ★重要: データが更新されたので保存する
     localStorage.setItem('user_session', JSON.stringify(currentUser));
-
-    // ★最重要: 画面をもう一度更新して、新しいタイトルを表示させる
     updateAccountUI();
-
-    // 念のためサーバー側の履歴も同期しておく
     syncHistoryToServer();
 }
 
 async function fetchNews(){
  if(!els.newsList)return;
  const t=TRANSLATIONS[CURRENT_LANG];
- // ここを変更: スピナーをloading-dotsに変更
  els.newsList.innerHTML=`<li style="text-align:center;opacity:0.6;padding:20px;"><span class="loading-dots">${t.news_loading||"Loading"}</span></li>`;
  try{
  const d = await(await fetch(`${GAS_API_URL}?type=news&lang=${CURRENT_LANG}&_t=${Date.now()}`)).json();
@@ -1187,14 +1199,11 @@ async function performAuth(code, mode = 'check') {
   const t = TRANSLATIONS[CURRENT_LANG];
   const thisRequestId = currentAuthRequestId;
   const uId = currentUser ? currentUser.userId : "GUEST";
-  
-  // 入力値サニタイズ（サーバー送信前に余分な文字を削除）
   const safeCode = (code || "").replace(/[^A-Za-z0-9\-]/g, "").trim();
 
   if (mode === 'check') {
     if(!safeCode) return;
     els.code.disabled = true; els.confirm.disabled = true;
-    // ここを変更: スピナーをloading-dotsに変更
     els.confirm.innerHTML = `<span class="loading-dots">${t.msg_verifying}</span>`;
     els.status.innerHTML = "";
   } else if (mode === 'redeem') {
