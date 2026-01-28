@@ -761,6 +761,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
           <div style="flex:1;">
             <div class="success-badge" id="successBadge"><i data-lucide="check" size="14"></i> <span data-translate="success_badge">Code Verified</span></div>
             <h3 id="successTitle" class="content-title"></h3>
+            <p id="successSubText" style="color:var(--modal-text-sub); margin:-15px 0 16px 2px; font-size:13px; line-height:1.5;"></p>
             <div id="infoSection">
                <div id="successNameDisplay" class="message-title">...</div>
                <div class="info-box"><div id="successExtraInfo" class="info-extra"></div></div>
@@ -803,9 +804,9 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 </div>
 
 <script>
-lucide.createIcons();
 // ★★★ ここにデプロイしたGASのURLを貼り付けてください ★★★
 const GAS_API_URL="api/proxy"; 
+
 let CURRENT_LANG="ja";
 let currentUser = null; 
 let pendingActivationCode = null;
@@ -813,6 +814,11 @@ let pendingAction = null;
 let tempAdminCreds = { user: "", pass: "" };
 let libraryTimerId = null;
 
+// ヘルパー関数
+const gId = (i) => document.getElementById(i);
+const setListener = (el, ev, fn) => { if(el) el.addEventListener(ev, fn); };
+
+// 翻訳データ定義
 const TRANSLATIONS={
  ja:{
   header_brand:"kr_開発者版", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理",
@@ -823,7 +829,10 @@ const TRANSLATIONS={
   msg_verifying:"確認中",msg_success_btn:"成功",
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました",
   success_badge:"コードが認証されました。",
-  success_title_preview:"コンテンツの確認", success_title_final:"認証成功!!",
+  success_title_preview:"コンテンツの確認", 
+  msg_preview_sub:"続行すると以下のコンテンツ受け取ります:", 
+  success_title_final:"認証成功!!", 
+  msg_success_sub: "このコードで以下のコンテンツが認証されました:",
   btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード",news_title:"最新情報",news_label:"履歴",news_loading:"更新を確認中",
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント", lib_updating: "読み込み中",
@@ -842,7 +851,10 @@ const TRANSLATIONS={
   msg_verifying:"Checking",msg_success_btn:"Success",
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred",
   success_badge:"Code Verified",
-  success_title_preview:"Confirm Content", success_title_final:"Activation Successful!!",
+  success_title_preview:"Confirm Content", 
+  msg_preview_sub: "The code will activate the following contents:", 
+  success_title_final:"Activation Successful!!", 
+  msg_success_sub: "The code has activated the following contents:",
   btn_close:"Close",btn_continue:"Confirm",btn_download:"Download",news_title:"News",news_label:"Log",news_loading:"Checking for updates",
   footer_admin:"Enforcement Administrator",
   menu_login: "Login", menu_account: "Account", lib_updating: "Loading",
@@ -861,7 +873,10 @@ const TRANSLATIONS={
   msg_verifying:"正在检查",msg_success_btn:"成功", 
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
   success_badge:"代码已检查",
-  success_title_preview:"确认内容", success_title_final:"激活成功!!",
+  success_title_preview:"确认内容", 
+  msg_preview_sub: "该代码将激活以下内容:", 
+  success_title_final:"激活成功!!", 
+  msg_success_sub: "该代码已激活以下内容:",
   btn_close:"关闭",btn_continue:"确认",btn_download:"下载",news_title:"最新消息",news_label:"日志",news_loading:"正在检查更新", 
   footer_admin:"系统管理长",
   menu_login: "登录", menu_account: "账户", lib_updating: "正在加载",
@@ -880,7 +895,10 @@ const TRANSLATIONS={
   msg_verifying:"正在檢查",msg_success_btn:"成功", 
   msg_invalid:"該代碼無效",msg_used:"該代碼已被使用",msg_error:"錯誤", 
   success_badge:"代碼已檢查",
-  success_title_preview:"確認內容", success_title_final:"激活成功!!",
+  success_title_preview:"確認內容", 
+  msg_preview_sub: "該代碼將激活以下內容:", 
+  success_title_final:"激活成功!!", 
+  msg_success_sub: "該程式碼已啟動以下內容:",
   btn_close:"關閉",btn_continue:"確認",btn_download:"下載",news_title:"最新消息",news_label:"日誌",news_loading:"正在檢查更新", 
   footer_admin:"系統管理長",
   menu_login: "登入", menu_account: "帳戶", lib_updating: "載入中",
@@ -893,13 +911,16 @@ const TRANSLATIONS={
  ko:{ 
   header_brand:"kr_개발자용", hero_title:"시스템 인증 포털", hero_sub:"액세스 권한 및 리소스 관리", 
   card1_title:"활성화",card1_desc:"콘텐츠 잠금 해제",card1_btn:"코드 교환", 
-  card2_title:"ニュース",card2_desc:"최신 정보",card2_btn:"보기", 
+  card2_title:"뉴스",card2_desc:"최신 정보",card2_btn:"보기", 
   card3_title:"지원",card3_desc:"문의하기",card3_btn:"연결", 
   modal_title:"활성화",modal_sub:"코드 입력",modal_placeholder:"활성화 코드",modal_btn_auth:"확인", 
   msg_verifying:"확인 중",msg_success_btn:"성공", 
   msg_invalid:"유효하지 않은 코드입니다.",msg_used:"이미 사용된 코드입니다.",msg_error:"오류", 
   success_badge:"코드 인증됨",
-  success_title_preview:"콘텐츠 확인", success_title_final:"활성화 완료!!",
+  success_title_preview:"콘텐츠 확인", 
+  msg_preview_sub: "해당 코드를 실행하면 다음 콘텐츠가 활성화됩니다:", 
+  success_title_final:"활성화 완료!!", 
+  msg_success_sub: "해당 코드가 다음 콘텐츠를 활성화했습니다:",
   btn_close:"닫기",btn_continue:"확인",btn_download:"다운로드",news_title:"뉴스",news_label:"로그",news_loading:"업데이트 확인 중", 
   footer_admin:"시스템 관리자",
   menu_login: "로그인", menu_account: "계정", lib_updating: "로딩 중",
@@ -918,7 +939,10 @@ const TRANSLATIONS={
       msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
       msg_invalid:"Неверный код",msg_used:"Этот код уже был использован.",msg_error:"Ошибка", 
       success_badge:"Подтверждено", 
-      success_title_preview:"Проверка контента", success_title_final:"Успешно!!",
+      success_title_preview:"Проверка контента", 
+      msg_preview_sub: "Данный код активирует следующее содержимое:", 
+      success_title_final:"Успешно!!", 
+      msg_success_sub: "Код активировал следующее содержимое:",
       btn_close:"Закрыть",btn_continue:"обмен",btn_download:"Скачать",news_title:"Новости",news_label:"Лог",news_loading:"Проверка обновлений", 
       footer_admin:"Администратор",
       menu_login: "Вход", menu_account: "Аккауント", lib_updating: "Загрузка",
@@ -930,13 +954,12 @@ const TRANSLATIONS={
  }
 };
 
-const gId=i=>document.getElementById(i);
-const setListener=(el,ev,fn)=>{if(el)el.addEventListener(ev,fn)};
+// 要素の定義
 const els={
  overlay: gId('langSelectionOverlay'), main: gId('mainContainer'), 
  authModal: gId('authModal'), modalCon: gId('modalContainer'), openAuth: gId('btnOpenModal'), closeAuth: gId('modalCloseBtn'), closeSub: gId('modalCloseSub'),
  inputPh: gId('inputPhase'), successPh: gId('successPhase'), code: gId('activationCode'), confirm: gId('btnConfirm'), status: gId('statusContainer'),
- sImg: gId('successImage'), sTitle: gId('successTitle'), sProdName: gId('productName'), sProdDisplay: gId('productDisplay'), 
+ sImg: gId('successImage'), sTitle: gId('successTitle'), sSubText: gId('successSubText'), sProdName: gId('productName'), sProdDisplay: gId('productDisplay'), 
  sInfoSec: gId('infoSection'), sNameDisp: gId('successNameDisplay'), sExtra: gId('successExtraInfo'), sBadge: gId('successBadge'), 
  btnRedeem: gId('btnRedeem'), btnDownload: gId('btnDownload'),
  newsList: gId('newsList'), newsModal: gId('newsModal'), openNews: gId('btnOpenNews'), closeNews: gId('newsCloseX'),
@@ -952,17 +975,17 @@ const els={
 
 // コード入力時にハイフンを入れるフォーマット（入力用）
 const formatCodeInput = (val) => {
+ if(!val) return "";
  val = val.toUpperCase().replace(/[^A-Z0-9]/g, '');
  let sz = val.length >= 25 ? 5 : 4, res = '';
  for(let i=0; i<val.length; i++) res += (i>0 && i%sz===0 ? '-' : '') + val[i];
  return res;
 };
 
-// 【新規追加】ライブラリ表示用にコードにハイフンを入れる関数
+// ライブラリ表示用にコードにハイフンを入れる関数
 const formatDisplayCode = (code) => {
   if (!code) return "";
   const clean = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  // 5文字または4文字ごとにハイフンを入れる（入力時のロジックに合わせる）
   const sz = clean.length >= 25 ? 5 : 4;
   let res = '';
   for(let i=0; i<clean.length; i++) {
@@ -975,6 +998,9 @@ const formatDisplayCode = (code) => {
    初期化処理 (EventListeners & Init)
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
+  // アイコン初期化（安全策）
+  try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+
   const sLang = localStorage.getItem('user_lang');
   if (sLang) setInitialLanguage(sLang, true); else fetchNews();
 
@@ -1075,7 +1101,9 @@ function setInitialLanguage(lang, immediate = false){
 }
 
 function showMainContent(){
- gId('mainContainer').style.opacity = '1'; lucide.createIcons();
+ gId('mainContainer').style.opacity = '1'; 
+ try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+ 
  const urlCode = new URLSearchParams(window.location.search).get('code');
  if(urlCode) {
    setTimeout(()=>{ 
@@ -1155,6 +1183,7 @@ function resetAuthModal(){
   els.confirm.textContent=TRANSLATIONS[CURRENT_LANG].modal_btn_auth;
   els.status.innerHTML=""; els.modalCon.classList.remove('is-success'); els.sImg.src="";
   els.sTitle.style.display = ''; els.sTitle.style.color = '';
+  els.sSubText.innerHTML = ''; // Reset subtext
   els.sInfoSec.style.display = 'block'; els.sProdDisplay.style.display = 'none'; 
   els.sBadge.classList.remove('visible');
   els.btnRedeem.disabled = false;
@@ -1162,7 +1191,7 @@ function resetAuthModal(){
   if(els.btnRedeem.parentNode) els.btnRedeem.parentNode.replaceChild(newBtn, els.btnRedeem);
   els.btnRedeem = newBtn;
   els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${TRANSLATIONS[CURRENT_LANG].btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
-  lucide.createIcons();
+  try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
 async function performAuth(code, mode = 'check') {
@@ -1189,7 +1218,7 @@ async function performAuth(code, mode = 'check') {
     if (mode === 'check') {
       if (d.success) {
         els.confirm.innerHTML = `<i data-lucide="check"></i>`;
-        lucide.createIcons(); 
+        try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         await new Promise(r => setTimeout(r, 600));
         if (thisRequestId !== currentAuthRequestId) return;
         
@@ -1209,7 +1238,7 @@ async function performAuth(code, mode = 'check') {
         els.btnRedeem.parentNode.replaceChild(newBtn, els.btnRedeem);
         els.btnRedeem = newBtn;
         els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
-        lucide.createIcons();
+        try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         els.btnRedeem.disabled = false;
         els.btnRedeem.addEventListener('click', (e) => { 
             e.preventDefault();
@@ -1224,7 +1253,7 @@ async function performAuth(code, mode = 'check') {
       } else {
         els.btnRedeem.disabled = false;
         els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
-        lucide.createIcons();
+        try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         alert(d.message === "This code has already been used." ? t.msg_used : t.msg_error);
       }
     }
@@ -1240,7 +1269,7 @@ async function performAuth(code, mode = 'check') {
     } else {
       els.btnRedeem.disabled = false;
       els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
-      lucide.createIcons();
+      try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
       alert(t.msg_error);
     }
   }
@@ -1248,12 +1277,16 @@ async function performAuth(code, mode = 'check') {
 
 function setupPreviewUI(d, t) {
  els.sBadge.classList.remove('visible'); els.btnRedeem.style.display = 'flex'; els.btnDownload.style.display = 'none'; 
- els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                    
+ els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                     
  els.sTitle.textContent = t.success_title_preview; 
+ 
+ // テキスト設定（エラー回避）
+ els.sSubText.innerHTML = t.msg_preview_sub || "Please verify content";
+ 
  els.sProdName.textContent = d.bundleLabel; els.sNameDisp.textContent = d.message;        
  els.sExtra.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : ""; 
  if(d.imageUrl && d.imageUrl.startsWith("http")){ els.sImg.src=d.imageUrl; } else { els.sImg.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; } 
- lucide.createIcons();
+ try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
 function transitionToFinal(d) {
@@ -1262,6 +1295,10 @@ function transitionToFinal(d) {
   els.btnDownload.removeAttribute('href'); els.btnDownload.innerHTML = `<div class="loading-spinner"></div>`;
   els.btnRedeem.style.display = 'none'; els.sInfoSec.style.display = 'none'; els.sBadge.classList.remove('visible');
   els.sTitle.style.display = 'block'; els.sTitle.textContent = t.success_title_final; els.sTitle.style.color = "#04CF22";
+  
+  // テキスト設定（エラー回避）
+  els.sSubText.innerHTML = t.msg_success_sub || "Code verified.";
+  
   els.sProdDisplay.style.display = 'block'; 
   checkDownloadUrl(d);
 }
@@ -1296,7 +1333,7 @@ function checkDownloadUrl(initialData) {
      const labelText = currentData.buttonLabel || "Download";
      const iconType = currentData.btnIcon || 'download';
      els.btnDownload.innerHTML = `<span>${labelText}</span> <i data-lucide="${iconType}" size="18"></i>`;
-     lucide.createIcons();
+     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
      saveUnlockedItem(currentData, els.code.value.trim());
      return; 
    } 
@@ -1405,7 +1442,7 @@ function updateAccountUI() {
         els.libraryList.appendChild(li);
         if (isLocked) hasLockedItems = true;
       });
-      lucide.createIcons();
+      try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
       if (hasLockedItems) startLibraryTimer();
     }
   } else {
@@ -1426,7 +1463,8 @@ function startLibraryTimer() {
                     const newBtn = document.createElement('a');
                     newBtn.href = btn.dataset.url; newBtn.target = "_blank"; newBtn.className = "lib-card-btn";
                     newBtn.innerHTML = `<i data-lucide="${btn.dataset.icon}" size="20"></i>`;
-                    btn.remove(); parent.appendChild(newBtn); lucide.createIcons();
+                    btn.remove(); parent.appendChild(newBtn); 
+                    try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
                 }
             } else { stillHasLocked = true; }
         });
@@ -1495,7 +1533,8 @@ function initThemeAndParticles() {
   function applyTheme(theme) {
     htmlEl.setAttribute('data-theme', theme);
     icons.forEach(ic => { if(ic) ic.setAttribute('data-lucide', theme === 'light' ? 'sun' : 'moon'); });
-    particleHue = theme === 'light' ? 210 : 220; lucide.createIcons();
+    particleHue = theme === 'light' ? 210 : 220; 
+    try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
   }
   const saved = localStorage.getItem('user_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   applyTheme(saved);
