@@ -758,17 +758,10 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     align-items: center;
     padding: 20px; 
     overflow: hidden;
+    /* 背景を真っ黒に */
+    background: #000;
   }
   
-  /* Background Video */
-  .mobile-bg-video {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover;
-    z-index: 1; /* 最背面 */
-    opacity: 0.6; /* 少し暗くする */
-  }
-
   /* Reset body styles for this view */
   body {
     background-color: #000 !important;
@@ -824,7 +817,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     max-width: 45%; 
     max-height: 45%; 
     mix-blend-mode: multiply; 
-    z-index: 5; /* 動画より上、テキストより下 */
+    z-index: 5;
   }
   
   .hand-1 { top: 2%; left: 2%; transform: rotate(-20deg); }
@@ -835,16 +828,51 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   .hand-6 { top: 55%; right: -20%; transform: rotate(-100deg) scale(1.2); }
   .hand-7 { top: -10%; left: 45%; transform: translateX(-50%) rotate(170deg) scale(0.8); }
   .hand-8 { bottom: -15%; right: 35%; transform: rotate(150deg) scale(0.9); }
+
+  /* --- NINJA GAIDEN風エフェクト --- */
+  /* 1. 斬撃エフェクト (Slash) */
+  .slash-effect {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 200%; height: 5px;
+    background: #fff;
+    transform: translate(-50%, -50%) rotate(-30deg) scaleX(0);
+    box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #ff0000;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  @keyframes slash-anim {
+    0% { transform: translate(-50%, -50%) rotate(-30deg) scaleX(0); opacity: 1; }
+    20% { transform: translate(-50%, -50%) rotate(-30deg) scaleX(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) rotate(-30deg) scaleX(1); opacity: 0; }
+  }
+
+  /* 2. 激しい血飛沫 (Intense Splatter) */
+  .blood-splatter-intense {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 20px; height: 20px;
+    background-color: #8a0303;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(1px);
+    opacity: 1;
+    pointer-events: none;
+    z-index: 15;
+    box-shadow: inset 0 0 10px #330000;
+  }
+
+  @keyframes splatter-explode {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(var(--scale)); opacity: 0; }
+  }
 }
 </style>
 </head>
 <body>
 
 <div id="mobile-warning">
-  <video class="mobile-bg-video" autoplay loop muted playsinline>
-    <source src="background_video.mp4" type="video/mp4">
-  </video>
-
   <img src="image_3.png" class="bloody-hand-img hand-1" alt="shadow hand">
   <img src="image_3.png" class="bloody-hand-img hand-2" alt="shadow hand">
   <img src="image_3.png" class="bloody-hand-img hand-3" alt="shadow hand">
@@ -918,7 +946,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
             </div>
             
             <div style="margin-top:20px; font-size:10px; opacity:0.3; text-align:center;">
-                © 2026 kiryu-sensya
+                v2.0.26<br>© 2026 kiryu-sensya
            </div>
         </div>
     </aside>
@@ -1074,7 +1102,8 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 </div>
 
 <script>
-const GAS_API_URL="api/proxy"; 
+// ★★★ ここにデプロイしたGASのURLを貼り付けてください ★★★
+const GAS_API_URL="https://script.google.com/macros/s/AKfycbzFPhesEEYoLsLHX74hF0lHZcplFxGKahtebtd04GhTzv4ESSouDEGgDdk2wViJOy--HA/exec"; 
 
 let CURRENT_LANG="ja";
 let currentUser = null; 
@@ -1094,7 +1123,7 @@ const setListener = (el, ev, fn) => { if(el) el.addEventListener(ev, fn); };
 const TRANSLATIONS={
  ja:{
   header_brand:"kr_開発者版", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理。プロダクトコードを入力してコンテンツを解除してください。",
-  card1_title:"ホーム",card2_title:"ニュース",card3_title:"サポート",
+  card1_title:"アクティベーション",card2_title:"ニュース",card3_title:"サポート",
   modal_title:"アクティベーション",modal_sub:"コードを入力してください",modal_placeholder:"アクティベーションコード",modal_btn_auth:"確認",
   msg_verifying:"確認中",msg_success_btn:"成功",
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました",
@@ -1103,7 +1132,7 @@ const TRANSLATIONS={
   msg_preview_sub:"続行すると以下のコンテンツを受け取ります:", 
   success_title_final:"認証成功!!", 
   msg_success_sub: "このコードで以下のコンテンツが認証されました:",
-  btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード",news_title:"最新情報",news_loading:"更新を確認中",
+  btn_close:"閉じる",btn_continue:"認証(続行)",btn_download:"ダウンロード",news_title:"最新情報",news_loading:"更新を確認中",
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント", lib_updating: "読み込み中",
   label_logged_in: "ユーザーID", label_library: "ライブラリ", label_welcome: "ようこそ", label_sync_desc: "ログインして同期を開始",
@@ -1117,7 +1146,7 @@ const TRANSLATIONS={
  },
  en:{
   header_brand:"kr_Dev E", hero_title:"Activation", hero_sub:"Manage your access and resources. Redeem your product code to unlock exclusive content.",
-  card1_title:"Home",card2_title:"News",card3_title:"Support",
+  card1_title:"Activation",card2_title:"News",card3_title:"Support",
   modal_title:"Activation",modal_sub:"Enter Activtion code",modal_placeholder:"Activation Code",modal_btn_auth:"CHECK",
   msg_verifying:"Checking",msg_success_btn:"Success",
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred",
@@ -1140,7 +1169,7 @@ const TRANSLATIONS={
  },
  zh:{ 
   header_brand:"kr_开发者版", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。兑换产品代码以解锁独家内容。", 
-  card1_title:"首页",card2_title:"新闻",card3_title:"支持", 
+  card1_title:"激活",card2_title:"新闻",card3_title:"支持", 
   modal_title:"激活",modal_sub:"输入激活码",modal_placeholder:"激活码",modal_btn_auth:"检查", 
   msg_verifying:"正在检查",msg_success_btn:"成功", 
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
@@ -1163,7 +1192,7 @@ const TRANSLATIONS={
  },
  "zh-TW":{ 
   header_brand:"kr_開發者版", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。兌換產品代碼以解鎖獨家內容。", 
-  card1_title:"首頁",card2_title:"新聞",card3_title:"支援", 
+  card1_title:"激活",card2_title:"新聞",card3_title:"支援", 
   modal_title:"激活",modal_sub:"輸入啟用碼",modal_placeholder:"啟動碼",modal_btn_auth:"檢查", 
   msg_verifying:"正在檢查",msg_success_btn:"成功", 
   msg_invalid:"該代碼無效",msg_used:"該代碼已被使用",msg_error:"錯誤", 
@@ -1186,7 +1215,7 @@ const TRANSLATIONS={
  },
  ko:{ 
   header_brand:"kr_개발자용", hero_title:"시스템 인증 포털", hero_sub:"액세스 권한 및 리소스 관리. 제품 코드를 사용하여 콘텐츠 잠금을 해제하세요.", 
-  card1_title:"메인 페이지",card2_title:"뉴스",card3_title:"지원", 
+  card1_title:"활성화",card2_title:"뉴스",card3_title:"지원", 
   modal_title:"활성화",modal_sub:"코드 입력",modal_placeholder:"활성화 코드",modal_btn_auth:"확인", 
   msg_verifying:"확인 중",msg_success_btn:"성공", 
   msg_invalid:"유효하지 않은 코드입니다.",msg_used:"이미 사용된 코드입니다.",msg_error:"오류", 
@@ -1209,7 +1238,7 @@ const TRANSLATIONS={
  },
  ru:{ 
   header_brand:"kr_Разработчик", hero_title:"Активация", hero_sub:"Управление доступом и ресурсами. Активируйте код продукта для разблокировки.", 
-  card1_title:"главная страница",card2_title:"Новости",card3_title:"Поддержка", 
+  card1_title:"Активация",card2_title:"Новости",card3_title:"Поддержка", 
   modal_title:"Проверка",modal_sub:"Введите код",modal_placeholder:"Код активации",modal_btn_auth:"Подтверждение", 
   msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
   msg_invalid:"Неверный код",msg_used:"Этот код уже был использован.",msg_error:"Ошибка", 
@@ -1263,6 +1292,12 @@ const formatCodeInput = (val) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+  
+  // スマホ判定: 768px以下の場合にNINJA GAIDEN風エフェクトを開始
+  if (window.innerWidth <= 768) {
+    initNinjaGaidenEffect();
+  }
+
   const sLang = localStorage.getItem('user_lang');
   if (sLang) setInitialLanguage(sLang, true); else fetchNews();
   const sUser = localStorage.getItem('user_session_identity');
@@ -1280,6 +1315,74 @@ document.addEventListener('DOMContentLoaded', () => {
   initCustomDropdown();
   setupEventListeners(); 
 });
+
+// --- NINJA GAIDEN風エフェクト (スマホ専用) ---
+function initNinjaGaidenEffect() {
+  const container = document.getElementById('mobile-warning');
+  if (!container || getComputedStyle(container).display === 'none') return;
+
+  // 1. 斬撃エフェクト (Slash)
+  const slash = document.createElement('div');
+  slash.classList.add('slash-effect');
+  slash.style.animation = 'slash-anim 0.4s ease-out forwards';
+  container.appendChild(slash);
+  
+  // 斬撃終了後に削除
+  setTimeout(() => slash.remove(), 400);
+
+  // 2. 激しい血飛沫 (Intense Splatter) - 斬撃の直後に発生
+  setTimeout(() => {
+    // 大量の血飛沫を一度に発生させる
+    for (let i = 0; i < 40; i++) {
+      spawnIntenseSplatter(container);
+    }
+    // 少し遅れて追加の飛沫
+    setTimeout(() => {
+        for (let i = 0; i < 20; i++) spawnIntenseSplatter(container);
+    }, 200);
+
+  }, 200); // 斬撃と少しずらす
+}
+
+function spawnIntenseSplatter(container) {
+  const splatter = document.createElement('div');
+  splatter.classList.add('blood-splatter-intense');
+  
+  // 画面中央付近から発生
+  const startX = 50 + (Math.random() * 20 - 10); // 40% - 60%
+  const startY = 50 + (Math.random() * 20 - 10); // 40% - 60%
+  splatter.style.left = startX + '%';
+  splatter.style.top = startY + '%';
+
+  // サイズをランダムに (大小織り交ぜる)
+  const size = Math.random() < 0.3 ? Math.random() * 150 + 80 : Math.random() * 40 + 10;
+  splatter.style.width = size + 'px';
+  splatter.style.height = size + 'px';
+  
+  // 形状をランダムに歪ませる
+  const borderRadius = `${Math.random()*50+25}% ${Math.random()*50+25}% ${Math.random()*50+25}% ${Math.random()*50+25}% / ${Math.random()*50+25}% ${Math.random()*50+25}% ${Math.random()*50+25}% ${Math.random()*50+25}%`;
+  splatter.style.borderRadius = borderRadius;
+
+  // 飛散方向（放射状に）
+  const angle = Math.random() * Math.PI * 2; // 全方向
+  const velocity = Math.random() * 150 + 50; // 速度
+  // 画面外まで飛ばす
+  const tx = Math.cos(angle) * velocity * (window.innerWidth / 100); 
+  const ty = Math.sin(angle) * velocity * (window.innerHeight / 100);
+  
+  splatter.style.setProperty('--tx', tx + 'px');
+  splatter.style.setProperty('--ty', ty + 'px');
+
+  // 拡大率と回転
+  splatter.style.setProperty('--scale', Math.random() * 2 + 1);
+
+  const duration = Math.random() * 0.5 + 0.3; // 高速
+  splatter.style.animation = `splatter-explode ${duration}s cubic-bezier(0.1, 0.8, 0.2, 1) forwards`;
+  
+  container.appendChild(splatter);
+  setTimeout(() => splatter.remove(), duration * 1000);
+}
+
 
 function setupEventListeners() {
   setListener(els.openAccount, 'click', (e) => {
