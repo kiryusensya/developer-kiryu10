@@ -196,11 +196,12 @@ button, input, textarea { font-family: var(--font-stack); }
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px 20px; /* 丸みに合わせて余白を少し増やす */
+    border-radius: 50px; /* PS5風の完全な丸み */
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
     border: 1px solid transparent; 
+    margin-bottom: 8px; /* アイテム同士の間隔を少し空ける */
 }
 .sidebar-game-item:hover { background: var(--sidebar-item-hover); }
 /* Active (Selected) State */
@@ -357,6 +358,7 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 
 /* --- ボタン --- */
+/* メインアクションボタン */
 .rgl-cta-btn {
     display: inline-flex;
     align-items: center;
@@ -370,7 +372,7 @@ button, input, textarea { font-family: var(--font-stack); }
     
     font-weight: 800;
     font-size: 18px;
-    border-radius: 4px; 
+    border-radius: 50px; /* ここを変更：PS5のボタンのような丸み */
     cursor: pointer;
     text-transform: none !important;
     
@@ -410,6 +412,30 @@ button, input, textarea { font-family: var(--font-stack); }
     background: transparent;
     transition: background 0.2s;
     font-family: var(--font-stack);
+}
+/* 言語切替ボタンのデザイン変更 */
+.lang-trigger-sidebar {
+    border-radius: 50px !important; /* PS5風の丸み */
+    padding: 0 20px !important;    /* 丸みに合わせて左右の余白を少し増やす */
+    border: 1px solid transparent; /* レイアウト崩れ防止の透明な枠線 */
+    transition: all 0.2s ease;
+}
+
+/* ホバー時の挙動調整（オプション） */
+.lang-trigger-sidebar:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+
+/* ダークモード時：白い枠線を追加 */
+[data-theme="dark"] .lang-trigger-sidebar {
+    border: 1px solid rgba(255, 255, 255, 0.6) !important; /* 白い枠線 */
+    background: rgba(255, 255, 255, 0.05); /* ほんの少し背景色を入れて枠線を馴染ませる */
+}
+
+/* ダークモードでホバーした時 */
+[data-theme="dark"] .lang-trigger-sidebar:hover {
+    border-color: #fff !important; /* ホバーで枠線をよりはっきりさせる */
+    background: rgba(255, 255, 255, 0.15);
 }
 .lang-trigger-sidebar:hover { background: rgba(128,128,128,0.1); }
 .lang-list { position: absolute; bottom: 80px; left: 24px; width: 200px; background: var(--card-bg); backdrop-filter: blur(20px); padding: 5px; border-radius: 12px; list-style: none; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 200; border: 1px solid rgba(128,128,128,0.1); }
@@ -509,8 +535,26 @@ button, input, textarea { font-family: var(--font-stack); }
 .modal-overlay.active .modal-sheet { transform: scale(1); }
 [data-theme="dark"] .modal-sheet { background: #1a1a1a; }
 
-#newsModal .modal-sheet { width: fit-content; min-width: 500px; max-width: 900px; text-align: left; }
-@media (max-width: 768px) { #newsModal .modal-sheet { width: 92%; min-width: 0; } }
+/* ニュースモーダルのすりガラス化 */
+#newsModal .modal-sheet { 
+    width: fit-content; 
+    min-width: 500px; 
+    max-width: 900px; 
+    text-align: left;
+    
+    /* 背景を半透明にしてぼかしを入れる */
+    background-color: rgba(255, 255, 255, 0.6) !important; 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ダークモード時のニュースモーダル */
+[data-theme="dark"] #newsModal .modal-sheet {
+    background-color: rgba(30, 30, 30, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
 /* Success Expansion */
 .modal-sheet.is-success {
@@ -546,6 +590,7 @@ button, input, textarea { font-family: var(--font-stack); }
   background: var(--primary); color: white; border-radius: 25px;
   font-size: 16px; font-weight: 700; cursor: pointer;
   transition: transform 0.2s; font-family: var(--font-stack);
+  border-radius: 50px !important; /* 丸くする */
 }
 .btn-primary:active { transform: scale(0.96); }
 
@@ -612,6 +657,8 @@ button, input, textarea { font-family: var(--font-stack); }
   flex: 1; height: 50px; background: transparent;
   border: 1px solid var(--btn-close-border); color: var(--btn-close-text);
   border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
+  border-radius: 50px !important; /* 丸くする */
+  border: 1px solid var(--btn-close-border) !important;
   font-family: var(--font-stack);
 }
 .btn-close-sub:hover { opacity: 0.6; }
@@ -620,6 +667,7 @@ button, input, textarea { font-family: var(--font-stack); }
 .btn-action {
   flex: 2; height: 50px; border-radius: 12px; border: none; font-weight: 700; 
   display: flex; align-items: center; justify-content: center; gap: 8px;
+  border-radius: 50px !important; /* 丸くする */
   text-decoration: none; transition: transform 0.2s; cursor: pointer;
   font-family: var(--font-stack);
 }
@@ -735,7 +783,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 .form-input { width: 100%; height: 44px; border-radius: 10px; border: 1px solid rgba(128,128,128,0.2); background: transparent; padding: 0 12px; color: var(--modal-text-main); font-family: inherit; outline: none; font-size: 14px; font-weight: 500; }
 .form-input:focus { border-color: var(--primary); background: rgba(128,128,128,0.05); }
 
-/* --- Mobile Adjustment (BLOCK & EFFECTS) --- */
+/* --- Mobile Adjustment (BLOCK) --- */
 #mobile-warning {
   display: none;
 }
@@ -751,18 +799,24 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     display: flex !important;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: #000 !important;
+    background-color: #000000 !important; /* 黒背景 */
     z-index: 999999;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px; 
     overflow: hidden;
-    /* 激しい赤黒い背景 */
-    background: radial-gradient(circle, #300 0%, #000 100%);
-    transition: background 0.1s;
   }
   
+  /* Background Video */
+  .mobile-bg-video {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1; /* 最背面 */
+    opacity: 0.6; /* 少し暗くする */
+  }
+
   /* Reset body styles for this view */
   body {
     background-color: #000 !important;
@@ -770,127 +824,174 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     margin: 0; padding: 0;
   }
 
-  /* --- Text Cut & Bleed Effect --- */
-  .cut-text-container {
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    height: auto;
+  /* Scary Text Styles */
+  .bloody-text {
     font-family: serif; 
+    color: #cc0000;
+    font-size: 14px; 
     font-weight: 800;
-    font-size: 15px; 
-    color: #cc0000;
     text-align: center;
-    line-height: 1.6;
-    text-shadow: 2px 2px 5px #000;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    text-shadow: 
+      1px 1px 0px #330000, 
+      0 0 5px #ff0000,
+      0 0 10px #8a0303;
+    animation: pulseBlood 3s infinite alternate;
+    position: relative;
+    z-index: 10; 
+    white-space: nowrap; 
   }
 
-  .cut-layer {
-    position: absolute;
-    top: 0; left: 0; width: 100%;
-    white-space: pre-wrap; /* 改行許可 */
-    animation: textSplit 2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
-    animation-delay: 0.5s; /* 斬撃の直後 */
+  .bloody-text span {
+    display: block; 
+    margin-bottom: 5px;
   }
-
-  /* 上半分 */
-  .cut-layer.top {
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 55%);
-    color: #ff0000;
-    text-shadow: 0 0 10px red;
-  }
-  /* 下半分 */
-  .cut-layer.bottom {
-    clip-path: polygon(0 55%, 100% 45%, 100% 100%, 0 100%);
-    color: #cc0000;
-  }
-
-  /* 文字からの出血 */
-  .text-blood-spray {
-    position: absolute;
-    top: 50%; left: 0; width: 100%; height: 0;
-    background: linear-gradient(to bottom, #990000 0%, transparent 100%);
-    opacity: 0.8;
-    z-index: 5;
-    animation: textBleed 3s ease-out forwards;
-    animation-delay: 0.6s;
-    filter: blur(1px);
-  }
-
-  @keyframes textSplit {
-    0% { transform: translate(0, 0); }
-    100% { 
-        /* 上が左上、下が右下にズレる */
-    }
-  }
-  /* Animation defined in JS for dynamic control or simple CSS here */
-  .cut-layer.top { animation: slideTop 2s forwards 0.5s; }
-  .cut-layer.bottom { animation: slideBottom 2s forwards 0.5s; }
   
-  @keyframes slideTop { to { transform: translate(-5px, -5px) rotate(-1deg); } }
-  @keyframes slideBottom { to { transform: translate(5px, 5px) rotate(1deg); } }
-
-  @keyframes textBleed {
-    0% { height: 0; opacity: 1; }
-    100% { height: 200px; opacity: 0; }
+  /* ロシア語は改行を許可 */
+  .bloody-text .ru-text {
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  @keyframes pulseBlood {
+    0% { opacity: 0.8; text-shadow: 1px 1px 0px #330000, 0 0 3px #ff0000; }
+    100% { opacity: 1; text-shadow: 1px 1px 0px #330000, 0 0 10px #ff0000; }
   }
 
-  /* --- NINJA GAIDEN Background FX --- */
-  .flash-bang {
-    position: absolute; inset: 0; background: #fff;
-    opacity: 0; z-index: 50;
-    animation: flashAnim 0.2s ease-out forwards;
-    animation-delay: 0.4s; /* 斬撃タイミング */
-    pointer-events: none;
-  }
-  @keyframes flashAnim { 0% { opacity: 1; } 100% { opacity: 0; } }
-
-  .blood-bg-layer {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    z-index: 1; pointer-events: none;
-    mix-blend-mode: multiply;
-  }
-
-  .bg-stain {
+  /* Bloody Hands Images (Shadows) */
+  .bloody-hand-img {
     position: absolute;
-    background: radial-gradient(circle, #8a0303 0%, transparent 70%);
+    opacity: 0.7; 
+    pointer-events: none;
+    user-select: none;
+    /* 赤い光彩と影を追加して血の表現を強化 */
+    filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 5px #8a0303);
+    width: auto;
+    height: auto;
+    max-width: 45%; 
+    max-height: 45%; 
+    mix-blend-mode: multiply; 
+    z-index: 5; /* 動画より上、テキストより下 */
+  }
+  
+  .hand-1 { top: 2%; left: 2%; transform: rotate(-20deg); }
+  .hand-2 { top: 10%; right: 5%; transform: rotate(30deg) scale(0.9); }
+  .hand-3 { bottom: 5%; left: 10%; transform: rotate(10deg) scale(1.3); }
+  .hand-4 { bottom: 2%; right: 2%; transform: rotate(-10deg); }
+  .hand-5 { top: 35%; left: -15%; transform: rotate(80deg) scale(1.1); }
+  .hand-6 { top: 55%; right: -20%; transform: rotate(-100deg) scale(1.2); }
+  .hand-7 { top: -10%; left: 45%; transform: translateX(-50%) rotate(170deg) scale(0.8); }
+  .hand-8 { bottom: -15%; right: 35%; transform: rotate(150deg) scale(0.9); }
+}
+[data-theme="dark"] .btn-close-sub {
+    border-color: rgba(255, 255, 255, 0.6) !important; /* 白枠線を少し透過させて馴染ませる */
+    color: #fff !important;
+}
+
+[data-theme="dark"] .btn-close-sub:hover {
+    border-color: #fff !important; /* ホバー時は真っ白に */
+    background: rgba(255, 255, 255, 0.1);
+}
+/* --- ヘッダーナビゲーション修正版（干渉防止・幅調整） --- */
+
+.rgl-tab {
+    position: relative;
+    /* 【重要】ボタン同士の物理的な間隔を確保（干渉防止） */
+    margin: 0 4px !important; 
+    
+    /* その他の設定は維持 */
+    padding: 0 !important; 
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    
+    /* テキスト設定 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: 700;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    z-index: 1; /* 文字を背景より前に出す */
+}
+
+/* 下線などの装飾も確実に消す */
+.rgl-tab::after { display: none !important; }
+
+/* ホバー時・選択時は文字をくっきりさせる */
+.rgl-tab:hover, 
+.rgl-tab.active { 
+    opacity: 1; 
+}
+
+/* --- 背景のカプセル（疑似要素） --- */
+.rgl-tab::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    
+    /* 【重要】横幅を小さく調整 */
+    /* 文字の幅(100%)に対して、左右に少しだけ(合計16px)余裕を持たせる */
+    width: calc(100% + 37px); 
+    height: 38px; /* 高さも少しスリムに調整 */
+    border-radius: 50px;
+    
+    /* デザイン：すりガラス */
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    
+    /* 初期状態（非表示） */
+    transform: translate(-50%, -50%) scale(0.9); /* 少し小さい状態から始める */
     opacity: 0;
-    border-radius: 50%;
-    transform: scale(0);
-    animation: bgStainAnim 1s ease-out forwards;
-  }
-  @keyframes bgStainAnim {
-    0% { opacity: 0.8; transform: scale(0.2); }
-    100% { opacity: 0.6; transform: scale(3); }
-  }
+    z-index: -1; /* 文字の後ろに配置 */
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ホバー時・アクティブ時に背景をフワッと表示 */
+.rgl-tab:hover::before,
+.rgl-tab.active::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1); /* 元のサイズに戻るアニメーション */
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .rgl-tab { color: #fff; }
+[data-theme="dark"] .rgl-tab::before {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 </style>
 </head>
 <body>
 
 <div id="mobile-warning">
-  <div class="flash-bang"></div>
-  
-  <div class="blood-bg-layer" id="bg-blood-layer"></div>
+  <video class="mobile-bg-video" autoplay loop muted playsinline>
+    <source src="background_video.mp4" type="video/mp4">
+  </video>
 
-  <div class="cut-text-container">
-    <div class="text-blood-spray"></div>
-    <div class="cut-layer top">
-      お使いのデバイスは対応していません<br>
-      Your device is not supported<br>
-      您的设备不支持<br>
-      您的裝置不支援<br>
-      귀하의 기기는 지원되지 않습니다<br>
-      <span style="font-size:12px;">Ваше устройство не поддерживается</span>
-    </div>
-    <div class="cut-layer bottom">
-      お使いのデバイスは対応していません<br>
-      Your device is not supported<br>
-      您的设备不支持<br>
-      您的裝置不支援<br>
-      귀하의 기기는 지원되지 않습니다<br>
-      <span style="font-size:12px;">Ваше устройство не поддерживается</span>
-    </div>
+  <img src="image_3.png" class="bloody-hand-img hand-1" alt="shadow hand">
+  <img src="image_3.png" class="bloody-hand-img hand-2" alt="shadow hand">
+  <img src="image_3.png" class="bloody-hand-img hand-3" alt="shadow hand">
+  <img src="image_3.png" class="bloody-hand-img hand-4" alt="shadow hand">
+  <img src="image_3.png" class="bloody-hand-img hand-5" alt="shadow hand">
+  <img src="image_3.png" class="bloody-hand-img hand-6" alt="shadow hand">
+  <img src="image_3.png" class="bloody-hand-img hand-7" alt="shadow hand">
+  <img src="image_3.png" class="bloody-hand-img hand-8" alt="shadow hand">
+
+  <div class="bloody-text">
+    <span>お使いのデバイスは対応していません</span>
+    <span>Your device is not supported</span>
+    <span>您的设备不支持</span>
+    <span>您的裝置不支援</span>
+    <span>귀하의 기기는 지원되지 않습니다</span>
+    <span class="ru-text">Ваше устройство не поддерживается</span>
   </div>
 </div>
 
@@ -948,7 +1049,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
             </div>
             
             <div style="margin-top:20px; font-size:10px; opacity:0.3; text-align:center;">
-                v2.0.26<br>© 2026 kiryu-sensya
+                © 2026 kiryu-sensya
            </div>
         </div>
     </aside>
@@ -1104,8 +1205,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 </div>
 
 <script>
-// ★★★ ここにデプロイしたGASのURLを貼り付けてください ★★★
-const GAS_API_URL="https://script.google.com/macros/s/AKfycbzFPhesEEYoLsLHX74hF0lHZcplFxGKahtebtd04GhTzv4ESSouDEGgDdk2wViJOy--HA/exec"; 
+const GAS_API_URL="api/proxy"; 
 
 let CURRENT_LANG="ja";
 let currentUser = null; 
@@ -1125,7 +1225,7 @@ const setListener = (el, ev, fn) => { if(el) el.addEventListener(ev, fn); };
 const TRANSLATIONS={
  ja:{
   header_brand:"kr_開発者版", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理。プロダクトコードを入力してコンテンツを解除してください。",
-  card1_title:"アクティベーション",card2_title:"ニュース",card3_title:"サポート",
+  card1_title:"ホーム",card2_title:"ニュース",card3_title:"サポート",
   modal_title:"アクティベーション",modal_sub:"コードを入力してください",modal_placeholder:"アクティベーションコード",modal_btn_auth:"確認",
   msg_verifying:"確認中",msg_success_btn:"成功",
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました",
@@ -1134,7 +1234,7 @@ const TRANSLATIONS={
   msg_preview_sub:"続行すると以下のコンテンツを受け取ります:", 
   success_title_final:"認証成功!!", 
   msg_success_sub: "このコードで以下のコンテンツが認証されました:",
-  btn_close:"閉じる",btn_continue:"認証(続行)",btn_download:"ダウンロード",news_title:"最新情報",news_loading:"更新を確認中",
+  btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード",news_title:"最新情報",news_loading:"更新を確認中",
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント", lib_updating: "読み込み中",
   label_logged_in: "ユーザーID", label_library: "ライブラリ", label_welcome: "ようこそ", label_sync_desc: "ログインして同期を開始",
@@ -1148,7 +1248,7 @@ const TRANSLATIONS={
  },
  en:{
   header_brand:"kr_Dev E", hero_title:"Activation", hero_sub:"Manage your access and resources. Redeem your product code to unlock exclusive content.",
-  card1_title:"Activation",card2_title:"News",card3_title:"Support",
+  card1_title:"Home",card2_title:"News",card3_title:"Support",
   modal_title:"Activation",modal_sub:"Enter Activtion code",modal_placeholder:"Activation Code",modal_btn_auth:"CHECK",
   msg_verifying:"Checking",msg_success_btn:"Success",
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred",
@@ -1171,7 +1271,7 @@ const TRANSLATIONS={
  },
  zh:{ 
   header_brand:"kr_开发者版", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。兑换产品代码以解锁独家内容。", 
-  card1_title:"激活",card2_title:"新闻",card3_title:"支持", 
+  card1_title:"首页",card2_title:"新闻",card3_title:"支持", 
   modal_title:"激活",modal_sub:"输入激活码",modal_placeholder:"激活码",modal_btn_auth:"检查", 
   msg_verifying:"正在检查",msg_success_btn:"成功", 
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
@@ -1194,7 +1294,7 @@ const TRANSLATIONS={
  },
  "zh-TW":{ 
   header_brand:"kr_開發者版", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。兌換產品代碼以解鎖獨家內容。", 
-  card1_title:"激活",card2_title:"新聞",card3_title:"支援", 
+  card1_title:"首頁",card2_title:"新聞",card3_title:"支援", 
   modal_title:"激活",modal_sub:"輸入啟用碼",modal_placeholder:"啟動碼",modal_btn_auth:"檢查", 
   msg_verifying:"正在檢查",msg_success_btn:"成功", 
   msg_invalid:"該代碼無效",msg_used:"該代碼已被使用",msg_error:"錯誤", 
@@ -1217,7 +1317,7 @@ const TRANSLATIONS={
  },
  ko:{ 
   header_brand:"kr_개발자용", hero_title:"시스템 인증 포털", hero_sub:"액세스 권한 및 리소스 관리. 제품 코드를 사용하여 콘텐츠 잠금을 해제하세요.", 
-  card1_title:"활성화",card2_title:"뉴스",card3_title:"지원", 
+  card1_title:"메인 페이지",card2_title:"뉴스",card3_title:"지원", 
   modal_title:"활성화",modal_sub:"코드 입력",modal_placeholder:"활성화 코드",modal_btn_auth:"확인", 
   msg_verifying:"확인 중",msg_success_btn:"성공", 
   msg_invalid:"유효하지 않은 코드입니다.",msg_used:"이미 사용된 코드입니다.",msg_error:"오류", 
@@ -1240,7 +1340,7 @@ const TRANSLATIONS={
  },
  ru:{ 
   header_brand:"kr_Разработчик", hero_title:"Активация", hero_sub:"Управление доступом и ресурсами. Активируйте код продукта для разблокировки.", 
-  card1_title:"Активация",card2_title:"Новости",card3_title:"Поддержка", 
+  card1_title:"главная страница",card2_title:"Новости",card3_title:"Поддержка", 
   modal_title:"Проверка",modal_sub:"Введите код",modal_placeholder:"Код активации",modal_btn_auth:"Подтверждение", 
   msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
   msg_invalid:"Неверный код",msg_used:"Этот код уже был использован.",msg_error:"Ошибка", 
@@ -1294,12 +1394,6 @@ const formatCodeInput = (val) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
-  
-  // スマホ判定: 768px以下の場合にNINJA GAIDEN風エフェクトを開始
-  if (window.innerWidth <= 768) {
-    initNinjaGaidenEffect();
-  }
-
   const sLang = localStorage.getItem('user_lang');
   if (sLang) setInitialLanguage(sLang, true); else fetchNews();
   const sUser = localStorage.getItem('user_session_identity');
@@ -1317,74 +1411,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initCustomDropdown();
   setupEventListeners(); 
 });
-
-// --- NINJA GAIDEN風エフェクト (スマホ専用) ---
-function initNinjaGaidenEffect() {
-  const container = document.getElementById('mobile-warning');
-  if (!container || getComputedStyle(container).display === 'none') return;
-
-  // 1. 斬撃エフェクト (Slash)
-  const slash = document.createElement('div');
-  slash.classList.add('slash-effect');
-  slash.style.animation = 'slash-anim 0.4s ease-out forwards';
-  container.appendChild(slash);
-  
-  // 斬撃終了後に削除
-  setTimeout(() => slash.remove(), 400);
-
-  // 2. 激しい血飛沫 (Intense Splatter) - 斬撃の直後に発生
-  setTimeout(() => {
-    // 大量の血飛沫を一度に発生させる
-    for (let i = 0; i < 40; i++) {
-      spawnIntenseSplatter(container);
-    }
-    // 少し遅れて追加の飛沫
-    setTimeout(() => {
-        for (let i = 0; i < 20; i++) spawnIntenseSplatter(container);
-    }, 200);
-
-  }, 200); // 斬撃と少しずらす
-}
-
-function spawnIntenseSplatter(container) {
-  const splatter = document.createElement('div');
-  splatter.classList.add('blood-splatter-intense');
-  
-  // 画面中央付近から発生
-  const startX = 50 + (Math.random() * 20 - 10); // 40% - 60%
-  const startY = 50 + (Math.random() * 20 - 10); // 40% - 60%
-  splatter.style.left = startX + '%';
-  splatter.style.top = startY + '%';
-
-  // サイズをランダムに (大小織り交ぜる)
-  const size = Math.random() < 0.3 ? Math.random() * 150 + 80 : Math.random() * 40 + 10;
-  splatter.style.width = size + 'px';
-  splatter.style.height = size + 'px';
-  
-  // 形状をランダムに歪ませる
-  const borderRadius = `${Math.random()*50+25}% ${Math.random()*50+25}% ${Math.random()*50+25}% ${Math.random()*50+25}% / ${Math.random()*50+25}% ${Math.random()*50+25}% ${Math.random()*50+25}% ${Math.random()*50+25}%`;
-  splatter.style.borderRadius = borderRadius;
-
-  // 飛散方向（放射状に）
-  const angle = Math.random() * Math.PI * 2; // 全方向
-  const velocity = Math.random() * 150 + 50; // 速度
-  // 画面外まで飛ばす
-  const tx = Math.cos(angle) * velocity * (window.innerWidth / 100); 
-  const ty = Math.sin(angle) * velocity * (window.innerHeight / 100);
-  
-  splatter.style.setProperty('--tx', tx + 'px');
-  splatter.style.setProperty('--ty', ty + 'px');
-
-  // 拡大率と回転
-  splatter.style.setProperty('--scale', Math.random() * 2 + 1);
-
-  const duration = Math.random() * 0.5 + 0.3; // 高速
-  splatter.style.animation = `splatter-explode ${duration}s cubic-bezier(0.1, 0.8, 0.2, 1) forwards`;
-  
-  container.appendChild(splatter);
-  setTimeout(() => splatter.remove(), duration * 1000);
-}
-
 
 function setupEventListeners() {
   setListener(els.openAccount, 'click', (e) => {
