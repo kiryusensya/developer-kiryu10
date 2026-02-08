@@ -735,7 +735,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 .form-input { width: 100%; height: 44px; border-radius: 10px; border: 1px solid rgba(128,128,128,0.2); background: transparent; padding: 0 12px; color: var(--modal-text-main); font-family: inherit; outline: none; font-size: 14px; font-weight: 500; }
 .form-input:focus { border-color: var(--primary); background: rgba(128,128,128,0.05); }
 
-/* --- Mobile Adjustment (BLOCK) --- */
+/* --- Mobile Adjustment (BLOCK & EFFECTS) --- */
 #mobile-warning {
   display: none;
 }
@@ -751,15 +751,16 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     display: flex !important;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: #000000 !important; /* 黒背景 */
+    background-color: #000 !important;
     z-index: 999999;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px; 
     overflow: hidden;
-    /* 背景を真っ黒に */
-    background: #000;
+    /* 激しい赤黒い背景 */
+    background: radial-gradient(circle, #300 0%, #000 100%);
+    transition: background 0.1s;
   }
   
   /* Reset body styles for this view */
@@ -769,103 +770,98 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     margin: 0; padding: 0;
   }
 
-  /* Scary Text Styles */
-  .bloody-text {
-    font-family: serif; 
-    color: #cc0000;
-    font-size: 14px; 
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 20px;
-    line-height: 1.4;
-    text-shadow: 
-      1px 1px 0px #330000, 
-      0 0 5px #ff0000,
-      0 0 10px #8a0303;
-    animation: pulseBlood 3s infinite alternate;
+  /* --- Text Cut & Bleed Effect --- */
+  .cut-text-container {
     position: relative;
-    z-index: 10; 
-    white-space: nowrap; 
-  }
-
-  .bloody-text span {
-    display: block; 
-    margin-bottom: 5px;
-  }
-  
-  /* ロシア語は改行を許可 */
-  .bloody-text .ru-text {
-    white-space: normal;
-    word-break: break-word;
-  }
-  
-  @keyframes pulseBlood {
-    0% { opacity: 0.8; text-shadow: 1px 1px 0px #330000, 0 0 3px #ff0000; }
-    100% { opacity: 1; text-shadow: 1px 1px 0px #330000, 0 0 10px #ff0000; }
-  }
-
-  /* Bloody Hands Images (Shadows) */
-  .bloody-hand-img {
-    position: absolute;
-    opacity: 0.7; 
-    pointer-events: none;
-    user-select: none;
-    /* 赤い光彩と影を追加して血の表現を強化 */
-    filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 5px #8a0303);
-    width: auto;
+    width: 100%;
+    max-width: 300px;
     height: auto;
-    max-width: 45%; 
-    max-height: 45%; 
-    mix-blend-mode: multiply; 
+    font-family: serif; 
+    font-weight: 800;
+    font-size: 15px; 
+    color: #cc0000;
+    text-align: center;
+    line-height: 1.6;
+    text-shadow: 2px 2px 5px #000;
+  }
+
+  .cut-layer {
+    position: absolute;
+    top: 0; left: 0; width: 100%;
+    white-space: pre-wrap; /* 改行許可 */
+    animation: textSplit 2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    animation-delay: 0.5s; /* 斬撃の直後 */
+  }
+
+  /* 上半分 */
+  .cut-layer.top {
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 55%);
+    color: #ff0000;
+    text-shadow: 0 0 10px red;
+  }
+  /* 下半分 */
+  .cut-layer.bottom {
+    clip-path: polygon(0 55%, 100% 45%, 100% 100%, 0 100%);
+    color: #cc0000;
+  }
+
+  /* 文字からの出血 */
+  .text-blood-spray {
+    position: absolute;
+    top: 50%; left: 0; width: 100%; height: 0;
+    background: linear-gradient(to bottom, #990000 0%, transparent 100%);
+    opacity: 0.8;
     z-index: 5;
-  }
-  
-  .hand-1 { top: 2%; left: 2%; transform: rotate(-20deg); }
-  .hand-2 { top: 10%; right: 5%; transform: rotate(30deg) scale(0.9); }
-  .hand-3 { bottom: 5%; left: 10%; transform: rotate(10deg) scale(1.3); }
-  .hand-4 { bottom: 2%; right: 2%; transform: rotate(-10deg); }
-  .hand-5 { top: 35%; left: -15%; transform: rotate(80deg) scale(1.1); }
-  .hand-6 { top: 55%; right: -20%; transform: rotate(-100deg) scale(1.2); }
-  .hand-7 { top: -10%; left: 45%; transform: translateX(-50%) rotate(170deg) scale(0.8); }
-  .hand-8 { bottom: -15%; right: 35%; transform: rotate(150deg) scale(0.9); }
-
-  /* --- NINJA GAIDEN風エフェクト --- */
-  /* 1. 斬撃エフェクト (Slash) */
-  .slash-effect {
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 200%; height: 5px;
-    background: #fff;
-    transform: translate(-50%, -50%) rotate(-30deg) scaleX(0);
-    box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #ff0000;
-    z-index: 20;
-    pointer-events: none;
-  }
-
-  @keyframes slash-anim {
-    0% { transform: translate(-50%, -50%) rotate(-30deg) scaleX(0); opacity: 1; }
-    20% { transform: translate(-50%, -50%) rotate(-30deg) scaleX(1); opacity: 1; }
-    100% { transform: translate(-50%, -50%) rotate(-30deg) scaleX(1); opacity: 0; }
-  }
-
-  /* 2. 激しい血飛沫 (Intense Splatter) */
-  .blood-splatter-intense {
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 20px; height: 20px;
-    background-color: #8a0303;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
+    animation: textBleed 3s ease-out forwards;
+    animation-delay: 0.6s;
     filter: blur(1px);
-    opacity: 1;
-    pointer-events: none;
-    z-index: 15;
-    box-shadow: inset 0 0 10px #330000;
   }
 
-  @keyframes splatter-explode {
-    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    100% { transform: translate(var(--tx), var(--ty)) scale(var(--scale)); opacity: 0; }
+  @keyframes textSplit {
+    0% { transform: translate(0, 0); }
+    100% { 
+        /* 上が左上、下が右下にズレる */
+    }
+  }
+  /* Animation defined in JS for dynamic control or simple CSS here */
+  .cut-layer.top { animation: slideTop 2s forwards 0.5s; }
+  .cut-layer.bottom { animation: slideBottom 2s forwards 0.5s; }
+  
+  @keyframes slideTop { to { transform: translate(-5px, -5px) rotate(-1deg); } }
+  @keyframes slideBottom { to { transform: translate(5px, 5px) rotate(1deg); } }
+
+  @keyframes textBleed {
+    0% { height: 0; opacity: 1; }
+    100% { height: 200px; opacity: 0; }
+  }
+
+  /* --- NINJA GAIDEN Background FX --- */
+  .flash-bang {
+    position: absolute; inset: 0; background: #fff;
+    opacity: 0; z-index: 50;
+    animation: flashAnim 0.2s ease-out forwards;
+    animation-delay: 0.4s; /* 斬撃タイミング */
+    pointer-events: none;
+  }
+  @keyframes flashAnim { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+  .blood-bg-layer {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    z-index: 1; pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+
+  .bg-stain {
+    position: absolute;
+    background: radial-gradient(circle, #8a0303 0%, transparent 70%);
+    opacity: 0;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: bgStainAnim 1s ease-out forwards;
+  }
+  @keyframes bgStainAnim {
+    0% { opacity: 0.8; transform: scale(0.2); }
+    100% { opacity: 0.6; transform: scale(3); }
   }
 }
 </style>
@@ -873,22 +869,28 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 <body>
 
 <div id="mobile-warning">
-  <img src="image_3.png" class="bloody-hand-img hand-1" alt="shadow hand">
-  <img src="image_3.png" class="bloody-hand-img hand-2" alt="shadow hand">
-  <img src="image_3.png" class="bloody-hand-img hand-3" alt="shadow hand">
-  <img src="image_3.png" class="bloody-hand-img hand-4" alt="shadow hand">
-  <img src="image_3.png" class="bloody-hand-img hand-5" alt="shadow hand">
-  <img src="image_3.png" class="bloody-hand-img hand-6" alt="shadow hand">
-  <img src="image_3.png" class="bloody-hand-img hand-7" alt="shadow hand">
-  <img src="image_3.png" class="bloody-hand-img hand-8" alt="shadow hand">
+  <div class="flash-bang"></div>
+  
+  <div class="blood-bg-layer" id="bg-blood-layer"></div>
 
-  <div class="bloody-text">
-    <span>お使いのデバイスは対応していません</span>
-    <span>Your device is not supported</span>
-    <span>您的设备不支持</span>
-    <span>您的裝置不支援</span>
-    <span>귀하의 기기는 지원되지 않습니다</span>
-    <span class="ru-text">Ваше устройство не поддерживается</span>
+  <div class="cut-text-container">
+    <div class="text-blood-spray"></div>
+    <div class="cut-layer top">
+      お使いのデバイスは対応していません<br>
+      Your device is not supported<br>
+      您的设备不支持<br>
+      您的裝置不支援<br>
+      귀하의 기기는 지원되지 않습니다<br>
+      <span style="font-size:12px;">Ваше устройство не поддерживается</span>
+    </div>
+    <div class="cut-layer bottom">
+      お使いのデバイスは対応していません<br>
+      Your device is not supported<br>
+      您的设备不支持<br>
+      您的裝置不支援<br>
+      귀하의 기기는 지원되지 않습니다<br>
+      <span style="font-size:12px;">Ваше устройство не поддерживается</span>
+    </div>
   </div>
 </div>
 
