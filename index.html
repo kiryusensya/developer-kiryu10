@@ -1460,14 +1460,16 @@ function setupEventListeners() {
       setListener(els.code, 'input', (e) => { els.code.value = formatCodeInput(els.code.value); });
   }
 
+  // ▼▼▼ 修正箇所: 日付チェックを削除 ▼▼▼
   setListener(els.heroActionBtn, 'click', (e) => {
      e.stopPropagation(); 
+     // currentHeroContextが 'owned' になっている時点で、すでに解禁済みとみなします
      if(currentHeroContext === 'owned' && selectedHeroItem) {
-        // ★追加: 解禁前ガード
-        const now = new Date();
-        if (selectedHeroItem.releaseDateIso && new Date(selectedHeroItem.releaseDateIso) > now) return; 
-
-        if(selectedHeroItem.url) window.open(selectedHeroItem.url, '_blank');
+        if(selectedHeroItem.url) {
+            // ポップアップブロックを避けるため、確実に開くなら location.href を推奨しますが
+            // ご提示のコードに合わせて window.open を使用します
+            window.open(selectedHeroItem.url, '_blank');
+        }
      } else {
         if (!currentUser) {
             toggleDropdown(true);
@@ -1477,6 +1479,7 @@ function setupEventListeners() {
         }
      }
   });
+  // ▲▲▲ 修正箇所ここまで ▲▲▲
 
   if (els.tabs) {
       els.tabs.forEach(tab => {
@@ -1832,8 +1835,8 @@ async function performAuthAction() {
   }
 }
 
-// 修正: ボタンの状態管理とカウントダウン
-function setHeroButtonState(state) {
+// 修正: ボタンの状態管理 (forceUnlockフラグ追加)
+function setHeroButtonState(state, forceUnlock = false) {
     const btn = els.heroActionBtn;
     const t = TRANSLATIONS[CURRENT_LANG];
     
@@ -1844,11 +1847,11 @@ function setHeroButtonState(state) {
     btn.classList.remove('is-download'); 
 
     if (state === 'owned') {
-        // ★修正: 所有済みの場合は解禁判定を行う
         const now = new Date();
         const releaseDate = selectedHeroItem.releaseDateIso ? new Date(selectedHeroItem.releaseDateIso) : null;
 
-        if (releaseDate && releaseDate > now) {
+        // ▼▼▼ 修正: forceUnlockがtrueなら、日付に関わらず解禁済みとする ▼▼▼
+        if (!forceUnlock && releaseDate && releaseDate > now) {
             // 解禁前: カウントダウン処理へ
             startHeroCountdown(releaseDate);
         } else {
@@ -1859,9 +1862,16 @@ function setHeroButtonState(state) {
             else if(iconName === 'check') iconName = 'check';
             else iconName = 'download';
 
-            btn.innerHTML = `<span>${t.btn_hero_download}</span> <i data-lucide="${iconName}" size="20"></i>`;
+            const displayLabel = (selectedHeroItem && selectedHeroItem.buttonLabel) 
+                               ? selectedHeroItem.buttonLabel 
+                               : t.btn_hero_download;
+
+            btn.innerHTML = `<span>${displayLabel}</span> <i data-lucide="${iconName}" size="20"></i>`;
             btn.classList.add('is-download');
+            
+            // 重要: ここで 'owned' にすることでクリックイベントが通過するようになります
             currentHeroContext = 'owned';
+            
             try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         }
     } else {
@@ -1872,43 +1882,78 @@ function setHeroButtonState(state) {
     }
 }
 
-// 追加: カウントダウン処理
+// 修正: カウントダウン処理
 function startHeroCountdown(targetDate) {
     const btn = els.heroActionBtn;
     btn.classList.add('is-download'); 
     btn.style.opacity = '0.7';
     btn.style.cursor = 'default';
     
+    // 月名の定義
+    const enMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const ruMonths = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+
     const update = () => {
         const now = new Date();
         const diff = targetDate - now;
 
+        // 0秒以下になったら終了してボタンを有効化
         if (diff <= 0) {
             if(heroTimer) clearInterval(heroTimer);
-            setHeroButtonState('owned'); 
+            // ▼▼▼ 修正: 第2引数に true を渡して強制的に解禁状態にする ▼▼▼
+            setHeroButtonState('owned', true); 
             return;
         }
 
         const oneDay = 24 * 60 * 60 * 1000;
+
+        // --- 24時間以上: 日付表示 ---
         if (diff > oneDay) {
-            // 24時間以上
             const y = targetDate.getFullYear();
-            const m = String(targetDate.getMonth() + 1).padStart(2, '0');
-            const d = String(targetDate.getDate()).padStart(2, '0');
-            btn.innerHTML = `<span>${y}.${m}.${d}</span>`; 
-        } else {
-            // 24時間以内
+            const m = targetDate.getMonth(); // 0-11
+            const d = targetDate.getDate();
+
+            // ゼロ埋め処理
+            const mm = String(m + 1).padStart(2, '0');
+            const dd = String(d).padStart(2, '0');
+
+            let dateString = "";
+
+            switch (CURRENT_LANG) {
+                case 'ja':      // 日本語
+                case 'zh':      // 中国語 (簡体)
+                case 'zh-TW':   // 中国語 (繁体)
+                    dateString = `${y}年${mm}月${dd}日`;
+                    break;
+
+                case 'ko':      // 韓国語
+                    dateString = `${y}년 ${mm}월 ${dd}일`;
+                    break;
+
+                case 'ru':      // ロシア語
+                    dateString = `${dd} ${ruMonths[m]} ${y}`;
+                    break;
+
+                case 'en':      // 英語
+                default:
+                    dateString = `${enMonths[m]} ${dd}, ${y}`;
+                    break;
+            }
+            
+            btn.innerHTML = `<span>${dateString}</span>`;
+        } 
+        // --- 24時間未満: カウントダウン (HH:MM:SS) ---
+        else {
             const h = Math.floor(diff / (1000 * 60 * 60));
             const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-            let text = "";
-            if (h > 0) {
-                text = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            } else {
-                text = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            }
-            btn.innerHTML = `<span>${text}</span>`;
+            // ゼロ埋め処理 (必ず2桁にする)
+            const hh = String(h).padStart(2, '0');
+            const mm = String(m).padStart(2, '0');
+            const ss = String(s).padStart(2, '0');
+
+            btn.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
         }
     };
 
@@ -1989,7 +2034,8 @@ async function saveUnlockedItemLocal(data, code) {
     lang: CURRENT_LANG,
     imageUrl: data.imageUrl, 
     releaseDateIso: data.releaseDateIso || null,
-    groupId: data.groupId 
+    groupId: data.groupId,
+    buttonLabel: data.Button_Label || null 
   };
   
   // 1. Historyに追加
