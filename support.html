@@ -336,18 +336,6 @@ body {
   .hand-2 { bottom: 5%; right: 5%; transform: rotate(30deg); }
 }
 </style>
-<script>
-    // アクセス制限
-    (function(){
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const referrer = document.referrer;
-        if (!referrer.includes('index.html') && !isLocal && referrer !== "") {
-           document.write('<div style="position:fixed;inset:0;background:#000;color:#fff;display:flex;justify-content:center;align-items:center;z-index:99999;">Access Denied. Redirecting...</div>');
-           setTimeout(() => { window.location.href = 'index.html'; }, 1000);
-           window.stop();
-        }
-    })();
-</script>
 </head>
 <body>
 
