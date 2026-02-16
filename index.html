@@ -656,88 +656,6 @@ button, input, textarea { font-family: var(--font-stack); }
 #btnDownload { background: var(--bright-green); color: #000; display: none; }
 #btnDownload:hover { box-shadow: 0 5px 20px rgba(4, 207, 34, 0.4); }
 
-@media (max-width: 768px) {
-  /* Mobile RGL layout adjustments */
-  .rgl-wrapper { flex-direction: column; }
-  
-  /* サイドバー（モバイルではヘッダーとして機能） */
-  .rgl-sidebar { 
-      width: 100%; 
-      height: auto; 
-      padding: 0; 
-      border-right: none; 
-      border-bottom: 1px solid rgba(128,128,128,0.1); 
-      overflow: visible; /* ハンバーガーメニュー展開用 */
-  }
-  
-  .rgl-brand-area { 
-      padding: 16px 20px; 
-      /* ハンバーガーアイコンとブランド名を横並びにする */
-      display: flex;
-      align-items: center;
-      gap: 16px; 
-  }
-  
-  /* PC用コンテンツ非表示 */
-  .rgl-menu-section { display: none; }
-  .rgl-bottom-controls { display: none; } 
-  
-  /* ★修正: ヘッダーを非表示にするのではなく、右上のアカウントアイコンだけ残す */
-  .rgl-header { 
-      display: flex !important; 
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: auto;
-      background: transparent !important;
-      padding: 16px 20px;
-      z-index: 102; /* サイドバーより上 */
-      pointer-events: none; /* ヘッダー領域自体はクリック透過 */
-  }
-  
-  /* ヘッダー内のクリッカブル要素はクリック可能に */
-  .rgl-header > * {
-      pointer-events: auto;
-  }
-
-  /* タブは消す */
-  .rgl-tabs { display: none !important; }
-  
-  .rgl-hero { padding: 30px 20px; min-height: 50vh; }
-  .rgl-logo-text { font-size: 32px; }
-  
-  /* ニュースモーダル（モバイル用調整） */
-  .modal-sheet.is-success { max-width: 92%; border-radius: 24px; height: auto; max-height: 85vh; overflow-y: auto; }
-  .success-container { flex-direction: column; min-height: auto; }
-  .success-visual { width: 100%; height: 220px; flex: none; }
-  .success-details { padding: 24px; flex: auto; }
-  
-  /* ★追加：モバイル用ニュースモーダルの全幅調整 */
-  #newsModal .modal-sheet {
-      width: 92% !important;
-      min-width: 0 !important;
-      max-height: 80vh;
-      overflow-y: auto;
-      padding: 24px !important;
-  }
-}
-
-footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font-size: 12px; }
-[data-theme="dark"] footer { color: #888; }
-
-.loading-spinner {
-  display: inline-block; 
-  vertical-align: middle; 
-  width: 24px;            
-  height: 24px;
-  border: 3px solid rgba(128,128,128,0.2);
-  border-top: 3px solid var(--primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-right: 8px;      
-}
-@keyframes spin { to{transform: rotate(360deg);} }
-
 /* --- ACCOUNT DROPDOWN STYLES (修正版) --- */
 .account-dropdown {
   position: absolute;
@@ -758,11 +676,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   transform-origin: top right;
   text-align: left; 
   display: flex; flex-direction: column;
-}
-
-/* モバイル用調整 */
-@media (max-width: 600px) {
-  .account-dropdown { width: 92vw; right: -10px; top: 75px; }
 }
 
 .account-dropdown.open {
@@ -1052,7 +965,113 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(1) { transition-delay: 0.1s; }
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(2) { transition-delay: 0.2s; }
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(3) { transition-delay: 0.3s; }
+    
+    /* =========================================
+       ★重要修正: スマホヘッダー（右上のアカウント表示）
+       ========================================= */
+    
+    /* モバイルRGL調整 */
+    .rgl-wrapper { flex-direction: column; }
+    
+    /* サイドバー（モバイルでは左上のハンバーガーエリアとして機能） */
+    .rgl-sidebar { 
+        width: 100%; 
+        height: auto; 
+        padding: 0; 
+        border-right: none; 
+        border-bottom: 1px solid rgba(128,128,128,0.1); 
+        overflow: visible;
+        position: relative;
+        z-index: 100;
+    }
+    
+    .rgl-brand-area { 
+        padding: 16px 20px; 
+        display: flex;
+        align-items: center;
+        gap: 16px; 
+        width: 100%;
+        /* 右側にスペースを空ける（アカウントアイコン用） */
+        padding-right: 120px; 
+    }
+    
+    /* PC用コンテンツ非表示 */
+    .rgl-menu-section { display: none; }
+    .rgl-bottom-controls { display: none; } 
+    
+    /* ★修正: ヘッダーを絶対配置で右上に固定 */
+    .rgl-header { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: auto;
+        height: 70px; /* サイドバーの高さに合わせる */
+        background: transparent !important;
+        padding: 0 20px;
+        z-index: 200; /* サイドバーより手前 */
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        pointer-events: none; /* コンテナ自体はクリック透過 */
+    }
+    
+    /* ヘッダー内の要素はクリック可能にする */
+    .rgl-header > * {
+        pointer-events: auto;
+    }
+
+    /* タブは消す */
+    .rgl-tabs { display: none !important; }
+    
+    .rgl-hero { padding: 30px 20px; min-height: 50vh; }
+    .rgl-logo-text { font-size: 32px; }
+    
+    /* ニュースモーダル（モバイル用調整） */
+    .modal-sheet.is-success { max-width: 92%; border-radius: 24px; height: auto; max-height: 85vh; overflow-y: auto; }
+    .success-container { flex-direction: column; min-height: auto; }
+    .success-visual { width: 100%; height: 220px; flex: none; }
+    .success-details { padding: 24px; flex: auto; }
+    
+    /* モバイル用ニュースモーダルの全幅調整 */
+    #newsModal .modal-sheet {
+        width: 92% !important;
+        min-width: 0 !important;
+        max-height: 80vh;
+        overflow-y: auto;
+        padding: 24px !important;
+    }
+    
+    /* ★重要修正: スマホ用アカウントドロップダウンの位置固定 */
+    .account-dropdown {
+        position: fixed; /* 固定配置に変更 */
+        top: 70px;       /* ヘッダーの下 */
+        right: 5%;       /* 右端から少し空ける */
+        width: 90%;      /* 画面幅の90% */
+        left: auto;
+        transform: translateY(-10px);
+    }
+    
+    .account-dropdown.open {
+        transform: translateY(0);
+    }
 }
+
+footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font-size: 12px; }
+[data-theme="dark"] footer { color: #888; }
+
+.loading-spinner {
+  display: inline-block; 
+  vertical-align: middle; 
+  width: 24px;            
+  height: 24px;
+  border: 3px solid rgba(128,128,128,0.2);
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;      
+}
+@keyframes spin { to{transform: rotate(360deg);} }
 
 </style>
 </head>
@@ -1211,7 +1230,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 
 <div id="libraryModal" class="modal-overlay">
   <div class="modal-sheet">
-    <div style="position:absolute; top:24px; right:24px; cursor:pointer; opacity:0.6;" id="libCloseBtn"><i data-lucide="x" size="24"></i></div>
+    <div style="position:absolute; top:24px; right:24px; cursor:pointer; opacity:0.6;" id="libCloseBtn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" size="24" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
     <div class="lib-modal-header">
       <div class="lib-header-left">
         <div class="lib-header-icon"><i data-lucide="package-open" size="28"></i></div>
