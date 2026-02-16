@@ -1019,13 +1019,13 @@ button, input, textarea { font-family: var(--font-stack); }
     
     /* ★修正: ヘッダーを絶対配置で右上に固定 */
     .rgl-header { 
-        position: absolute;
+        position: fixed !important; /* Changed from absolute to fixed */
         top: 0;
         right: 0;
         width: auto;
-        height: 100%; /* サイドバーの高さに合わせる */
+        height: 70px; /* サイドバーの高さに合わせる */
         background: transparent !important;
-        padding: 0 16px;
+        padding: 0 20px;
         z-index: 200; /* サイドバーより手前 */
         display: flex !important;
         align-items: center;
@@ -2137,7 +2137,7 @@ function startHeroCountdown(targetDate) {
 
                 case 'en':      // 英語
                 default:
-                    dateString = `${enMonths[m - 1]} ${dd}, ${y}`;
+                    dateString = `${enMonths[m]} ${dd}, ${y}`;
                     break;
             }
             
