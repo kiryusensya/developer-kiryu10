@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0104)file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/index.html -->
 <html lang="ja" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="./_.k__yu.10__Developers_files/css2" rel="stylesheet">
 <link rel="stylesheet" href="./_.k__yu.10__Developers_files/all.min.css">
-<script src="./_.k__yu.10__Developers_files/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
 /* --- FONT FACE DEFINITIONS --- */
@@ -40,7 +39,7 @@
   --spring-ease: cubic-bezier(0.33, 1, 0.68, 1);
   --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
   --rgl-green: #04CF22;
-    
+   
   /* Account System */
   --dropdown-bg: rgba(255, 255, 255, 0.95);
   --modal-bg-standard: #FFFFFF;
@@ -75,7 +74,7 @@
   --btn-close-border: #FFFFFF;
   --btn-close-text: #FFFFFF;
   --shadow-soft: 0 15px 40px rgba(0,0,0,0.4);
-    
+   
   /* Account System */
   --dropdown-bg: rgba(20, 20, 20, 0.98);
   --modal-bg-standard: #1A1A1A;
@@ -196,15 +195,14 @@ button, input, textarea { font-family: var(--font-stack); }
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px; /* 丸みに合わせて余白を少し増やす */
-    border-radius: 50px; /* PS5風の完全な丸み */
+    padding: 12px 20px;
+    border-radius: 50px;
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
     border: 1px solid transparent; 
-    margin-bottom: 8px; /* アイテム同士の間隔を少し空ける */
+    margin-bottom: 8px;
 }
 .sidebar-game-item:hover { background: var(--sidebar-item-hover); }
-/* Active (Selected) State */
 .sidebar-game-item.active { 
     background: var(--sidebar-item-hover); 
     border-color: rgba(128,128,128,0.1);
@@ -278,9 +276,6 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 .rgl-tab:hover { opacity: 1; }
 .rgl-tab.active { opacity: 1; }
-.rgl-tab.active::after {
-  content: ''; position: absolute; bottom: -6px; left: 0; width: 100%; height: 2px; background: var(--nav-text);
-}
 
 .theme-pill {
   width: 44px; height: 44px; border-radius: 50%;
@@ -319,7 +314,6 @@ button, input, textarea { font-family: var(--font-stack); }
     transition: background-image 0.5s ease-in-out;
 }
 
-/* 白い膜(before/after)も削除 */
 .rgl-hero::before, .rgl-hero::after {
     display: none !important;
     background: none !important;
@@ -345,7 +339,6 @@ button, input, textarea { font-family: var(--font-stack); }
   text-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-/* 説明文エリアを強制非表示（2重タイトル防止） */
 .rgl-desc {
     display: none !important;
 }
@@ -358,7 +351,6 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 
 /* --- ボタン --- */
-/* メインアクションボタン */
 .rgl-cta-btn {
     display: inline-flex;
     align-items: center;
@@ -372,7 +364,7 @@ button, input, textarea { font-family: var(--font-stack); }
     
     font-weight: 800;
     font-size: 18px;
-    border-radius: 50px; /* ここを変更：PS5のボタンのような丸み */
+    border-radius: 50px;
     cursor: pointer;
     text-transform: none !important;
     
@@ -403,41 +395,28 @@ button, input, textarea { font-family: var(--font-stack); }
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 12px;
+    padding: 0 20px !important;
     cursor: pointer;
     font-size: 14px;
     font-weight: 700;
     color: var(--sidebar-text);
-    border-radius: 8px;
+    border-radius: 50px !important;
     background: transparent;
-    transition: background 0.2s;
-    font-family: var(--font-stack);
-}
-/* 言語切替ボタンのデザイン変更 */
-.lang-trigger-sidebar {
-    border-radius: 50px !important; /* PS5風の丸み */
-    padding: 0 20px !important;    /* 丸みに合わせて左右の余白を少し増やす */
-    border: 1px solid transparent; /* レイアウト崩れ防止の透明な枠線 */
     transition: all 0.2s ease;
+    font-family: var(--font-stack);
+    border: 1px solid transparent;
 }
-
-/* ホバー時の挙動調整（オプション） */
 .lang-trigger-sidebar:hover {
     background: rgba(128, 128, 128, 0.15);
 }
-
-/* ダークモード時：白い枠線を追加 */
 [data-theme="dark"] .lang-trigger-sidebar {
-    border: 1px solid rgba(255, 255, 255, 0.6) !important; /* 白い枠線 */
-    background: rgba(255, 255, 255, 0.05); /* ほんの少し背景色を入れて枠線を馴染ませる */
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    background: rgba(255, 255, 255, 0.05);
 }
-
-/* ダークモードでホバーした時 */
 [data-theme="dark"] .lang-trigger-sidebar:hover {
-    border-color: #fff !important; /* ホバーで枠線をよりはっきりさせる */
+    border-color: #fff !important;
     background: rgba(255, 255, 255, 0.15);
 }
-.lang-trigger-sidebar:hover { background: rgba(128,128,128,0.1); }
 .lang-list { position: absolute; bottom: 80px; left: 24px; width: 200px; background: var(--card-bg); backdrop-filter: blur(20px); padding: 5px; border-radius: 12px; list-style: none; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 200; border: 1px solid rgba(128,128,128,0.1); }
 .lang-list.open { display: block; animation: popIn 0.3s; }
 .lang-list li { padding: 10px 15px; cursor: pointer; border-radius: 8px; color: var(--modal-text-main); font-size: 13px; font-family: var(--font-stack); }
@@ -451,7 +430,7 @@ button, input, textarea { font-family: var(--font-stack); }
 /* Keep Animations */
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-/* --- INTRO DESIGN (Kept as is) --- */
+/* --- INTRO DESIGN --- */
 .intro-theme-btn {
   position: absolute; top: 40px; right: 40px; z-index: 10002;
   border-color: var(--card-border);
@@ -541,8 +520,6 @@ button, input, textarea { font-family: var(--font-stack); }
     min-width: 500px; 
     max-width: 900px; 
     text-align: left;
-    
-    /* 背景を半透明にしてぼかしを入れる */
     background-color: rgba(255, 255, 255, 0.6) !important; 
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -590,7 +567,7 @@ button, input, textarea { font-family: var(--font-stack); }
   background: var(--primary); color: white; border-radius: 25px;
   font-size: 16px; font-weight: 700; cursor: pointer;
   transition: transform 0.2s; font-family: var(--font-stack);
-  border-radius: 50px !important; /* 丸くする */
+  border-radius: 50px !important;
 }
 .btn-primary:active { transform: scale(0.96); }
 
@@ -657,7 +634,7 @@ button, input, textarea { font-family: var(--font-stack); }
   flex: 1; height: 50px; background: transparent;
   border: 1px solid var(--btn-close-border); color: var(--btn-close-text);
   border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
-  border-radius: 50px !important; /* 丸くする */
+  border-radius: 50px !important;
   border: 1px solid var(--btn-close-border) !important;
   font-family: var(--font-stack);
 }
@@ -667,7 +644,7 @@ button, input, textarea { font-family: var(--font-stack); }
 .btn-action {
   flex: 2; height: 50px; border-radius: 12px; border: none; font-weight: 700; 
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  border-radius: 50px !important; /* 丸くする */
+  border-radius: 50px !important;
   text-decoration: none; transition: transform 0.2s; cursor: pointer;
   font-family: var(--font-stack);
 }
@@ -680,21 +657,69 @@ button, input, textarea { font-family: var(--font-stack); }
 #btnDownload:hover { box-shadow: 0 5px 20px rgba(4, 207, 34, 0.4); }
 
 @media (max-width: 768px) {
+  /* Mobile RGL layout adjustments */
+  .rgl-wrapper { flex-direction: column; }
+  
+  /* サイドバー（モバイルではヘッダーとして機能） */
+  .rgl-sidebar { 
+      width: 100%; 
+      height: auto; 
+      padding: 0; 
+      border-right: none; 
+      border-bottom: 1px solid rgba(128,128,128,0.1); 
+      overflow: visible; /* ハンバーガーメニュー展開用 */
+  }
+  
+  .rgl-brand-area { 
+      padding: 16px 20px; 
+      /* ハンバーガーアイコンとブランド名を横並びにする */
+      display: flex;
+      align-items: center;
+      gap: 16px; 
+  }
+  
+  /* PC用コンテンツ非表示 */
+  .rgl-menu-section { display: none; }
+  .rgl-bottom-controls { display: none; } 
+  
+  /* ★修正: ヘッダーを非表示にするのではなく、右上のアカウントアイコンだけ残す */
+  .rgl-header { 
+      display: flex !important; 
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: auto;
+      background: transparent !important;
+      padding: 16px 20px;
+      z-index: 102; /* サイドバーより上 */
+      pointer-events: none; /* ヘッダー領域自体はクリック透過 */
+  }
+  
+  /* ヘッダー内のクリッカブル要素はクリック可能に */
+  .rgl-header > * {
+      pointer-events: auto;
+  }
+
+  /* タブは消す */
+  .rgl-tabs { display: none !important; }
+  
+  .rgl-hero { padding: 30px 20px; min-height: 50vh; }
+  .rgl-logo-text { font-size: 32px; }
+  
+  /* ニュースモーダル（モバイル用調整） */
   .modal-sheet.is-success { max-width: 92%; border-radius: 24px; height: auto; max-height: 85vh; overflow-y: auto; }
   .success-container { flex-direction: column; min-height: auto; }
   .success-visual { width: 100%; height: 220px; flex: none; }
   .success-details { padding: 24px; flex: auto; }
-  .content-title { font-size: 24px; }
-    
-  /* Mobile RGL layout adjustments */
-  .rgl-wrapper { flex-direction: column; }
-  .rgl-sidebar { width: 100%; height: auto; padding: 0; border-right: none; border-bottom: 1px solid rgba(128,128,128,0.1); }
-  .rgl-brand-area { padding: 16px 20px; }
-  .rgl-menu-section { width: 100%; margin-bottom: 10px; }
-  .rgl-bottom-controls { display: none; } /* Hide or relocate */
-  .rgl-header { justify-content: flex-end; padding: 16px; gap: 16px; overflow-x: auto; }
-  .rgl-hero { padding: 30px 20px; min-height: 50vh; }
-  .rgl-logo-text { font-size: 32px; } /* スマホ用サイズ調整 */
+  
+  /* ★追加：モバイル用ニュースモーダルの全幅調整 */
+  #newsModal .modal-sheet {
+      width: 92% !important;
+      min-width: 0 !important;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 24px !important;
+  }
 }
 
 footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font-size: 12px; }
@@ -725,13 +750,10 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   border-radius: 24px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.2);
   padding: 24px;
-  z-index: 2000; /* サイドバー(z-index:100)より確実に上に表示させる */
+  z-index: 2000;
   opacity: 0;
   transform: translateY(-10px) scale(0.98);
-  
-  /* 重要: 閉じているときはマウス操作を無効化 */
   pointer-events: none; 
-  
   transition: all 0.3s var(--spring-ease);
   transform-origin: top right;
   text-align: left; 
@@ -743,12 +765,9 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   .account-dropdown { width: 92vw; right: -10px; top: 75px; }
 }
 
-/* 重要: 開いている状態（.open）のスタイル定義 */
 .account-dropdown.open {
   opacity: 1;
   transform: translateY(0) scale(1);
-  
-  /* 重要: 開いているときだけクリックを有効化 */
   pointer-events: auto; 
   visibility: visible;
 }
@@ -788,126 +807,26 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   display: none;
 }
 
-@media (max-width: 768px) {
-  /* Hide EVERYTHING else */
-  body > *:not(#mobile-warning) {
-    display: none !important;
-  }
-  
-  /* Show only the warning container */
-  #mobile-warning {
-    display: flex !important;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: #000000 !important; /* 黒背景 */
-    z-index: 999999;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px; 
-    overflow: hidden;
-  }
-  
-  /* Background Video */
-  .mobile-bg-video {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover;
-    z-index: 1; /* 最背面 */
-    opacity: 0.6; /* 少し暗くする */
-  }
-
-  /* Reset body styles for this view */
-  body {
-    background-color: #000 !important;
-    overflow: hidden !important;
-    margin: 0; padding: 0;
-  }
-
-  /* Scary Text Styles */
-  .bloody-text {
-    font-family: serif; 
-    color: #cc0000;
-    font-size: 14px; 
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 20px;
-    line-height: 1.4;
-    text-shadow: 
-      1px 1px 0px #330000, 
-      0 0 5px #ff0000,
-      0 0 10px #8a0303;
-    animation: pulseBlood 3s infinite alternate;
-    position: relative;
-    z-index: 10; 
-    white-space: nowrap; 
-  }
-
-  .bloody-text span {
-    display: block; 
-    margin-bottom: 5px;
-  }
-  
-  /* ロシア語は改行を許可 */
-  .bloody-text .ru-text {
-    white-space: normal;
-    word-break: break-word;
-  }
-  
-  @keyframes pulseBlood {
-    0% { opacity: 0.8; text-shadow: 1px 1px 0px #330000, 0 0 3px #ff0000; }
-    100% { opacity: 1; text-shadow: 1px 1px 0px #330000, 0 0 10px #ff0000; }
-  }
-
-  /* Bloody Hands Images (Shadows) */
-  .bloody-hand-img {
-    position: absolute;
-    opacity: 0.7; 
-    pointer-events: none;
-    user-select: none;
-    /* 赤い光彩と影を追加して血の表現を強化 */
-    filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 5px #8a0303);
-    width: auto;
-    height: auto;
-    max-width: 45%; 
-    max-height: 45%; 
-    mix-blend-mode: multiply; 
-    z-index: 5; /* 動画より上、テキストより下 */
-  }
-  
-  .hand-1 { top: 2%; left: 2%; transform: rotate(-20deg); }
-  .hand-2 { top: 10%; right: 5%; transform: rotate(30deg) scale(0.9); }
-  .hand-3 { bottom: 5%; left: 10%; transform: rotate(10deg) scale(1.3); }
-  .hand-4 { bottom: 2%; right: 2%; transform: rotate(-10deg); }
-  .hand-5 { top: 35%; left: -15%; transform: rotate(80deg) scale(1.1); }
-  .hand-6 { top: 55%; right: -20%; transform: rotate(-100deg) scale(1.2); }
-  .hand-7 { top: -10%; left: 45%; transform: translateX(-50%) rotate(170deg) scale(0.8); }
-  .hand-8 { bottom: -15%; right: 35%; transform: rotate(150deg) scale(0.9); }
-}
 [data-theme="dark"] .btn-close-sub {
-    border-color: rgba(255, 255, 255, 0.6) !important; /* 白枠線を少し透過させて馴染ませる */
+    border-color: rgba(255, 255, 255, 0.6) !important;
     color: #fff !important;
 }
 
 [data-theme="dark"] .btn-close-sub:hover {
-    border-color: #fff !important; /* ホバー時は真っ白に */
+    border-color: #fff !important;
     background: rgba(255, 255, 255, 0.1);
 }
-/* --- ヘッダーナビゲーション修正版（干渉防止・幅調整） --- */
+/* --- ヘッダーナビゲーション修正版 --- */
 
 .rgl-tab {
     position: relative;
-    /* 【重要】ボタン同士の物理的な間隔を確保（干渉防止） */
     margin: 0 4px !important; 
-    
-    /* その他の設定は維持 */
     padding: 0 !important; 
     border: none !important;
     background: transparent !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
     
-    /* テキスト設定 */
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -915,13 +834,11 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     font-weight: 700;
     opacity: 0.6;
     transition: opacity 0.2s ease;
-    z-index: 1; /* 文字を背景より前に出す */
+    z-index: 1;
 }
 
-/* 下線などの装飾も確実に消す */
 .rgl-tab::after { display: none !important; }
 
-/* ホバー時・選択時は文字をくっきりさせる */
 .rgl-tab:hover, 
 .rgl-tab.active { 
     opacity: 1; 
@@ -933,67 +850,213 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     position: absolute;
     top: 50%;
     left: 50%;
-    
-    /* 【重要】横幅を小さく調整 */
-    /* 文字の幅(100%)に対して、左右に少しだけ(合計16px)余裕を持たせる */
     width: calc(100% + 37px); 
-    height: 38px; /* 高さも少しスリムに調整 */
+    height: 38px;
     border-radius: 50px;
     
-    /* デザイン：すりガラス */
     background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     
-    /* 初期状態（非表示） */
-    transform: translate(-50%, -50%) scale(0.9); /* 少し小さい状態から始める */
+    transform: translate(-50%, -50%) scale(0.9);
     opacity: 0;
-    z-index: -1; /* 文字の後ろに配置 */
+    z-index: -1;
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* ホバー時・アクティブ時に背景をフワッと表示 */
 .rgl-tab:hover::before,
 .rgl-tab.active::before {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1); /* 元のサイズに戻るアニメーション */
+    transform: translate(-50%, -50%) scale(1);
 }
 
-/* ダークモード対応 */
 [data-theme="dark"] .rgl-tab { color: #fff; }
 [data-theme="dark"] .rgl-tab::before {
     background: rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 255, 255, 0.1);
 }
+
+/* =========================================
+   ★ここから追加：スマホ用ライブラリモーダルCSS
+   ========================================= */
+
+/* スマホ用「ライブラリを開く」ボタン（デフォルト非表示） */
+#btnShowLibrary {
+    display: none; /* PCでは非表示 */
+}
+
+/* スマホ表示時（768px以下）のみ表示 */
+@media (max-width: 768px) {
+    #btnShowLibrary {
+        display: flex; 
+    }
+}
+
+/* ライブラリモーダル（2つ目のコードのデザインを移植） */
+#libraryModal .modal-sheet {
+  background: var(--modal-bg-standard);
+  border-radius: 28px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+  width: 90%; max-width: 600px;
+  padding: 40px;
+  text-align: left;
+}
+
+.lib-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 30px;
+}
+.lib-header-left { display: flex; align-items: center; gap: 16px; }
+.lib-header-icon {
+  width: 56px; height: 56px; background: #007DFF; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center; color: white;
+  box-shadow: 0 10px 25px rgba(0, 125, 255, 0.25);
+}
+.lib-header-title { font-size: 32px; font-weight: 800; color: var(--modal-text-main); line-height: 1; letter-spacing: -1px; }
+
+.lib-list-scroll { list-style: none; padding: 0; margin: 0; max-height: 450px; overflow-y: auto; }
+
+/* Library Card Item */
+.lib-item-card {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(128, 128, 128, 0.04);
+  border: 1px solid rgba(128, 128, 128, 0.08);
+  border-radius: 20px; padding: 16px; margin-bottom: 12px;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.lib-item-card:hover { transform: translateY(-2px); background: rgba(128, 128, 128, 0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+.lib-card-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+.lib-card-thumb {
+  width: 72px; height: 72px; border-radius: 14px; object-fit: cover;
+  background: #eee; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.lib-card-info { display: flex; flex-direction: column; overflow: hidden; justify-content: center; }
+.lib-card-meta { font-size: 12px; color: var(--modal-text-sub); font-weight: 600; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+.lib-card-title { font-size: 18px; font-weight: 800; color: var(--modal-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+
+.lib-card-btn {
+  width: 48px; height: 48px; background: #000000; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; color: #ffffff;
+  text-decoration: none; transition: all 0.2s; flex-shrink: 0;
+}
+[data-theme="dark"] .lib-card-btn { background: #ffffff; color: #000000; }
+.lib-card-btn:hover { transform: scale(1.05); opacity: 0.9; }
+
+/* スマホ用ライブラリ表示調整 */
+@media (max-width: 480px) {
+  #libraryModal .modal-sheet {
+    width: 96%; 
+    padding: 20px; 
+  }
+  .lib-item-card { padding: 8px; }
+  .lib-card-thumb { width: 32px; height: 32px; }
+  .lib-card-btn { width: 32px; height: 32px; }
+  .lib-card-left { gap: 8px; }
+  .lib-card-title { font-size: 9px; white-space: nowrap; }
+  .lib-card-meta { font-size: 8px; white-space: nowrap; letter-spacing: -0.5px; }
+}
+
+/* =========================================
+   ★追加：スマホ用全画面メニューCSS
+   ========================================= */
+
+/* デフォルトでは非表示 */
+.mobile-menu-trigger { display: none; }
+.mobile-nav-overlay { display: none; }
+
+/* スマホ表示時（768px以下） */
+@media (max-width: 768px) {
+    /* ハンバーガーアイコン */
+    .mobile-menu-trigger { 
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        background: transparent; 
+        border: none; 
+        color: var(--sidebar-text); 
+        cursor: pointer;
+        padding: 8px;
+        margin-right: 8px;
+    }
+    
+    /* ブランドエリアの配置調整 */
+    .rgl-brand {
+        /* ハンバーガーアイコンの後ろにロゴを表示するための調整 */
+        order: 2; 
+    }
+    .mobile-menu-trigger {
+        order: 1;
+    }
+    
+    /* 全画面メニューオーバーレイ */
+    .mobile-nav-overlay {
+        display: flex; 
+        flex-direction: column;
+        position: fixed; 
+        inset: 0; 
+        background: var(--bg-color); 
+        z-index: 10001; /* アカウントメニューより上 */
+        padding: 40px;
+        transform: translateX(-100%); /* 左からスライド */
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        visibility: hidden;
+    }
+    
+    .mobile-nav-overlay.active { 
+        transform: translateX(0); 
+        visibility: visible;
+    }
+    
+    /* 閉じるボタン */
+    .mobile-menu-close {
+        align-self: flex-end;
+        background: transparent;
+        border: 1px solid var(--btn-close-border);
+        color: var(--modal-text-main);
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        margin-bottom: 40px;
+    }
+    
+    /* メニューコンテンツ */
+    .mobile-nav-content { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 40px; /* アイテム間隔 */
+    }
+    
+    .mobile-nav-item { 
+        font-family: var(--font-stack);
+        font-size: 32px; 
+        font-weight: 800; 
+        color: var(--modal-text-main); 
+        text-decoration: none; 
+        text-align: left; 
+        opacity: 0;
+        transform: translateX(-20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    
+    /* メニューオープン時のアニメーション */
+    .mobile-nav-overlay.active .mobile-nav-item {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    /* 遅延表示 */
+    .mobile-nav-overlay.active .mobile-nav-item:nth-child(1) { transition-delay: 0.1s; }
+    .mobile-nav-overlay.active .mobile-nav-item:nth-child(2) { transition-delay: 0.2s; }
+    .mobile-nav-overlay.active .mobile-nav-item:nth-child(3) { transition-delay: 0.3s; }
+}
+
 </style>
 </head>
 <body>
-
-<div id="mobile-warning">
-  <video class="mobile-bg-video" autoplay="" loop="" muted="" playsinline="">
-    <source src="background_video.mp4" type="video/mp4">
-  </video>
-
-  <img src="file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/image_3.png" class="bloody-hand-img hand-1" alt="shadow hand">
-  <img src="file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/image_3.png" class="bloody-hand-img hand-2" alt="shadow hand">
-  <img src="file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/image_3.png" class="bloody-hand-img hand-3" alt="shadow hand">
-  <img src="file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/image_3.png" class="bloody-hand-img hand-4" alt="shadow hand">
-  <img src="file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/image_3.png" class="bloody-hand-img hand-5" alt="shadow hand">
-  <img src="file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/image_3.png" class="bloody-hand-img hand-6" alt="shadow hand">
-  <img src="file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/image_3.png" class="bloody-hand-img hand-7" alt="shadow hand">
-  <img src="file:///C:/Users/%E6%98%A5%E6%97%A5%E4%BA%95%E8%A5%BF%E9%AB%98%E7%94%9F%E5%BE%9201066/Desktop/image_3.png" class="bloody-hand-img hand-8" alt="shadow hand">
-
-  <div class="bloody-text">
-    <span>お使いのデバイスは対応していません</span>
-    <span>Your device is not supported</span>
-    <span>您的设备不支持</span>
-    <span>您的裝置不支援</span>
-    <span>귀하의 기기는 지원되지 않습니다</span>
-    <span class="ru-text">Ваше устройство не поддерживается</span>
-  </div>
-</div>
 
 <canvas id="particleCanvas" width="1125" height="605"></canvas>
 
@@ -1012,10 +1075,22 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   </div>
 </div>
 
+<div class="mobile-nav-overlay" id="mobileNav">
+    <button class="mobile-menu-close" id="mobileMenuCloseBtn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+    <div class="mobile-nav-content">
+        <a href="index.html" class="mobile-nav-item" data-translate="card1_title">ホーム</a>
+        <a href="#" class="mobile-nav-item" id="btnMobileNewsLink" data-translate="card2_title">ニュース</a>
+        <a href="support.html" class="mobile-nav-item" data-translate="card3_title">サポート</a>
+    </div>
+</div>
+
 <div class="rgl-wrapper" id="mainContainer" style="opacity: 1;">
     
     <aside class="rgl-sidebar">
         <div class="rgl-brand-area">
+            <button class="mobile-menu-trigger" id="mobileMenuBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="menu" aria-hidden="true" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+            </button>
             <div class="rgl-brand"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="graduation-cap" aria-hidden="true" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"></path><path d="M22 10v6"></path><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path></svg> <span data-translate="header_brand">kr_開発者版</span></div>
         </div>
         
@@ -1081,6 +1156,11 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                          <button class="menu-btn" id="btnMenuRedeem">
                             <span data-translate="btn_redeem_code">コード引き換え</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="key-round" aria-hidden="true" size="18" class="lucide lucide-key-round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></svg>
                          </button>
+                         
+                         <button class="menu-btn" id="btnShowLibrary">
+                            <span data-translate="label_library">ライブラリ</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="package-open" aria-hidden="true" size="18" class="lucide lucide-package-open"><path d="M12 22v-9"></path><path d="m2.9 14.4 8.1 4.5 8.1-4.5"></path><path d="m19 5.3-7 4-7-4"></path><path d="m12 9.3 8.1 4.6"></path><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
+                         </button>
+
                          <button class="menu-btn" id="btnLogout" style="color:#FF3B30;">
                            <span data-translate="btn_logout">ログアウト</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="log-out" aria-hidden="true" size="18" class="lucide lucide-log-out"><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path></svg>
                          </button>
@@ -1127,6 +1207,19 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 
     </main>
 
+</div>
+
+<div id="libraryModal" class="modal-overlay">
+  <div class="modal-sheet">
+    <div style="position:absolute; top:24px; right:24px; cursor:pointer; opacity:0.6;" id="libCloseBtn"><i data-lucide="x" size="24"></i></div>
+    <div class="lib-modal-header">
+      <div class="lib-header-left">
+        <div class="lib-header-icon"><i data-lucide="package-open" size="28"></i></div>
+        <div class="lib-header-title" data-translate="label_library">Library</div>
+      </div>
+    </div>
+    <ul id="libraryList" class="lib-list-scroll"></ul>
+  </div>
 </div>
 
 <div id="adminModal" class="modal-overlay">
@@ -1218,6 +1311,18 @@ let currentHeroContext = 'default';
 // Helper
 const gId = (i) => document.getElementById(i);
 const setListener = (el, ev, fn) => { if(el) el.addEventListener(ev, fn); };
+
+// ライブラリ表示用にコードにハイフンを入れる関数 (2つ目のコードから移植)
+const formatDisplayCode = (code) => {
+  if (!code) return "";
+  const clean = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const sz = clean.length >= 25 ? 5 : 4;
+  let res = '';
+  for(let i=0; i<clean.length; i++) {
+    res += (i > 0 && i % sz === 0 ? '-' : '') + clean[i];
+  }
+  return res;
+};
 
 const TRANSLATIONS={
  ja:{
@@ -1371,14 +1476,21 @@ const els={
  langWrapper: gId('customLangWrapper'), langTrigger: gId('langTrigger'), langMenu: gId('langMenu'), currentLangLabel: gId('currentLangLabel'),
  accountDropdown: gId('accountDropdown'), openAccount: gId('btnOpenAccount'),
  loggedInView: gId('loggedInView'), loggedOutView: gId('loggedOutView'), displayUserId: gId('displayUserId'), displayUserEmail: gId('displayUserEmail'),
- btnLogout: gId('btnLogout'),
+ btnLogout: gId('btnLogout'), btnMenuRedeem: gId('btnMenuRedeem'), btnShowLibrary: gId('btnShowLibrary'),
  libraryListSidebar: gId('sidebarLibraryList'),
  availableListSidebar: gId('sidebarAvailableList'),
  secAvailable: gId('secAvailable'), secLibrary: gId('secLibrary'),
  tabs: document.querySelectorAll('.auth-tab'), email: gId('inputEmail'), pass: gId('inputPass'), btnAuthAction: gId('btnAuthAction'), authStatus: gId('authStatus'),
  adminModal: gId('adminModal'), adminCloseBtn: gId('adminCloseBtn'),
  targetUserEmail: gId('targetUserEmail'), btnAdminSearch: gId('btnAdminSearch'), adminResultArea: gId('adminResultArea'),
- heroActionBtn: gId('heroActionBtn'), heroTitle: gId('heroTitle'), heroDesc: gId('heroDesc'), heroBgImage: gId('heroBgImage')
+ heroActionBtn: gId('heroActionBtn'), heroTitle: gId('heroTitle'), heroDesc: gId('heroDesc'), heroBgImage: gId('heroBgImage'),
+ libraryModal: gId('libraryModal'), libCloseBtn: gId('libCloseBtn'), libraryList: gId('libraryList'),
+ 
+ // ★追加：モバイルメニュー用
+ mobileMenuBtn: gId('mobileMenuBtn'),
+ mobileNav: gId('mobileNav'),
+ mobileMenuCloseBtn: gId('mobileMenuCloseBtn'),
+ btnMobileNewsLink: gId('btnMobileNewsLink')
 };
 
 const formatCodeInput = (val) => {
@@ -1422,14 +1534,28 @@ function setupEventListeners() {
     }
   });
 
-  const btnMenuRedeem = document.getElementById('btnMenuRedeem');
-  if (btnMenuRedeem) {
-      btnMenuRedeem.addEventListener('click', (e) => {
+  // ドロップダウン内の「コード引き換え」ボタン (全デバイス共通)
+  if (els.btnMenuRedeem) {
+      els.btnMenuRedeem.addEventListener('click', (e) => {
           e.stopPropagation();
           toggleDropdown(false);
           openAuthModal();
       });
   }
+
+  // ★追加: ドロップダウン内の「ライブラリ」ボタン (スマホのみ表示)
+  if (els.btnShowLibrary) {
+      els.btnShowLibrary.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleDropdown(false);
+          els.libraryModal.classList.add('active'); // モーダルを開く
+      });
+  }
+
+  // ★追加: ライブラリモーダルを閉じる
+  setListener(els.libCloseBtn, 'click', () => els.libraryModal.classList.remove('active'));
+  setListener(els.libraryModal, 'click', (e) => { if(e.target === els.libraryModal) els.libraryModal.classList.remove('active'); });
+
 
   if (els.btnLogout) {
       els.btnLogout.addEventListener('click', (e) => {
@@ -1491,6 +1617,26 @@ function setupEventListeners() {
       });
   }
   setListener(els.btnAuthAction, 'click', performAuthAction);
+  
+  // ★追加: スマホメニュー開閉イベント
+  if (els.mobileMenuBtn) {
+      els.mobileMenuBtn.addEventListener('click', () => {
+          els.mobileNav.classList.add('active');
+      });
+  }
+  if (els.mobileMenuCloseBtn) {
+      els.mobileMenuCloseBtn.addEventListener('click', () => {
+          els.mobileNav.classList.remove('active');
+      });
+  }
+  // スマホメニュー内の「ニュース」リンク
+  if (els.btnMobileNewsLink) {
+      els.btnMobileNewsLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          els.mobileNav.classList.remove('active'); // メニューを閉じる
+          els.newsModal.classList.add('active');    // ニュースを開く
+      });
+  }
 }
 
 function toggleDropdown(forceState) {
@@ -1611,7 +1757,7 @@ function formatDateByLang(dateStr, lang) {
   const y = parts[0];
   const m = parseInt(parts[1], 10);
   const d = parseInt(parts[2], 10);
-  
+   
   // 2桁にゼロ埋め
   const mm = m.toString().padStart(2, '0');
   const dd = d.toString().padStart(2, '0');
@@ -1749,7 +1895,7 @@ async function performAuth(code, mode = 'check') {
 
 function setupPreviewUI(d, t) {
  els.sBadge.classList.remove('visible'); els.btnRedeem.style.display = 'flex'; 
- els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                         
+ els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                      
  els.sTitle.textContent = t.success_title_preview; 
  els.sSubText.innerHTML = t.msg_preview_sub || "Please verify content";
  els.sProdName.textContent = d.bundleLabel; els.sNameDisp.textContent = d.message;            
@@ -1863,7 +2009,7 @@ function setHeroButtonState(state, forceUnlock = false) {
                                ? selectedHeroItem.buttonLabel 
                                : t.btn_hero_download;
 
-            btn.innerHTML = `<span>${displayLabel}</span> <i data-lucide="${iconName}" size="20"></i>`;
+            btn.innerHTML = `<span>${displayLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${iconName}" aria-hidden="true" size="20" class="lucide lucide-${iconName}"></svg>`;
             btn.classList.add('is-download');
             
             // 重要: ここで 'owned' にすることでクリックイベントが通過するようになります
@@ -1981,39 +2127,102 @@ function updateAccountUI() {
     els.loggedInView.style.display = 'block';
     if(els.displayUserEmail) els.displayUserEmail.textContent = currentUser.email || '-';
     
+    // ============================================
+    //  PC用 (Sidebar) の更新処理
+    // ============================================
     const hasHistory = (currentUser.history && currentUser.history.length > 0);
     if (hasHistory) {
       els.secLibrary.style.display = 'block';
       els.libraryListSidebar.innerHTML = "";
       currentUser.history.forEach((item, index) => {
-           const div = document.createElement('div');
-           div.className = 'sidebar-game-item';
-           div.onclick = () => {
-               document.querySelectorAll('.sidebar-game-item').forEach(el => el.classList.remove('active'));
-               div.classList.add('active');
-               updateHeroView(item, true); 
-           };
-           const imgUrl = (item.imageUrl && item.imageUrl.startsWith('http')) ? item.imageUrl : 'https://via.placeholder.com/32';
-           div.innerHTML = `
-             <div class="sidebar-game-info">
+            const div = document.createElement('div');
+            div.className = 'sidebar-game-item';
+            div.onclick = () => {
+                document.querySelectorAll('.sidebar-game-item').forEach(el => el.classList.remove('active'));
+                div.classList.add('active');
+                updateHeroView(item, true); 
+            };
+            const imgUrl = (item.imageUrl && item.imageUrl.startsWith('http')) ? item.imageUrl : 'https://via.placeholder.com/32';
+            div.innerHTML = `
+              <div class="sidebar-game-info">
                 <img src="${imgUrl}" class="sidebar-game-thumb" onerror="this.style.background='#555'">
                 <div class="sidebar-game-text">
                    <div class="sidebar-game-title">${item.title}</div>
                 </div>
-             </div>
-           `;
-           els.libraryListSidebar.appendChild(div);
+              </div>
+            `;
+            els.libraryListSidebar.appendChild(div);
       });
     } else {
       els.secLibrary.style.display = 'none';
     }
     els.secAvailable.style.display = 'block';
+
+    // ============================================
+    //  ★追加: スマホ用 (Modal) の更新処理
+    //  (2つ目のコードのロジックを統合)
+    // ============================================
+    if(libraryTimerId) { clearInterval(libraryTimerId); libraryTimerId = null; }
+    els.libraryList.innerHTML = "";
+    
+    if (!currentUser.history || currentUser.history.length === 0) {
+      els.libraryList.innerHTML = `<li style='text-align:center; opacity:0.5; padding:20px; font-size:13px;'>${t.msg_empty_lib}</li>`;
+    } else {
+      const now = Date.now();
+      let hasLockedItems = false;
+      currentUser.history.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'lib-item-card';
+        const iconName = item.icon || 'download';
+        const displayCode = formatDisplayCode(item.code); // ハイフン整形
+        
+        const img = item.imageUrl && item.imageUrl.startsWith('http') 
+          ? `<img src="${item.imageUrl}" class="lib-card-thumb">` 
+          : `<div class="lib-card-thumb" style="display:flex;align-items:center;justify-content:center;color:#999;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="image" aria-hidden="true" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg></div>`;
+        const releaseTime = item.releaseDateIso ? new Date(item.releaseDateIso).getTime() : 0;
+        const isLocked = releaseTime > now;
+        
+        let btnHtml = isLocked 
+          ? `<div class="lib-card-btn lib-locked-btn" data-url="${item.url}" data-release="${releaseTime}" data-icon="${iconName}" style="background:rgba(128,128,128,0.2); cursor:not-allowed; opacity:0.6;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="lock" aria-hidden="true" size="20" class="lucide lucide-lock"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>` 
+          : `<a href="${item.url}" target="_blank" class="lib-card-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${iconName}" aria-hidden="true" size="20" class="lucide lucide-${iconName}"></svg></a>`;
+        
+        li.innerHTML = `<div class="lib-card-left">${img}<div class="lib-card-info"><div class="lib-card-meta">${item.date} • ${displayCode}</div><div class="lib-card-title">${item.title}</div></div></div>${btnHtml}`;
+        els.libraryList.appendChild(li);
+        if (isLocked) hasLockedItems = true;
+      });
+      // モーダル側のアイコン描画更新
+      try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+      if (hasLockedItems) startLibraryTimer();
+    }
+
   } else {
     els.loggedOutView.style.display = 'block';
     els.loggedInView.style.display = 'none';
     els.secLibrary.style.display = 'none';
     els.secAvailable.style.display = 'none';
   }
+}
+
+// ★追加: スマホ用ライブラリのロック解除タイマー (2つ目のコードから移植)
+function startLibraryTimer() {
+    if (libraryTimerId) clearInterval(libraryTimerId);
+    libraryTimerId = setInterval(() => {
+        const now = Date.now();
+        let stillHasLocked = false;
+        document.querySelectorAll('.lib-locked-btn').forEach(btn => {
+            if (parseInt(btn.dataset.release) <= now) {
+                const parent = btn.parentElement; 
+                if (parent) {
+                    const newBtn = document.createElement('a');
+                    newBtn.href = btn.dataset.url; newBtn.target = "_blank"; newBtn.className = "lib-card-btn";
+                    newBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${btn.dataset.icon}" aria-hidden="true" size="20" class="lucide lucide-${btn.dataset.icon}"></svg>`;
+                    btn.remove(); parent.appendChild(newBtn); 
+                    try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+                }
+            } else { stillHasLocked = true; }
+        });
+        if (!stillHasLocked) { clearInterval(libraryTimerId); libraryTimerId = null; }
+    }, 1000);
 }
 
 // 修正: サーバーフェッチなしでローカルDOM操作を行う関数
@@ -2083,7 +2292,7 @@ async function fetchAvailableContent() {
         currentUser.history.forEach(h => {
             if (h.groupId) ownedGroups.add(h.groupId); 
             if (h.code) ownedCodes.add(h.code);
-            if (h.title) ownedTitles.add(h.title);        
+            if (h.title) ownedTitles.add(h.title);         
         });
     }
     
