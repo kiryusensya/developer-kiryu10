@@ -892,7 +892,7 @@ button, input, textarea { font-family: var(--font-stack); }
         color: var(--sidebar-text); 
         cursor: pointer;
         padding: 8px;
-        margin-right: 8px;
+        margin-right: 4px; /* ロゴとの間隔を詰める */
     }
     
     /* ブランドエリアの配置調整 */
@@ -1013,19 +1013,19 @@ button, input, textarea { font-family: var(--font-stack); }
         padding-right: 120px; 
     }
     
-    /* PC用コンテンツ非表示 */
+    /* PC用コンテンツ（サイドバーリスト）非表示 */
     .rgl-menu-section { display: none; }
     .rgl-bottom-controls { display: none; } 
     
     /* ★修正: ヘッダーを絶対配置で右上に固定 */
     .rgl-header { 
-        position: fixed !important; /* Changed from absolute to fixed */
+        position: fixed !important; /* Fixedに変更して画面追従 */
         top: 0;
         right: 0;
         width: auto;
-        height: 70px; /* サイドバーの高さに合わせる */
+        height: 70px; /* サイドバーの高さ(approx 60-70px)に合わせる */
         background: transparent !important;
-        padding: 0 20px;
+        padding: 0 16px;
         z-index: 200; /* サイドバーより手前 */
         display: flex !important;
         align-items: center;
@@ -1200,7 +1200,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                             <span data-translate="btn_redeem_code">コード引き換え</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="key-round" aria-hidden="true" size="18" class="lucide lucide-key-round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></svg>
                          </button>
                          
-                         <button class="menu-btn" id="btnShowLibrary">
+                         <button class="menu-btn" id="btnShowLibrary" style="display:flex;">
                             <span data-translate="label_library">ライブラリ</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="package-open" aria-hidden="true" size="18" class="lucide lucide-package-open"><path d="M12 22v-9"></path><path d="m2.9 14.4 8.1 4.5 8.1-4.5"></path><path d="m19 5.3-7 4-7-4"></path><path d="m12 9.3 8.1 4.6"></path><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
                          </button>
 
@@ -1590,7 +1590,7 @@ function setupEventListeners() {
       });
   }
 
-  // ★追加: ドロップダウン内の「ライブラリ」ボタン (スマホのみ表示)
+  // ★追加: ドロップダウン内の「ライブラリ」ボタン
   if (els.btnShowLibrary) {
       els.btnShowLibrary.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -2137,7 +2137,7 @@ function startHeroCountdown(targetDate) {
 
                 case 'en':      // 英語
                 default:
-                    dateString = `${enMonths[m]} ${dd}, ${y}`;
+                    dateString = `${enMonths[m - 1]} ${dd}, ${y}`;
                     break;
             }
             
@@ -2186,7 +2186,7 @@ function updateAccountUI() {
     if(els.displayUserEmail) els.displayUserEmail.textContent = currentUser.email || '-';
     
     // ============================================
-    //  PC用 (Sidebar) の更新処理
+    //  PC用 (Sidebar) の更新処理（復活）
     // ============================================
     const hasHistory = (currentUser.history && currentUser.history.length > 0);
     if (hasHistory) {
@@ -2217,7 +2217,7 @@ function updateAccountUI() {
     els.secAvailable.style.display = 'block';
 
     // ============================================
-    //  ★追加: スマホ用 (Modal) の更新処理
+    //  ★スマホ用 (Modal) の更新処理
     //  (2つ目のコードのロジックを統合)
     // ============================================
     if(libraryTimerId) { clearInterval(libraryTimerId); libraryTimerId = null; }
