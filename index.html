@@ -941,6 +941,7 @@ button, input, textarea { font-family: var(--font-stack); }
         display: flex; 
         flex-direction: column; 
         gap: 40px; /* アイテム間隔 */
+        flex: 1; /* 残りのスペースを埋める */
     }
     
     .mobile-nav-item { 
@@ -966,6 +967,20 @@ button, input, textarea { font-family: var(--font-stack); }
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(2) { transition-delay: 0.2s; }
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(3) { transition-delay: 0.3s; }
     
+    /* ★追加: メニュー内の言語切り替え配置用 */
+    .mobile-menu-footer {
+        margin-top: auto;
+        padding-top: 20px;
+        border-top: 1px solid rgba(128,128,128,0.1);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease 0.4s; /* 遅延アニメーション */
+    }
+    .mobile-nav-overlay.active .mobile-menu-footer {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
     /* =========================================
        ★重要修正: スマホヘッダー（右上のアカウント表示）
        ========================================= */
@@ -983,13 +998,16 @@ button, input, textarea { font-family: var(--font-stack); }
         overflow: visible;
         position: relative;
         z-index: 100;
+        /* 背景色を「こい灰色」（変数の色）に */
+        background-color: var(--sidebar-bg); 
     }
     
     .rgl-brand-area { 
-        padding: 16px 20px; 
+        padding: 16px 12px; /* 左寄せのためにpaddingを減らす */
         display: flex;
         align-items: center;
-        gap: 16px; 
+        justify-content: flex-start; /* 左揃え */
+        gap: 8px; /* アイコンとロゴの間隔を詰める */
         width: 100%;
         /* 右側にスペースを空ける（アカウントアイコン用） */
         padding-right: 120px; 
@@ -1005,9 +1023,9 @@ button, input, textarea { font-family: var(--font-stack); }
         top: 0;
         right: 0;
         width: auto;
-        height: 70px; /* サイドバーの高さに合わせる */
+        height: 100%; /* サイドバーの高さに合わせる */
         background: transparent !important;
-        padding: 0 20px;
+        padding: 0 16px;
         z-index: 200; /* サイドバーより手前 */
         display: flex !important;
         align-items: center;
@@ -1100,6 +1118,12 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         <a href="index.html" class="mobile-nav-item" data-translate="card1_title">ホーム</a>
         <a href="#" class="mobile-nav-item" id="btnMobileNewsLink" data-translate="card2_title">ニュース</a>
         <a href="support.html" class="mobile-nav-item" data-translate="card3_title">サポート</a>
+    </div>
+    <div class="mobile-menu-footer">
+         <div class="lang-trigger-sidebar" id="mobileLangTrigger">
+             <span style="display:flex;align-items:center;gap:8px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="globe" aria-hidden="true" size="16" class="lucide lucide-globe"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg> <span id="mobileCurrentLangLabel">日本語</span></span>
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-up" aria-hidden="true" size="14" style="opacity:0.5;" class="lucide lucide-chevron-up"><path d="m18 15-6-6-6 6"></path></svg>
+         </div>
     </div>
 </div>
 
@@ -1509,7 +1533,11 @@ const els={
  mobileMenuBtn: gId('mobileMenuBtn'),
  mobileNav: gId('mobileNav'),
  mobileMenuCloseBtn: gId('mobileMenuCloseBtn'),
- btnMobileNewsLink: gId('btnMobileNewsLink')
+ btnMobileNewsLink: gId('btnMobileNewsLink'),
+ 
+ // ★追加: モバイルメニュー内言語切り替え用
+ mobileLangTrigger: gId('mobileLangTrigger'),
+ mobileCurrentLangLabel: gId('mobileCurrentLangLabel')
 };
 
 const formatCodeInput = (val) => {
@@ -1656,6 +1684,16 @@ function setupEventListeners() {
           els.newsModal.classList.add('active');    // ニュースを開く
       });
   }
+  // スマホメニュー内の言語設定
+  if (els.mobileLangTrigger) {
+      els.mobileLangTrigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // メニューを閉じて言語選択オーバーレイを開く
+          els.mobileNav.classList.remove('active');
+          gId('langSelectionOverlay').style.display = 'flex';
+          setTimeout(() => gId('langSelectionOverlay').style.opacity = '1', 10);
+      });
+  }
 }
 
 function toggleDropdown(forceState) {
@@ -1740,6 +1778,7 @@ function updateLanguage(lang){
   });
   const langMap = { ja: '日本語', en: 'English', zh: '简体中文', 'zh-TW': '繁體中文', ko: '한국어', ru: 'Русский' };
   if(els.currentLangLabel) els.currentLangLabel.textContent = langMap[lang] || 'Language';
+  if(els.mobileCurrentLangLabel) els.mobileCurrentLangLabel.textContent = langMap[lang] || 'Language'; // モバイル用も更新
   if(t.modal_placeholder && els.code) els.code.placeholder = t.modal_placeholder;
   updateAccountUI();
 }
@@ -2098,7 +2137,7 @@ function startHeroCountdown(targetDate) {
 
                 case 'en':      // 英語
                 default:
-                    dateString = `${enMonths[m]} ${dd}, ${y}`;
+                    dateString = `${enMonths[m - 1]} ${dd}, ${y}`;
                     break;
             }
             
