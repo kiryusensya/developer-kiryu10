@@ -1013,8 +1013,9 @@ button, input, textarea { font-family: var(--font-stack); }
         padding-right: 120px; 
     }
     
-    /* PC用コンテンツ（サイドバーリスト）非表示 */
-    .rgl-menu-section { display: none; }
+    /* ★修正: スマホのみサイドバー内のリストを非表示 */
+    .rgl-menu-section { display: none !important; }
+    
     .rgl-bottom-controls { display: none; } 
     
     /* ★修正: ヘッダーを絶対配置で右上に固定 */
