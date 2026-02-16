@@ -1015,7 +1015,6 @@ button, input, textarea { font-family: var(--font-stack); }
     
     /* ★修正: スマホのみサイドバー内のリストを非表示 */
     .rgl-menu-section { display: none !important; }
-    
     .rgl-bottom-controls { display: none; } 
     
     /* ★修正: ヘッダーを絶対配置で右上に固定 */
@@ -1591,7 +1590,7 @@ function setupEventListeners() {
       });
   }
 
-  // ★追加: ドロップダウン内の「ライブラリ」ボタン
+  // ★追加: ドロップダウン内の「ライブラリ」ボタン (スマホのみ表示)
   if (els.btnShowLibrary) {
       els.btnShowLibrary.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -2164,6 +2163,11 @@ function startHeroCountdown(targetDate) {
 }
 
 function updateHeroView(item, isOwned) {
+    // ★スマホ対応: スマホ(768px以下)ではメイン画面(Hero)の書き換えを行わない（静的表示）
+    if (window.innerWidth <= 768) {
+        return; 
+    }
+
     selectedHeroItem = item;
     els.heroTitle.textContent = item.title;
     
