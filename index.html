@@ -1389,6 +1389,7 @@ const formatDisplayCode = (code) => {
   return res;
 };
 
+// 翻訳データ（省略なし）
 const TRANSLATIONS={
  ja:{
   header_brand:"kr_開発者版", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理。プロダクトコードを入力してコンテンツを解除してください。",
@@ -1413,7 +1414,6 @@ const TRANSLATIONS={
   btn_redeem_code: "コード引き換え", btn_hero_download: "ダウンロード",
   status_owned: "所有済み", status_locked: "未所有"
  },
- // ... (Other languages omitted for brevity but logic remains same) ...
  en:{
   header_brand:"kr_Dev E", hero_title:"Personal Activation Center", hero_sub:"Manage your access and resources. Redeem your product code to unlock exclusive content.",
   card1_title:"Home",card2_title:"News",card3_title:"Support",
@@ -1436,14 +1436,100 @@ const TRANSLATIONS={
   label_store_cat: "Store", label_available: "Available",
   btn_redeem_code: "REDEEM CODE", btn_hero_download: "DOWNLOAD",
   status_owned: "Owned", status_locked: "Not Owned"
+ },
+ zh:{ 
+  header_brand:"kr_开发者版", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。兑换产品代码以解锁独家内容。", 
+  card1_title:"首页",card2_title:"新闻",card3_title:"支持", 
+  modal_title:"激活",modal_sub:"请兑换激活码以下载内容。使用激活码时请将其输入下方字段",modal_placeholder:"激活码",modal_btn_auth:"检查", 
+  msg_verifying:"正在检查",msg_success_btn:"成功", 
+  msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
+  success_badge:"代码已检查",
+  success_title_preview:"确认内容", 
+  msg_preview_sub: "该代码将激活以下内容:", 
+  success_title_final:"激活成功!!", 
+  msg_success_sub: "该代码已激活以下内容:",
+  btn_close:"关闭",btn_continue:"兑换",btn_download:"下载",news_title:"最新消息",news_loading:"正在检查更新", 
+  footer_admin:"系统管理长",
+  menu_login: "登录", menu_account: "账户", lib_updating: "正在加载",
+  label_logged_in: "用户ID", label_library: "我的库", label_welcome: "欢迎", label_sync_desc: "登录以同步内容",
+  tab_login: "登录", tab_signup: "注册", form_email: "账户名", form_pass: "密码",
+  btn_login_action: "登录", btn_signup_action: "注册", btn_logout: "登出",
+  msg_empty_lib: "此处无内容。",
+  msg_logging_in: "正在登录", msg_signing_up: "正在注册",
+  label_store_cat: "商店", label_available: "可用",
+  btn_redeem_code: "兑换代码", btn_hero_download: "下载",
+  status_owned: "已拥有", status_locked: "未拥有"
+ },
+ "zh-TW":{ 
+  header_brand:"kr_開發者版", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。兌換產品代碼以解鎖獨家內容。", 
+  card1_title:"首頁",card2_title:"新聞",card3_title:"支援", 
+  modal_title:"激活",modal_sub:"請兌換啟用碼以下載內容。使用啟用碼時請於下方欄位輸入",modal_placeholder:"啟動碼",modal_btn_auth:"檢查", 
+  msg_verifying:"正在檢查",msg_success_btn:"成功", 
+  msg_invalid:"該代碼無效",msg_used:"該代碼已被使用",msg_error:"錯誤", 
+  success_badge:"代碼已檢查",
+  success_title_preview:"確認內容", 
+  msg_preview_sub: "該代碼將激活以下內容:", 
+  success_title_final:"激活成功!!", 
+  msg_success_sub: "該程式碼已啟動以下內容:",
+  btn_close:"關閉",btn_continue:"兌換",btn_download:"下載",news_title:"最新消息",news_loading:"正在檢查更新", 
+  footer_admin:"系統管理長",
+  menu_login: "登入", menu_account: "帳戶", lib_updating: "載入中",
+  label_logged_in: "用戶ID", label_library: "我的庫", label_welcome: "歡迎", label_sync_desc: "登入以同步內容",
+  tab_login: "登入", tab_signup: "註冊", form_email: "帳號名稱", form_pass: "密碼",
+  btn_login_action: "登入", btn_signup_action: "註冊", btn_logout: "登出",
+  msg_empty_lib: "沒有內容。",
+  msg_logging_in: "正在登入中...", msg_signing_up: "正在註冊中",
+  label_store_cat: "商店", label_available: "可用",
+  btn_redeem_code: "兌換代碼", btn_hero_download: "下載",
+  status_owned: "已擁有", status_locked: "未擁有"
+ },
+ ko:{ 
+  header_brand:"kr_개발자용", hero_title:"개인 코드 검사 센터", hero_sub:"액세스 권한 및 리소스 관리. 제품 코드를 사용하여 콘텐츠 잠금을 해제하세요.", 
+  card1_title:"메인 페이지",card2_title:"뉴스",card3_title:"지원", 
+  modal_title:"활성화",modal_sub:"활성화 코드를 사용해 콘텐츠를 다운로드하세요. 활성화 코드를 사용하려면 아래 필드에 입력해 주세요.",modal_placeholder:"활성화 코드",modal_btn_auth:"확인", 
+  msg_verifying:"확인 중",msg_success_btn:"성공", 
+  msg_invalid:"유효하지 않은 코드입니다.",msg_used:"이미 사용된 코드입니다.",msg_error:"오류", 
+  success_badge:"코드 인증됨",
+  success_title_preview:"콘텐츠 확인", 
+  msg_preview_sub: "해당 코드를 실행하면 다음 콘텐츠가 활성화됩니다:", 
+  success_title_final:"활성화 완료!!", 
+  msg_success_sub: "해당 코드가 다음 콘텐츠를 활성화했습니다:",
+  btn_close:"닫기",btn_continue:"사용",btn_download:"다운로드",news_title:"뉴스",news_loading:"업데이트 확인 중", 
+  footer_admin:"시스템 관리자",
+  menu_login: "로그인", menu_account: "계정", lib_updating: "로딩 중",
+  label_logged_in: "사용자 ID", label_library: "라이브러리", label_welcome: "환영합니다", label_sync_desc: "동기화하려면 로그인",
+  tab_login: "로그인", tab_signup: "가입", form_email: "계정 이름", form_pass: "비밀번호",
+  btn_login_action: "로그인", btn_signup_action: "가입", btn_logout: "로그아웃",
+  msg_empty_lib: "콘텐츠가 없습니다. ",
+  msg_logging_in: "로그인 중", msg_signing_up: "계정 생성 중",
+  label_store_cat: "상점", label_available: "사용 가능",
+  btn_redeem_code: "코드 교환", btn_hero_download: "다운로드",
+  status_owned: "소유함", status_locked: "미소유"
+ },
+ ru:{ 
+  header_brand:"kr_Разработчик", hero_title:"Центр личной активации", hero_sub:"Управление доступом и ресурсами. Активируйте код продукта для разблокировки.", 
+  card1_title:"главная страница",card2_title:"Новости",card3_title:"Поддержка", 
+  modal_title:"Проверка",modal_sub:"Погасите код активации, чтобы загрузить контент. Чтобы использовать код активации, введите его в поле ниже.",modal_placeholder:"Код активации",modal_btn_auth:"Подтверждение", 
+  msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
+  msg_invalid:"Неверный код",msg_used:"Этот код уже был использован.",msg_error:"Ошибка", 
+  success_badge:"Подтверждено", 
+  success_title_preview:"Проверка контента", 
+  msg_preview_sub: "Данный код активирует следующее содержимое:", 
+  success_title_final:"Успешно!!", 
+  msg_success_sub: "Код активировал следующее содержимое:",
+  btn_close:"Закрыть",btn_continue:"Погасить",btn_download:"Скачать",news_title:"Новости",news_loading:"Проверка обновлений", 
+  footer_admin:"Администратор",
+  menu_login: "Вход", menu_account: "Учетная запись", lib_updating: "Загрузка",
+  label_logged_in: "ID пользователя", label_library: "Библиотека", label_welcome: "Привет", label_sync_desc: "Войдите для синхронизации",
+  tab_login: "Вход", tab_signup: "Регистрация", form_email: "Название счета", form_pass: "Пароль",
+  btn_login_action: "Войти", btn_signup_action: "Создать", btn_logout: "Выйти",
+  msg_empty_lib: "Контент недоступен.",
+  msg_logging_in: "Вход", msg_signing_up: "Создание",
+  label_store_cat: "Магазин", label_available: "Доступно",
+  btn_redeem_code: "Активировать код", btn_hero_download: "Скачать",
+  status_owned: "В наличии", status_locked: "Не в наличии"
  }
 };
-// Fallback for other languages to avoid errors if object is incomplete
-if(!TRANSLATIONS.zh) TRANSLATIONS.zh = TRANSLATIONS.en;
-if(!TRANSLATIONS["zh-TW"]) TRANSLATIONS["zh-TW"] = TRANSLATIONS.en;
-if(!TRANSLATIONS.ko) TRANSLATIONS.ko = TRANSLATIONS.en;
-if(!TRANSLATIONS.ru) TRANSLATIONS.ru = TRANSLATIONS.en;
-
 
 const els={
  overlay: gId('langSelectionOverlay'), main: gId('mainContainer'), 
@@ -1983,7 +2069,7 @@ function transitionToFinal(d) {
   els.btnDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" size="18" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>`;
 
   els.sInfoSec.style.display = 'none'; 
-  els.sBadge.classList.remove('visible'); // PC版ではバッジ非表示
+  els.sBadge.classList.remove('visible'); // PC版でもバッジ非表示
   els.sBadge.style.display = 'none';
   els.sTitle.style.display = 'block'; 
   els.sTitle.textContent = t.success_title_final; 
@@ -2214,7 +2300,6 @@ function updateAccountUI() {
       currentUser.history.forEach(item => {
         const li = document.createElement('li');
         li.className = 'lib-item-card';
-        // const iconName = item.icon || 'download'; // リスト内ボタン廃止
         const displayCode = formatDisplayCode(item.code); 
         
         const img = item.imageUrl && item.imageUrl.startsWith('http') 
