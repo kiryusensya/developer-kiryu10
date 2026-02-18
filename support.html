@@ -328,8 +328,17 @@ body {
     .brand-text-mobile { display: inline; }
     
     .unified-header { height: auto; }
+    /* ヘッダー左側（ロゴ）の配置 */
     .header-left-group { top: 0; left: 0; margin: 24px 0 0 24px; position: relative; }
-    .header-right { top: 0; right: 0; margin: 24px 24px 0 0; position: relative; }
+    
+    /* ヘッダー右側（アイコン群）の配置変更: 
+       ヘッダータイトル(Support)と同じ高さにするため top: 24px に戻す */
+    .header-right { 
+        top: 24px; /* ヘッダー内の左側要素(margin-top:24px)と高さを合わせる */
+        right: 24px; /* 右端に配置 */
+        margin: 0;
+        position: absolute;
+    }
 
     .support-wrapper { 
         height: auto; 
@@ -439,7 +448,7 @@ body {
         </button>
         <div class="header-brand">
             <i data-lucide="shield-check"></i>
-            <span class="brand-text-pc" data-translate="brand_name">kr_開発者 | Support</span>
+            <span class="brand-text-pc" data-translate="brand_name">kr_開発者版 | Support</span>
             <span class="brand-text-mobile" data-translate="brand_mobile">Support</span>
         </div>
     </div>
