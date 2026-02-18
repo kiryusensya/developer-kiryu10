@@ -28,6 +28,7 @@
   --sidebar-text: #000;
   --font-stack: 'HarmonyOS Sans', 'Noto Sans JP', sans-serif;
   --spring-ease: cubic-bezier(0.33, 1, 0.68, 1);
+  --btn-close-border: #000000;
 }
 
 :root:lang(ja) { --font-stack: 'HarmonyOS Sans', 'Noto Sans JP', sans-serif; }
@@ -44,6 +45,7 @@
   --modal-text-sub: #A0A0A0;
   --nav-text: #fff;
   --sidebar-text: #fff;
+  --btn-close-border: #FFFFFF;
 }
 
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -54,8 +56,8 @@ body {
   color: var(--modal-text-main);
   font-family: var(--font-stack);
   min-height: 100vh;
-  /* スクロール可能にするが、基本は収まるように調整 */
-  overflow-y: auto; 
+  /* PCでは画面いっぱいに収めるため overflow: hidden 推奨だが、コンテンツが多い場合は auto */
+  overflow: hidden; 
   display: flex;
   flex-direction: column;
   transition: background-color 0.5s ease;
@@ -68,49 +70,64 @@ body {
   filter: blur(80px);
 }
 
-/* --- ヘッダーレイアウト (Scroll away & Exact Positioning) --- */
-/* スクロール時に消えるように position: absolute を使用。
-   top:0, left:0 を基準に、index.htmlのpadding値を margin で再現します。
-*/
+/* --- ヘッダーレイアウト --- */
 .unified-header {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100px; /* クリック透過のための高さ確保 */
+    height: 100px;
     z-index: 50;
-    pointer-events: none; /* 余白部分はクリックを通す */
+    pointer-events: none;
 }
 
-/* ブランドロゴ (index.html: padding: 30px 24px ...) */
-.header-brand {
+/* 左側エリア (ハンバーガー + ブランド) */
+.header-left-group {
     position: absolute;
     top: 30px;
     left: 24px;
-    
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    pointer-events: auto;
+}
+
+/* ハンバーガーアイコン (デフォルト非表示、スマホで表示) */
+.hamburger-btn {
+    display: none; /* PCでは非表示 */
+    background: transparent;
+    border: none;
+    color: var(--sidebar-text);
+    cursor: pointer;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+.hamburger-btn:hover { transform: scale(1.1); }
+
+.header-brand {
     font-size: 20px;
     font-weight: 800;
     display: flex;
     align-items: center;
     gap: 12px;
     color: var(--sidebar-text);
-    pointer-events: auto;
 }
 .header-brand i { color: #FFA500; }
 
-/* ナビゲーション (index.html: padding: 24px 40px ...) */
+/* 右側エリア (タブ + テーマ + ユーザー) */
 .header-right {
     position: absolute;
     top: 24px;
     right: 40px;
-    
     display: flex;
     align-items: center;
     gap: 20px;
     pointer-events: auto;
 }
 
-/* タブスタイル */
+/* タブスタイル (PC用) */
 .rgl-tabs { display: flex; gap: 30px; }
 .rgl-tab {
     position: relative;
@@ -157,44 +174,47 @@ body {
 .theme-pill:hover { transform: scale(1.1); }
 [data-theme="dark"] .theme-pill { color: #fff; }
 
-/* --- メインコンテンツエリア (1画面に収める調整) --- */
+/* --- メインコンテンツエリア (全画面対応) --- */
 .support-wrapper {
-    /* ヘッダーの高さ分を確保しつつ、画面中央寄せ */
-    min-height: 100vh;
-    padding: 100px 40px 40px 40px; /* Top padding ensures content starts below header */
+    width: 100%;
+    height: 100vh; /* 画面いっぱいに */
+    /* ヘッダーの高さを考慮して上部パディングを設定 */
+    padding: 100px 40px 40px 40px; 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* 垂直方向中央寄せ */
+    justify-content: center; 
     z-index: 5;
     position: relative;
-    width: 100%;
+    box-sizing: border-box;
 }
 
 .page-title-area {
     text-align: center;
-    margin-bottom: 30px; /* 余白を少し詰める */
+    margin-bottom: 20px;
     animation: fadeInUp 0.6s ease forwards;
     flex-shrink: 0;
 }
 .page-title {
-    font-size: 36px; /* 少し小さくして圧迫感を減らす */
+    font-size: 36px;
     font-weight: 800; margin: 0 0 8px 0;
     text-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 .page-sub { opacity: 0.6; font-size: 13px; }
 
-/* BENTO GRID LAYOUT (Compact) */
+/* BENTO GRID LAYOUT (Full Screen Optimized) */
 .bento-grid {
     display: grid;
-    /* 左側(Web)1.4、右側は1fr 1fr */
-    grid-template-columns: 1.4fr 1fr 1fr; 
-    /* 高さを画面サイズに合わせて可変に (最小200px, 最大240px程度) */
-    grid-template-rows: clamp(180px, 22vh, 240px) clamp(180px, 22vh, 240px);
-    gap: 20px;
+    /* PCでは幅制限解除して画面いっぱいにする */
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
+    height: 100%;
+    max-width: none; 
+    margin: 0;
+    
+    grid-template-columns: 1.4fr 1fr 1fr; 
+    /* 高さを画面いっぱいにするために 1fr を使用 */
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
 }
 
 .bento-card {
@@ -216,51 +236,115 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 .bento-card:hover {
-    transform: translateY(-4px) scale(1.01);
+    transform: translateY(-4px) scale(1.005);
     box-shadow: 0 20px 50px rgba(0,0,0,0.2);
     border-color: rgba(128,128,128,0.5);
     z-index: 10;
 }
 [data-theme="dark"] .bento-card:hover { border-color: #fff; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
 
-/* 左側の大きなカード (Web/Mail) */
+/* 左側の大きなカード */
 .card-large-left {
     grid-column: 1 / 2;
-    grid-row: 1 / 3;
+    grid-row: 1 / 3; /* 縦一杯 */
     background: linear-gradient(135deg, rgba(0,125,255,0.1) 0%, var(--card-bg) 100%);
 }
-.card-large-left .card-icon { font-size: 70px; margin-bottom: 24px; }
-.card-large-left .card-title { font-size: 28px; font-weight: 800; text-align: center; }
-.card-large-left .card-desc { font-size: 15px; margin-top: 8px; }
+.card-large-left .card-icon { font-size: 80px; margin-bottom: 24px; }
+.card-large-left .card-title { font-size: 32px; font-weight: 800; text-align: center; }
+.card-large-left .card-desc { font-size: 16px; margin-top: 8px; }
 
 /* 右側の小さなカード */
 .card-icon { font-size: 40px; margin-bottom: 12px; transition: transform 0.3s; }
 .bento-card:hover .card-icon { transform: scale(1.1) rotate(5deg); }
-.card-title { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
-.card-desc { font-size: 11px; opacity: 0.6; }
+.card-title { font-size: 18px; font-weight: 800; margin-bottom: 2px; }
+.card-desc { font-size: 12px; opacity: 0.6; }
 
-/* スマホ対応 */
+/* --- スマホメニューオーバーレイ (index.htmlベース) --- */
+.nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-color);
+    z-index: 10000;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    visibility: hidden;
+}
+.nav-overlay.active {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.nav-close-btn {
+    align-self: flex-end;
+    background: transparent;
+    border: 1px solid var(--btn-close-border);
+    color: var(--modal-text-main);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    margin-bottom: 40px;
+}
+
+.nav-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.nav-item {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--modal-text-main);
+    text-decoration: none;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.nav-overlay.active .nav-item {
+    opacity: 1;
+    transform: translateX(0);
+}
+.nav-overlay.active .nav-item:nth-child(1) { transition-delay: 0.1s; }
+.nav-overlay.active .nav-item:nth-child(2) { transition-delay: 0.2s; }
+
+/* スマホ対応レスポンシブ */
 @media (max-width: 900px) {
+    body { overflow-y: auto; height: auto; }
+    
+    /* PCタブ非表示、ハンバーガー表示 */
+    .rgl-tabs { display: none; }
+    .hamburger-btn { display: flex; }
+    
+    .unified-header { height: auto; }
+    .header-left-group { top: 0; left: 0; margin: 24px 0 0 24px; position: relative; }
+    .header-right { top: 0; right: 0; margin: 24px 24px 0 0; position: relative; }
+
+    .support-wrapper { 
+        height: auto; 
+        min-height: 100vh;
+        padding: 100px 20px 40px 20px; 
+    }
+    
     .bento-grid {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto;
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        gap: 20px;
     }
     .card-large-left {
-        grid-column: 1 / 3;
-        grid-row: auto;
-        height: 180px;
+        height: 220px;
     }
-    .card-large-left .card-icon { font-size: 40px; margin-bottom: 10px; }
-    .card-large-left .card-title { font-size: 20px; }
+    .card-large-left .card-icon { font-size: 50px; }
+    .card-large-left .card-title { font-size: 24px; }
     
-    .unified-header { position: absolute; height: auto; } /* スマホでも絶対配置 */
-    .header-brand { margin-top: 20px; margin-left: 16px; top: 0; left: 0; }
-    .header-right { margin-top: 16px; margin-right: 16px; top: 0; right: 0; }
-    .support-wrapper { padding: 80px 20px 40px 20px; min-height: auto; }
-}
-@media (max-width: 600px) {
-    .bento-grid { grid-template-columns: 1fr; }
-    .card-large-left { grid-column: 1 / 2; }
+    .bento-card.card-small {
+        height: 160px;
+    }
 }
 
 /* 詳細モーダル */
@@ -317,47 +401,39 @@ body {
 /* Mobile Warning */
 #mobile-warning { display: none; }
 @media (max-width: 768px) {
-  body > *:not(#mobile-warning) { display: none !important; }
+  body > *:not(#mobile-warning) { 
+      /* display: none !important;  <- 今回はスマホ対応するため無効化 */
+  }
   #mobile-warning {
-    display: flex !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: #000 !important; z-index: 999999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow: hidden;
+    /* display: flex !important; <- 今回はスマホ対応するため無効化 */
+    display: none !important;
   }
-  .bloody-text {
-    font-family: serif; color: #cc0000; font-size: 14px; font-weight: 800; text-align: center;
-    text-shadow: 1px 1px 0px #330000, 0 0 5px #ff0000; animation: pulseBlood 3s infinite alternate; z-index: 10;
-  }
-  .bloody-text span { display: block; margin-bottom: 5px; }
-  @keyframes pulseBlood { 0% { opacity: 0.8; } 100% { opacity: 1; text-shadow: 0 0 10px #ff0000; } }
-  .bloody-hand-img {
-    position: absolute; opacity: 0.7; pointer-events: none;
-    filter: drop-shadow(0 0 15px #ff0000); mix-blend-mode: multiply; max-width: 45%;
-  }
-  .hand-1 { top: 2%; left: 2%; transform: rotate(-20deg); }
-  .hand-2 { bottom: 5%; right: 5%; transform: rotate(30deg); }
 }
 </style>
 </head>
 <body>
 
-<div id="mobile-warning">
-  <div class="bloody-text">
-    <span>お使いのデバイスは対応していません</span>
-    <span>Your device is not supported</span>
-    <span>您的设备不支持</span>
-    <span>您的裝置不支援</span>
-    <span>귀하의 기기는 지원되지 않습니다</span>
-    <span>Ваше устройство не поддерживается</span>
-  </div>
-  <img src="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/fit/w_500,h_500,q_90/hand_print.png" class="bloody-hand-img hand-1" alt="">
-  <img src="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/fit/w_500,h_500,q_90/hand_print.png" class="bloody-hand-img hand-2" alt="">
+<div class="nav-overlay" id="navOverlay">
+    <button class="nav-close-btn" id="navCloseBtn">
+        <i data-lucide="x"></i>
+    </button>
+    <div class="nav-content">
+        <a href="index.html" class="nav-item" data-translate="tab_home">ACTIVATION</a>
+        <a href="support.html" class="nav-item" data-translate="tab_support">SUPPORT</a>
+    </div>
 </div>
 
 <canvas id="particleCanvas"></canvas>
 
 <nav class="unified-header">
-    <div class="header-brand">
-        <i data-lucide="shield-check"></i>
-        <span data-translate="brand_name">kr_開発者 | Support</span>
+    <div class="header-left-group">
+        <button class="hamburger-btn" id="hamburgerBtn">
+            <i data-lucide="menu" size="24"></i>
+        </button>
+        <div class="header-brand">
+            <i data-lucide="shield-check"></i>
+            <span data-translate="brand_name">kr_開発者 | Support</span>
+        </div>
     </div>
 
     <div class="header-right">
@@ -429,10 +505,25 @@ body {
 <script>
     lucide.createIcons();
 
+    // ハンバーガーメニュー制御
+    const navOverlay = document.getElementById('navOverlay');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navCloseBtn = document.getElementById('navCloseBtn');
+
+    if(hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', () => {
+            navOverlay.classList.add('active');
+        });
+    }
+    if(navCloseBtn) {
+        navCloseBtn.addEventListener('click', () => {
+            navOverlay.classList.remove('active');
+        });
+    }
+
     // Support Data
     const supportData = {
         web: {
-            // Web Page Inquiryのみ翻訳
             titleKey: "card_web_title",
             descKey: "desc_web",
             iconClass: "lucide-mail",
@@ -440,28 +531,28 @@ body {
             url: "https://kiryu10.vercel.app"
         },
         xbox: {
-            title: "Xbox Network", // No Translation
+            title: "Xbox Network", 
             descKey: "desc_xbox",
             iconClass: "fa-brands fa-xbox",
             color: "#107C10",
             url: "https://www.xbox.com/ja-JP/play/user/kiryusensya"
         },
         ps: {
-            title: "PlayStation Network", // No Translation
+            title: "PlayStation Network", 
             descKey: "desc_ps",
             iconClass: "fa-brands fa-playstation",
             color: "#0070D1",
             url: "#"
         },
         instagram: {
-            title: "Instagram", // No Translation
+            title: "Instagram", 
             descKey: "desc_insta",
             iconClass: "fa-brands fa-instagram",
             color: "#E1306C",
             url: "https://www.instagram.com/_.k__yu.10"
         },
         discord: {
-            title: "Discord", // No Translation
+            title: "Discord", 
             descKey: "desc_discord",
             iconClass: "fa-brands fa-discord",
             color: "#5865F2",
@@ -469,7 +560,7 @@ body {
         }
     };
 
-    // Translations (Web Page Inquiry Title ONLY translated for card title)
+    // Translations
     const TRANSLATIONS = {
         ja: { 
             brand_name: "kr_開発者版 | Support", tab_home: "ホーム", tab_news: "ニュース", tab_support: "サポート",
@@ -553,12 +644,11 @@ body {
     const mBtn = document.getElementById('modalBtn');
     const mVisual = document.getElementById('modalVisual');
 
-    function openDetail(key) {
+    window.openDetail = function(key) {
         const data = supportData[key];
         const t = setLanguage();
         if(!data) return;
 
-        // Title: Use translated key if exists, else raw title
         mTitle.textContent = data.titleKey ? (t[data.titleKey] || data.title) : data.title;
         mDesc.innerText = t[data.descKey] || data.descKey;
         mBtn.href = data.url;
@@ -579,7 +669,7 @@ body {
         lucide.createIcons();
     }
 
-    function closeDetail() { overlay.classList.remove('active'); }
+    window.closeDetail = function() { overlay.classList.remove('active'); }
     overlay.addEventListener('click', (e) => { if(e.target === overlay) closeDetail(); });
 
     // テーマ設定
