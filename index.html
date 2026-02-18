@@ -1529,7 +1529,7 @@ const TRANSLATIONS={
   status_owned: "В наличии", status_locked: "Не в наличии"
  }
 };
-// Fallback
+// Fallback for other languages to avoid errors if object is incomplete
 if(!TRANSLATIONS.zh) TRANSLATIONS.zh = TRANSLATIONS.en;
 if(!TRANSLATIONS["zh-TW"]) TRANSLATIONS["zh-TW"] = TRANSLATIONS.en;
 if(!TRANSLATIONS.ko) TRANSLATIONS.ko = TRANSLATIONS.en;
@@ -2023,7 +2023,7 @@ async function performAuth(code, mode = 'check') {
              imageUrl: d.imageUrl,
              url: d.actionUrl,
              releaseDateIso: d.releaseDateIso,
-             buttonLabel: d.buttonLabel, // GASからのボタンラベル
+             buttonLabel: d.Button_Label, // GASからのボタンラベル
              icon: d.btnIcon // GASからのアイコン
            };
            showMobileItemDetail(item);
@@ -2358,7 +2358,7 @@ async function saveUnlockedItemLocal(data, code) {
     imageUrl: data.imageUrl, 
     releaseDateIso: data.releaseDateIso || null,
     groupId: data.groupId,
-    buttonLabel: data.buttonLabel || null 
+    buttonLabel: data.Button_Label || null 
   };
   
   const idx = currentUser.history.findIndex(h => h.code === code);
