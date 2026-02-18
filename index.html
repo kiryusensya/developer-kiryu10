@@ -589,13 +589,8 @@ button, input, textarea { font-family: var(--font-stack); }
 [data-theme="dark"] .success-details { color: #fff; }
 
 .success-badge {
-  display: none; /* Initially Hidden, no transition */
-  align-items: center; gap: 8px;
-  border: 1px solid var(--success-text-green); color: var(--success-text-green);
-  padding: 6px 16px; border-radius: 50px; font-size: 13px; font-weight: 700;
-  margin-bottom: 20px; width: fit-content; background: rgba(4, 207, 34, 0.1);
+  display: none !important; /* ★修正: 全デバイスで完全に非表示 */
 }
-.success-badge.visible { display: inline-flex; } /* Simple switch */
 
 .content-title { font-size: 28px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.2; color: var(--modal-text-main); }
 
@@ -2219,6 +2214,7 @@ function updateAccountUI() {
       currentUser.history.forEach(item => {
         const li = document.createElement('li');
         li.className = 'lib-item-card';
+        // const iconName = item.icon || 'download'; // リスト内ボタン廃止
         const displayCode = formatDisplayCode(item.code); 
         
         const img = item.imageUrl && item.imageUrl.startsWith('http') 
@@ -2227,6 +2223,7 @@ function updateAccountUI() {
         
         // リストアイテム自体をクリックして詳細へ
         li.onclick = () => {
+             // モーダルを閉じて詳細表示
              els.libraryModal.classList.remove('active');
              showMobileItemDetail(item);
         };
@@ -2235,6 +2232,7 @@ function updateAccountUI() {
         li.innerHTML = `<div class="lib-card-left">${img}<div class="lib-card-info"><div class="lib-card-meta">${item.date} • ${displayCode}</div><div class="lib-card-title">${item.title}</div></div></div>`;
         els.libraryList.appendChild(li);
         
+        // ロック判定（表示上は区別しないがロジック用）
         const releaseTime = item.releaseDateIso ? new Date(item.releaseDateIso).getTime() : 0;
         if (releaseTime > now) hasLockedItems = true;
       });
