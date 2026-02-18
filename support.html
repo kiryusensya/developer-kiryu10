@@ -116,6 +116,9 @@ body {
 }
 .header-brand i { color: #FFA500; }
 
+/* ブランド名表示切替用クラス */
+.brand-text-mobile { display: none; }
+
 /* 右側エリア (タブ + テーマ + ユーザー) */
 .header-right {
     position: absolute;
@@ -320,6 +323,10 @@ body {
     .rgl-tabs { display: none; }
     .hamburger-btn { display: flex; }
     
+    /* PC用ブランド名非表示、スマホ用ブランド名表示 */
+    .brand-text-pc { display: none; }
+    .brand-text-mobile { display: inline; }
+    
     .unified-header { height: auto; }
     .header-left-group { top: 0; left: 0; margin: 24px 0 0 24px; position: relative; }
     .header-right { top: 0; right: 0; margin: 24px 24px 0 0; position: relative; }
@@ -398,14 +405,14 @@ body {
 
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Mobile Warning */
+/* Mobile Warning (Not used but kept for structure if needed) */
 #mobile-warning { display: none; }
 @media (max-width: 768px) {
   body > *:not(#mobile-warning) { 
-      /* display: none !important;  <- 今回はスマホ対応するため無効化 */
+      /* display: none !important; */
   }
   #mobile-warning {
-    /* display: flex !important; <- 今回はスマホ対応するため無効化 */
+    /* display: flex !important; */
     display: none !important;
   }
 }
@@ -432,7 +439,8 @@ body {
         </button>
         <div class="header-brand">
             <i data-lucide="shield-check"></i>
-            <span data-translate="brand_name">kr_開発者 | Support</span>
+            <span class="brand-text-pc" data-translate="brand_name">kr_開発者 | Support</span>
+            <span class="brand-text-mobile" data-translate="brand_mobile">Support</span>
         </div>
     </div>
 
@@ -563,7 +571,8 @@ body {
     // Translations
     const TRANSLATIONS = {
         ja: { 
-            brand_name: "kr_開発者版 | Support", tab_home: "ホーム", tab_news: "ニュース", tab_support: "サポート",
+            brand_name: "kr_開発者版 | Support", brand_mobile: "Support",
+            tab_home: "ホーム", tab_news: "ニュース", tab_support: "サポート",
             page_title: "サポートセンター", page_sub: "接続するサービスを選択してください", 
             card_web_title: "Webページのお問い合わせ", btn_inquiry: "問い合わせる",
             desc_web: "公式サイトに関するお問い合わせはこちらから。\n kiryu10.vercel.app",
@@ -573,7 +582,8 @@ body {
             desc_discord: "リアルタイムサポートチャット。\nID: kiryu_sensya"
         },
         en: { 
-            brand_name: "kr_Dev E | Support", tab_home: "HOME", tab_news: "NEWS", tab_support: "SUPPORT",
+            brand_name: "kr_Dev E | Support", brand_mobile: "Support",
+            tab_home: "HOME", tab_news: "NEWS", tab_support: "SUPPORT",
             page_title: "Support Center", page_sub: "Select a service to connect", 
             card_web_title: "Web Page Inquiry", btn_inquiry: "Contact Support",
             desc_web: "Contact us regarding the official website.\n kiryu10.vercel.app",
@@ -583,7 +593,8 @@ body {
             desc_discord: "Real-time support chat.\nID: kiryu_sensya"
         },
         zh: { 
-            brand_name: "kr_开发者版 | Support", tab_home: "首页", tab_news: "新闻", tab_support: "支持",
+            brand_name: "kr_开发者版 | Support", brand_mobile: "Support",
+            tab_home: "首页", tab_news: "新闻", tab_support: "支持",
             page_title: "服务中心", page_sub: "选择要连接的服务", 
             card_web_title: "网页咨询", btn_inquiry: "联系我们",
             desc_web: "关于官方网站的咨询请点击此处。\n kiryu10.vercel.app",
@@ -593,7 +604,8 @@ body {
             desc_discord: "实时支持聊天。\nID: kiryu_sensya"
         },
         "zh-TW": { 
-            brand_name: "kr_開發者版 | Support", tab_home: "首頁", tab_news: "新聞", tab_support: "支援",
+            brand_name: "kr_開發者版 | Support", brand_mobile: "Support",
+            tab_home: "首頁", tab_news: "新聞", tab_support: "支援",
             page_title: "服務中心", page_sub: "選擇要連接的服務", 
             card_web_title: "網頁諮詢", btn_inquiry: "聯絡我們",
             desc_web: "關於官方網站的諮詢請點擊此處。\n kiryu10.vercel.app",
@@ -603,7 +615,8 @@ body {
             desc_discord: "即時支援聊天。\nID: kiryu_sensya"
         },
         ko: { 
-            brand_name: "kr_개발자용 | Support", tab_home: "홈", tab_news: "뉴스", tab_support: "지원",
+            brand_name: "kr_개발자용 | Support", brand_mobile: "Support",
+            tab_home: "홈", tab_news: "뉴스", tab_support: "지원",
             page_title: "서비스 센터", page_sub: "연결할 서비스를 선택하세요", 
             card_web_title: "웹 페이지 문의", btn_inquiry: "문의하기",
             desc_web: "공식 웹사이트 관련 문의는 여기로.\n kiryu10.vercel.app",
@@ -613,7 +626,8 @@ body {
             desc_discord: "실시간 지원 채팅.\nID: kiryu_sensya"
         },
         ru: { 
-            brand_name: "kr_Разработчик | Support", tab_home: "главная страница", tab_news: "Новости", tab_support: "Поддержка",
+            brand_name: "kr_Разработчик | Support", brand_mobile: "Support",
+            tab_home: "главная страница", tab_news: "Новости", tab_support: "Поддержка",
             page_title: "Центр поддержки", page_sub: "Выберите сервис", 
             card_web_title: "Запрос по сайту", btn_inquiry: "Связаться",
             desc_web: "Свяжитесь с нами через официальный сайт.\n kiryu10.vercel.app",
