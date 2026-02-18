@@ -1389,7 +1389,6 @@ const formatDisplayCode = (code) => {
   return res;
 };
 
-// 翻訳データ（省略なし）
 const TRANSLATIONS={
  ja:{
   header_brand:"kr_開発者版", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理。プロダクトコードを入力してコンテンツを解除してください。",
@@ -1530,6 +1529,12 @@ const TRANSLATIONS={
   status_owned: "В наличии", status_locked: "Не в наличии"
  }
 };
+// Fallback for other languages to avoid errors if object is incomplete
+if(!TRANSLATIONS.zh) TRANSLATIONS.zh = TRANSLATIONS.en;
+if(!TRANSLATIONS["zh-TW"]) TRANSLATIONS["zh-TW"] = TRANSLATIONS.en;
+if(!TRANSLATIONS.ko) TRANSLATIONS.ko = TRANSLATIONS.en;
+if(!TRANSLATIONS.ru) TRANSLATIONS.ru = TRANSLATIONS.en;
+
 
 const els={
  overlay: gId('langSelectionOverlay'), main: gId('mainContainer'), 
@@ -1584,7 +1589,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!currentUser) { /* 未ログイン時処理 */ }
   initThemeAndParticles();
   initCustomDropdown();
-  setupEventListeners(); 
+  setupEventListeners();
+  // ★重要: 初期ロード時にURLパラメータをチェック
+  showMainContent(); 
 });
 
 function setupEventListeners() {
@@ -1847,7 +1854,9 @@ function resetAuthModal(){
   els.code.value=""; els.code.disabled=false; els.confirm.disabled=false;
   els.confirm.textContent=TRANSLATIONS[CURRENT_LANG].modal_btn_auth;
   els.status.innerHTML=""; els.modalCon.classList.remove('is-success'); els.sImg.src="";
-  els.sTitle.style.display = ''; els.sTitle.style.color = '';
+  els.sTitle.style.display = ''; 
+  // ★修正: テーマ連動色を使用（以前は緑固定だった）
+  els.sTitle.style.color = "var(--modal-text-main)"; 
   els.sSubText.innerHTML = ''; 
   els.sInfoSec.style.display = 'block'; els.sProdDisplay.style.display = 'none'; 
   els.sBadge.classList.remove('visible');
@@ -1882,7 +1891,9 @@ function showMobileItemDetail(item) {
     const t = TRANSLATIONS[CURRENT_LANG];
     els.sTitle.style.display = 'block'; 
     els.sTitle.textContent = t.success_title_final; 
-    els.sTitle.style.color = "#04CF22";
+    // ★修正: テーマ連動色を使用
+    els.sTitle.style.color = "var(--modal-text-main)";
+    
     els.sSubText.innerHTML = t.msg_success_sub || "Code verified.";
     
     // アイテム情報
@@ -2048,6 +2059,8 @@ function setupPreviewUI(d, t) {
  els.sBadge.classList.remove('visible'); els.btnRedeem.style.display = 'flex'; 
  els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                      
  els.sTitle.textContent = t.success_title_preview; 
+ // ★修正: テーマ連動色を使用
+ els.sTitle.style.color = "var(--modal-text-main)";
  els.sSubText.innerHTML = t.msg_preview_sub || "Please verify content";
  els.sProdName.textContent = d.bundleLabel; els.sNameDisp.textContent = d.message;            
  els.sExtra.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : ""; 
@@ -2073,7 +2086,9 @@ function transitionToFinal(d) {
   els.sBadge.style.display = 'none';
   els.sTitle.style.display = 'block'; 
   els.sTitle.textContent = t.success_title_final; 
-  els.sTitle.style.color = "#04CF22";
+  // ★修正: テーマ連動色を使用
+  els.sTitle.style.color = "var(--modal-text-main)";
+  
   els.sSubText.innerHTML = t.msg_success_sub || "Code verified.";
   els.sProdDisplay.style.display = 'block'; 
   
@@ -2308,7 +2323,6 @@ function updateAccountUI() {
         
         // リストアイテム自体をクリックして詳細へ
         li.onclick = () => {
-             // モーダルを閉じて詳細表示
              els.libraryModal.classList.remove('active');
              showMobileItemDetail(item);
         };
@@ -2317,7 +2331,6 @@ function updateAccountUI() {
         li.innerHTML = `<div class="lib-card-left">${img}<div class="lib-card-info"><div class="lib-card-meta">${item.date} • ${displayCode}</div><div class="lib-card-title">${item.title}</div></div></div>`;
         els.libraryList.appendChild(li);
         
-        // ロック判定（表示上は区別しないがロジック用）
         const releaseTime = item.releaseDateIso ? new Date(item.releaseDateIso).getTime() : 0;
         if (releaseTime > now) hasLockedItems = true;
       });
