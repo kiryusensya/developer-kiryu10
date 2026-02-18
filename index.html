@@ -1751,6 +1751,7 @@ function initCustomDropdown() {
     document.querySelectorAll('.lang-option').forEach(opt => {
         opt.addEventListener('click', () => {
             const val = opt.getAttribute('data-value');
+            // スマホメニュー内ならオーバーレイは出さない
             if (opt.closest('#mobileLangMenu')) {
                 localStorage.setItem('user_lang', val); updateLanguage(val); fetchNews();
                 gId('mobileLangMenu').classList.remove('open');
@@ -1853,6 +1854,7 @@ function resetAuthModal(){
   els.confirm.textContent=TRANSLATIONS[CURRENT_LANG].modal_btn_auth;
   els.status.innerHTML=""; els.modalCon.classList.remove('is-success'); els.sImg.src="";
   els.sTitle.style.display = ''; 
+  // ★修正: テーマ連動色を使用
   els.sTitle.style.color = "var(--modal-text-main)"; 
   els.sSubText.innerHTML = ''; 
   els.sInfoSec.style.display = 'block'; els.sProdDisplay.style.display = 'none'; 
@@ -1868,47 +1870,71 @@ function resetAuthModal(){
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
+// スマホ用: ライブラリのアイテムクリック時に詳細モーダルを開く
 function showMobileItemDetail(item) {
-    if(modalDownloadTimer) clearInterval(modalDownloadTimer); 
+    if(modalDownloadTimer) clearInterval(modalDownloadTimer); // 既存タイマーリセット
+
     els.authModal.classList.add('active');
+    
+    // resetAuthModalに近い処理だが、最初からsuccessPhaseにする
     currentAuthRequestId++;
     els.inputPh.style.display='none'; 
     els.successPh.style.display='block'; 
     setTimeout(() => els.successPh.style.opacity='1', 50);
     els.modalCon.classList.add('is-success');
+    
+    // バッジは消す
     els.sBadge.classList.remove('visible');
     els.sBadge.style.display = 'none';
+    
     const t = TRANSLATIONS[CURRENT_LANG];
     els.sTitle.style.display = 'block'; 
     els.sTitle.textContent = t.success_title_final; 
+    // ★修正: テーマ連動色を使用
     els.sTitle.style.color = "var(--modal-text-main)";
+    
     els.sSubText.innerHTML = t.msg_success_sub || "Code verified.";
+    
+    // アイテム情報
     els.sProdName.textContent = item.title;
     els.sProdDisplay.style.display = 'block';
     els.sInfoSec.style.display = 'none'; 
+
+    // 画像
     if(item.imageUrl && item.imageUrl.startsWith("http")){ 
         els.sImg.src=item.imageUrl; 
     } else { 
+        // プレースホルダー
         els.sImg.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; 
     }
+    
+    // ボタン制御
     els.btnRedeem.style.display = 'none'; 
+    
+    // ダウンロードボタンの設定 (カウントダウン処理)
     els.btnDownload.style.display = 'flex';
     
     const startModalTimer = () => {
         const now = new Date();
         const releaseDate = item.releaseDateIso ? new Date(item.releaseDateIso) : null;
+        
         if (releaseDate && releaseDate > now) {
+            // ロック中: カウントダウン表示
             const diff = releaseDate - now;
             const oneDay = 24 * 60 * 60 * 1000;
+            
             els.btnDownload.style.pointerEvents = 'none';
             els.btnDownload.style.opacity = '0.6';
-            els.btnDownload.removeAttribute('href'); 
+            els.btnDownload.removeAttribute('href'); // リンク無効化
+
             if (diff > oneDay) {
+               // 24時間以上
                const y = releaseDate.getFullYear();
                const m = releaseDate.getMonth() + 1;
                const d = releaseDate.getDate();
                els.btnDownload.innerHTML = `<span>${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}</span>`;
             } else {
+               // 24時間以内 (HH:MM:SS)
                const h = Math.floor(diff / (1000 * 60 * 60));
                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                const s = Math.floor((diff % (1000 * 60)) / 1000);
@@ -1918,19 +1944,23 @@ function showMobileItemDetail(item) {
                els.btnDownload.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
             }
         } else {
+            // 解禁済み
             if(modalDownloadTimer) clearInterval(modalDownloadTimer);
             els.btnDownload.style.pointerEvents = 'auto';
             els.btnDownload.style.opacity = '1';
             els.btnDownload.href = item.url;
             els.btnDownload.target = "_blank";
+            // ★修正: GASからのボタンラベルとアイコンを使用
             const btnLabel = item.buttonLabel || t.btn_hero_download || "Download";
             const btnIcon = item.icon || "download";
             els.btnDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${btnIcon}" aria-hidden="true" size="18" class="lucide lucide-${btnIcon}"></svg>`;
             try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         }
     };
+
     startModalTimer();
     modalDownloadTimer = setInterval(startModalTimer, 1000);
+    
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
@@ -1985,14 +2015,16 @@ async function performAuth(code, mode = 'check') {
     } else if (mode === 'redeem') {
       if (d.success) { 
         await saveUnlockedItemLocal(d, safeCode);
+        // スマホ版の場合のみ、詳細モーダルへ遷移
         if(window.innerWidth <= 768) {
+           // データ整形して詳細表示へ
            const item = {
              title: d.bundleLabel || d.message,
              imageUrl: d.imageUrl,
              url: d.actionUrl,
              releaseDateIso: d.releaseDateIso,
-             buttonLabel: d.Button_Label,
-             icon: d.btnIcon
+             buttonLabel: d.buttonLabel, // GASからのボタンラベル
+             icon: d.btnIcon // GASからのアイコン
            };
            showMobileItemDetail(item);
         } else {
@@ -2030,6 +2062,7 @@ function setupPreviewUI(d, t) {
  els.sBadge.classList.remove('visible'); els.btnRedeem.style.display = 'flex'; 
  els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                      
  els.sTitle.textContent = t.success_title_preview; 
+ // ★修正: テーマ連動色を使用
  els.sTitle.style.color = "var(--modal-text-main)";
  els.sSubText.innerHTML = t.msg_preview_sub || "Please verify content";
  els.sProdName.textContent = d.bundleLabel; els.sNameDisp.textContent = d.message;            
@@ -2041,23 +2074,29 @@ function setupPreviewUI(d, t) {
 function transitionToFinal(d) {
   const t = TRANSLATIONS[CURRENT_LANG];
   els.btnRedeem.style.display = 'none'; 
+  
+  // ダウンロードボタンを有効化・表示 (PCではCSSで非表示)
   els.btnDownload.style.display = 'flex';
   els.btnDownload.style.pointerEvents = 'auto';
   els.btnDownload.style.opacity = '1';
   els.btnDownload.href = d.actionUrl;
   els.btnDownload.target = "_blank";
+  // ★修正: GASからのボタンラベルとアイコンを使用
   const btnLabel = d.buttonLabel || t.btn_hero_download || "Download";
   const btnIcon = d.btnIcon || "download";
   els.btnDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${btnIcon}" aria-hidden="true" size="18" class="lucide lucide-${btnIcon}"></svg>`;
 
   els.sInfoSec.style.display = 'none'; 
-  els.sBadge.classList.remove('visible'); 
+  els.sBadge.classList.remove('visible'); // PC版でもバッジ非表示
   els.sBadge.style.display = 'none';
   els.sTitle.style.display = 'block'; 
   els.sTitle.textContent = t.success_title_final; 
+  // ★修正: テーマ連動色を使用
   els.sTitle.style.color = "var(--modal-text-main)";
+  
   els.sSubText.innerHTML = t.msg_success_sub || "Code verified.";
   els.sProdDisplay.style.display = 'block'; 
+  
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
@@ -2115,6 +2154,7 @@ async function performAuthAction() {
   }
 }
 
+// 修正: ボタンの状態管理 (PC Hero用)
 function setHeroButtonState(state, forceUnlock = false) {
     const btn = els.heroActionBtn;
     const t = TRANSLATIONS[CURRENT_LANG];
@@ -2131,10 +2171,9 @@ function setHeroButtonState(state, forceUnlock = false) {
         if (!forceUnlock && releaseDate && releaseDate > now) {
             startHeroCountdown(releaseDate);
         } else {
+            // ★修正: GASからのボタンラベルとアイコンを使用
             let iconName = selectedHeroItem.icon || 'download';
-            const displayLabel = (selectedHeroItem && selectedHeroItem.buttonLabel) 
-                               ? selectedHeroItem.buttonLabel 
-                               : t.btn_hero_download;
+            const displayLabel = selectedHeroItem.buttonLabel || t.btn_hero_download;
 
             btn.innerHTML = `<span>${displayLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${iconName}" aria-hidden="true" size="20" class="lucide lucide-${iconName}"></svg>`;
             btn.classList.add('is-download');
@@ -2149,6 +2188,7 @@ function setHeroButtonState(state, forceUnlock = false) {
     }
 }
 
+// 修正: PC用 カウントダウン処理
 function startHeroCountdown(targetDate) {
     const btn = els.heroActionBtn;
     btn.classList.add('is-download'); 
@@ -2164,6 +2204,7 @@ function startHeroCountdown(targetDate) {
 
         if (diff <= 0) {
             if(heroTimer) clearInterval(heroTimer);
+            // 時間が来たら即座にボタンを有効化して更新
             setHeroButtonState('owned', true); 
             return;
         }
@@ -2204,8 +2245,11 @@ function updateHeroView(item, isOwned) {
     }
     selectedHeroItem = item;
     els.heroTitle.textContent = item.title;
+    
     if(heroTimer) { clearInterval(heroTimer); heroTimer = null; }
+    
     els.heroDesc.style.display = 'none';
+    
     if (item.imageUrl && item.imageUrl.startsWith('http')) {
         els.heroBgImage.style.backgroundImage = `url('${item.imageUrl}')`;
     }
@@ -2293,7 +2337,6 @@ function startLibraryTimer() {
         if (selectedHeroItem && selectedHeroItem.releaseDateIso) {
              const releaseTime = new Date(selectedHeroItem.releaseDateIso).getTime();
              if (releaseTime <= now && currentHeroContext === 'owned') {
-                  // タイマー更新の必要があれば updateHeroView を呼ぶのではなく setHeroButtonState で表示を更新
                   setHeroButtonState('owned', true);
              }
         }
@@ -2315,7 +2358,7 @@ async function saveUnlockedItemLocal(data, code) {
     imageUrl: data.imageUrl, 
     releaseDateIso: data.releaseDateIso || null,
     groupId: data.groupId,
-    buttonLabel: data.Button_Label || null 
+    buttonLabel: data.buttonLabel || null 
   };
   
   const idx = currentUser.history.findIndex(h => h.code === code);
