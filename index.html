@@ -656,6 +656,13 @@ button, input, textarea { font-family: var(--font-stack); }
 #btnDownload { background: var(--bright-green); color: #000; display: none; }
 #btnDownload:hover { box-shadow: 0 5px 20px rgba(4, 207, 34, 0.4); }
 
+/* PCでボタンを隠すためのCSS */
+@media (min-width: 769px) {
+    #btnDownload { display: none !important; }
+    /* PCではアカウントメニュー内のライブラリボタンも隠す */
+    #btnShowLibrary { display: none !important; }
+}
+
 /* --- ACCOUNT DROPDOWN STYLES (修正版) --- */
 .account-dropdown {
   position: absolute;
@@ -797,7 +804,7 @@ button, input, textarea { font-family: var(--font-stack); }
 
 /* スマホ用「ライブラリを開く」ボタン（デフォルト非表示） */
 #btnShowLibrary {
-    display: none; /* PCでは非表示 */
+    display: none; 
 }
 
 /* スマホ表示時（768px以下）のみ表示 */
@@ -1820,6 +1827,8 @@ function showMobileItemDetail(item) {
          els.btnDownload.style.pointerEvents = 'none';
          els.btnDownload.style.opacity = '0.6';
          els.btnDownload.innerHTML = `<span>Locked</span>`;
+         // さらに念のためhrefも削除
+         els.btnDownload.removeAttribute('href');
     } else {
          // 解禁済み
          els.btnDownload.style.pointerEvents = 'auto';
@@ -2156,7 +2165,6 @@ function updateAccountUI() {
 
     // ============================================
     //  ★スマホ用 (Modal) の更新処理
-    //  (2つ目のコードのロジックを統合)
     // ============================================
     if(libraryTimerId) { clearInterval(libraryTimerId); libraryTimerId = null; }
     els.libraryList.innerHTML = "";
@@ -2169,7 +2177,7 @@ function updateAccountUI() {
       currentUser.history.forEach(item => {
         const li = document.createElement('li');
         li.className = 'lib-item-card';
-        // const iconName = item.icon || 'download'; // リスト内ボタン廃止のため不要
+        // const iconName = item.icon || 'download'; // リスト内ボタン廃止
         const displayCode = formatDisplayCode(item.code); 
         
         const img = item.imageUrl && item.imageUrl.startsWith('http') 
