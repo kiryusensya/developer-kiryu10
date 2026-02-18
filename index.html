@@ -653,8 +653,8 @@ button, input, textarea { font-family: var(--font-stack); }
 #btnRedeem { background: var(--modal-text-main); color: var(--bg-color); }
 [data-theme="dark"] #btnRedeem { background: #fff; color: #000; }
 
-#btnDownload { background: var(--bright-green); color: #000; display: none; }
-#btnDownload:hover { box-shadow: 0 5px 20px rgba(4, 207, 34, 0.4); }
+#btnDownload { background: var(--primary); color: #fff; display: none; }
+#btnDownload:hover { box-shadow: 0 5px 20px rgba(0, 125, 255, 0.4); }
 
 /* PCでボタンを隠すためのCSS */
 @media (min-width: 769px) {
@@ -1334,7 +1334,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         </div>
         <div class="success-details">
           <div style="flex:1;">
-            <div class="success-badge" id="successBadge"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" size="14" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"></path></svg> <span data-translate="success_badge">コードが認証されました。</span></div>
+            <div class="success-badge" id="successBadge" style="display:none;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" size="14" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"></path></svg> <span data-translate="success_badge">コードが認証されました。</span></div>
             <h3 id="successTitle" class="content-title"></h3>
             <p id="successSubText" style="color:var(--modal-text-sub); margin:-15px 0 16px 2px; font-size:13px; line-height:1.5;"></p>
             <div id="infoSection" style="display: block;">
@@ -1376,6 +1376,7 @@ let libraryTimerId = null;
 let heroTimer = null;
 let selectedHeroItem = null;
 let currentHeroContext = 'default';
+let modalDownloadTimer = null; // モーダル内のカウントダウン用
 
 // Helper
 const gId = (i) => document.getElementById(i);
@@ -1782,6 +1783,8 @@ function resetAuthModal(){
 
 // スマホ用: ライブラリのアイテムクリック時に詳細モーダルを開く
 function showMobileItemDetail(item) {
+    if(modalDownloadTimer) clearInterval(modalDownloadTimer); // 既存タイマーリセット
+
     els.authModal.classList.add('active');
     
     // resetAuthModalに近い処理だが、最初からsuccessPhaseにする
@@ -1791,8 +1794,9 @@ function showMobileItemDetail(item) {
     setTimeout(() => els.successPh.style.opacity='1', 50);
     els.modalCon.classList.add('is-success');
     
-    // UIセットアップ (認証成功時と同じレイアウトを使う)
-    els.sBadge.classList.add('visible'); // チェックマーク表示
+    // バッジは消す
+    els.sBadge.classList.remove('visible');
+    els.sBadge.style.display = 'none';
     
     const t = TRANSLATIONS[CURRENT_LANG];
     els.sTitle.style.display = 'block'; 
@@ -1803,7 +1807,7 @@ function showMobileItemDetail(item) {
     // アイテム情報
     els.sProdName.textContent = item.title;
     els.sProdDisplay.style.display = 'block';
-    els.sInfoSec.style.display = 'none'; // 追加情報は非表示でシンプルに
+    els.sInfoSec.style.display = 'none'; 
 
     // 画像
     if(item.imageUrl && item.imageUrl.startsWith("http")){ 
@@ -1814,30 +1818,54 @@ function showMobileItemDetail(item) {
     }
     
     // ボタン制御
-    els.btnRedeem.style.display = 'none'; // 認証ボタンは消す
+    els.btnRedeem.style.display = 'none'; 
     
-    // ダウンロードボタンの設定
+    // ダウンロードボタンの設定 (カウントダウン処理)
     els.btnDownload.style.display = 'flex';
     
-    const now = new Date();
-    const releaseDate = item.releaseDateIso ? new Date(item.releaseDateIso) : null;
-    
-    if (releaseDate && releaseDate > now) {
-         // ロック中
-         els.btnDownload.style.pointerEvents = 'none';
-         els.btnDownload.style.opacity = '0.6';
-         els.btnDownload.innerHTML = `<span>Locked</span>`;
-         // さらに念のためhrefも削除
-         els.btnDownload.removeAttribute('href');
-    } else {
-         // 解禁済み
-         els.btnDownload.style.pointerEvents = 'auto';
-         els.btnDownload.style.opacity = '1';
-         els.btnDownload.href = item.url;
-         els.btnDownload.target = "_blank";
-         const btnLabel = item.buttonLabel || t.btn_hero_download || "Download";
-         els.btnDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" size="18" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>`;
-    }
+    const startModalTimer = () => {
+        const now = new Date();
+        const releaseDate = item.releaseDateIso ? new Date(item.releaseDateIso) : null;
+        
+        if (releaseDate && releaseDate > now) {
+            // ロック中: カウントダウン表示
+            const diff = releaseDate - now;
+            const oneDay = 24 * 60 * 60 * 1000;
+            
+            els.btnDownload.style.pointerEvents = 'none';
+            els.btnDownload.style.opacity = '0.6';
+            els.btnDownload.removeAttribute('href'); // リンク無効化
+
+            if (diff > oneDay) {
+               // 24時間以上
+               const y = releaseDate.getFullYear();
+               const m = releaseDate.getMonth() + 1;
+               const d = releaseDate.getDate();
+               els.btnDownload.innerHTML = `<span>${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}</span>`;
+            } else {
+               // 24時間以内 (HH:MM:SS)
+               const h = Math.floor(diff / (1000 * 60 * 60));
+               const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+               const s = Math.floor((diff % (1000 * 60)) / 1000);
+               const hh = String(h).padStart(2, '0');
+               const mm = String(m).padStart(2, '0');
+               const ss = String(s).padStart(2, '0');
+               els.btnDownload.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
+            }
+        } else {
+            // 解禁済み
+            if(modalDownloadTimer) clearInterval(modalDownloadTimer);
+            els.btnDownload.style.pointerEvents = 'auto';
+            els.btnDownload.style.opacity = '1';
+            els.btnDownload.href = item.url;
+            els.btnDownload.target = "_blank";
+            const btnLabel = item.buttonLabel || t.btn_hero_download || "Download";
+            els.btnDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" size="18" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>`;
+        }
+    };
+
+    startModalTimer();
+    modalDownloadTimer = setInterval(startModalTimer, 1000);
     
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
@@ -1893,9 +1921,22 @@ async function performAuth(code, mode = 'check') {
     } else if (mode === 'redeem') {
       if (d.success) { 
         await saveUnlockedItemLocal(d, safeCode);
-        transitionToFinal(d);
-        if (currentUser.history.length > 0) {
-            updateHeroView(currentUser.history[0], true); 
+        // スマホ版の場合のみ、詳細モーダルへ遷移
+        if(window.innerWidth <= 768) {
+           // データ整形して詳細表示へ
+           const item = {
+             title: d.bundleLabel || d.message,
+             imageUrl: d.imageUrl,
+             url: d.actionUrl,
+             releaseDateIso: d.releaseDateIso,
+             buttonLabel: d.Button_Label
+           };
+           showMobileItemDetail(item);
+        } else {
+           transitionToFinal(d);
+           if (currentUser.history.length > 0) {
+              updateHeroView(currentUser.history[0], true); 
+           }
         }
       } else {
         els.btnRedeem.disabled = false;
@@ -1937,7 +1978,7 @@ function transitionToFinal(d) {
   const t = TRANSLATIONS[CURRENT_LANG];
   els.btnRedeem.style.display = 'none'; 
   
-  // ダウンロードボタンを有効化・表示
+  // ダウンロードボタンを有効化・表示 (PCではCSSで非表示)
   els.btnDownload.style.display = 'flex';
   els.btnDownload.style.pointerEvents = 'auto';
   els.btnDownload.style.opacity = '1';
@@ -1947,7 +1988,8 @@ function transitionToFinal(d) {
   els.btnDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" size="18" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>`;
 
   els.sInfoSec.style.display = 'none'; 
-  els.sBadge.classList.add('visible'); // チェックマーク表示
+  els.sBadge.classList.remove('visible'); // PC版ではバッジ非表示
+  els.sBadge.style.display = 'none';
   els.sTitle.style.display = 'block'; 
   els.sTitle.textContent = t.success_title_final; 
   els.sTitle.style.color = "#04CF22";
@@ -2177,7 +2219,6 @@ function updateAccountUI() {
       currentUser.history.forEach(item => {
         const li = document.createElement('li');
         li.className = 'lib-item-card';
-        // const iconName = item.icon || 'download'; // リスト内ボタン廃止
         const displayCode = formatDisplayCode(item.code); 
         
         const img = item.imageUrl && item.imageUrl.startsWith('http') 
@@ -2186,7 +2227,6 @@ function updateAccountUI() {
         
         // リストアイテム自体をクリックして詳細へ
         li.onclick = () => {
-             // モーダルを閉じて詳細表示
              els.libraryModal.classList.remove('active');
              showMobileItemDetail(item);
         };
@@ -2195,7 +2235,6 @@ function updateAccountUI() {
         li.innerHTML = `<div class="lib-card-left">${img}<div class="lib-card-info"><div class="lib-card-meta">${item.date} • ${displayCode}</div><div class="lib-card-title">${item.title}</div></div></div>`;
         els.libraryList.appendChild(li);
         
-        // ロック判定（表示上は区別しないがロジック用）
         const releaseTime = item.releaseDateIso ? new Date(item.releaseDateIso).getTime() : 0;
         if (releaseTime > now) hasLockedItems = true;
       });
