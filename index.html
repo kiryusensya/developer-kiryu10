@@ -1590,8 +1590,33 @@ const formatCodeInput = (val) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
-  const sLang = localStorage.getItem('user_lang');
-  if (sLang) setInitialLanguage(sLang, true); else fetchNews();
+  
+  // 1. ユーザーが手動で選んだ言語の保存データがあるか確認
+  let sLang = localStorage.getItem('user_lang');
+  
+  // 2. データがない（初回アクセス）場合は、端末の言語を読み取る
+  if (!sLang) {
+      const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+      
+      // 言語コードの判定
+      if (browserLang.startsWith('ja')) {
+          sLang = 'ja';
+      } else if (browserLang.includes('zh-tw') || browserLang.includes('zh-hk') || browserLang.includes('zh-hant')) {
+          sLang = 'zh-TW';
+      } else if (browserLang.startsWith('zh')) {
+          sLang = 'zh';
+      } else if (browserLang.startsWith('ko')) {
+          sLang = 'ko';
+      } else if (browserLang.startsWith('ru')) {
+          sLang = 'ru';
+      } else {
+          sLang = 'en'; // スペイン語など、上記以外の言語はすべて「英語」にする
+      }
+  }
+  
+  // 3. 判定した言語（または手動で設定済みの言語）を適用して画面を表示
+  setInitialLanguage(sLang, true);
+
   const sUser = localStorage.getItem('user_session_identity');
   if (sUser) {
     try {
@@ -1605,9 +1630,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initThemeAndParticles();
   initCustomDropdown();
   setupEventListeners();
-  showMainContent(); 
 });
-
 function setupEventListeners() {
   setListener(els.openAccount, 'click', (e) => {
     e.stopPropagation(); 
