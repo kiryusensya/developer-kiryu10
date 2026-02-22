@@ -1653,8 +1653,10 @@ function setupEventListeners() {
   setListener(els.heroActionBtn, 'click', (e) => {
      e.stopPropagation(); 
      if(currentHeroContext === 'owned' && selectedHeroItem) {
-        if(selectedHeroItem.url) {
-            window.open(selectedHeroItem.url, '_blank');
+        // 修正: url と actionUrl の両方を評価する
+        const targetUrl = selectedHeroItem.url || selectedHeroItem.actionUrl;
+        if(targetUrl) {
+            window.open(targetUrl, '_blank');
         }
      } else {
         if (!currentUser) {
@@ -2315,7 +2317,8 @@ function startLibraryTimer() {
         // PCのヒーローセクション更新 (現在選択中のアイテムがあれば)
         if (selectedHeroItem && selectedHeroItem.releaseDateIso) {
              const releaseTime = new Date(selectedHeroItem.releaseDateIso).getTime();
-             if (releaseTime <= now && currentHeroContext === 'owned') {
+             // 修正: 既に解禁済みUIになっている場合は書き換えをスキップする
+             if (releaseTime <= now && currentHeroContext === 'owned' && !els.heroActionBtn.classList.contains('is-download')) {
                   setHeroButtonState('owned', true);
              }
         }
