@@ -488,55 +488,55 @@ button, input, textarea { font-family: var(--font-stack); }
 .font-ru { font-family: 'HarmonyOS Sans', sans-serif; }
 
 /* ====================================================
-   ★ MODAL SYSTEM (グラスモーフィズム & Dynamic Island風)
+   ★ MODAL SYSTEM (Glassmorphism & Dynamic Island)
    ==================================================== */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px);
   z-index: 9999; display: flex; justify-content: center; align-items: center;
-  opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+  opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
 }
 .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
-/* 1. 入力・確認画面のモーダル（少し白っぽく、ぼかし強め） */
+/* 1. 入力・確認画面のモーダル（画像1枚目の透明度、枠線なし） */
 .modal-sheet {
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.7) !important;
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 40px 100px rgba(0,0,0,0.2);
-  
+  border: none !important; 
+  border-radius: 32px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.15);
   position: relative; overflow: hidden;
   width: 90%; max-width: 470px; 
   padding: 40px;
   font-family: var(--font-stack);
   
-  /* Dynamic Island風アニメーション：初期状態は中央に小さくクリップ */
-  clip-path: inset(45% 35% 45% 35% round 50px);
-  transform: translateY(20px) scale(0.9);
+  /* Dynamic Island風アニメーション：下部中央から拡大 */
+  clip-path: inset(80% 30% 0% 30% round 50px);
+  transform: translateY(60px) scale(0.85);
   opacity: 0;
   
-  /* バネ感（スプリング）のあるイージングで滑らかに展開 */
-  transition: clip-path 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-              transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+  /* バネ感のあるイージング */
+  transition: clip-path 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
               background-color 0.5s ease,
-              opacity 0.3s ease,
-              max-width 0.5s ease;
+              max-width 0.5s ease,
+              opacity 0.4s ease;
 }
 
-/* モーダルが開いた状態 */
 .modal-overlay.active .modal-sheet {
   clip-path: inset(0% 0% 0% 0% round 32px);
   transform: translateY(0) scale(1);
   opacity: 1;
 }
 
-/* 2. 完了画面のモーダル（透け感強め、背景がよく見える） */
+/* 2. 完了画面のモーダル（画像2枚目の透明度） */
 .modal-sheet.is-success {
   max-width: 850px; 
   padding: 0;
-  background: rgba(255, 255, 255, 0.55) !important;
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+  background: rgba(255, 255, 255, 0.3) !important; /* 透け感強め */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.2);
 }
 .modal-overlay.active .modal-sheet.is-success {
   clip-path: inset(0% 0% 0% 0% round 24px);
@@ -544,26 +544,36 @@ button, input, textarea { font-family: var(--font-stack); }
 
 /* ダークモード対応 */
 [data-theme="dark"] .modal-sheet {
-  background: rgba(30, 30, 30, 0.85) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(50, 50, 50, 0.7) !important;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
 }
 [data-theme="dark"] .modal-sheet.is-success {
-  background: rgba(20, 20, 20, 0.45) !important;
+  background: rgba(20, 20, 20, 0.3) !important;
 }
 
-/* 閉じるボタン（展開アニメーション中に見えないよう遅延表示） */
-#modalCloseBtn {
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.3s ease 0.3s, transform 0.3s ease 0.3s;
-  z-index: 10;
+/* アニメーション中に中身がはみ出ないようにフェードインさせる */
+.modal-overlay:not(.active) #inputPhase,
+.modal-overlay:not(.active) #successPhase {
+  opacity: 0 !important;
+  transform: scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.modal-overlay.active #inputPhase,
+.modal-overlay.active #successPhase {
+  transition: opacity 0.5s ease 0.2s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+}
+
+/* 閉じるボタンのフェード調整 */
+.modal-overlay:not(.active) #modalCloseBtn {
+  opacity: 0 !important;
+  transition: opacity 0.2s ease;
 }
 .modal-overlay.active #modalCloseBtn {
-  opacity: 0.6;
-  transform: scale(1);
+  opacity: 0.6 !important;
+  transition: opacity 0.3s ease 0.4s;
 }
 .modal-overlay.active #modalCloseBtn:hover {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 /* INPUT PHASE */
@@ -632,6 +642,7 @@ button, input, textarea { font-family: var(--font-stack); }
   margin-bottom: 12px; display: block; line-height: 1.4;
 }
 [data-theme="dark"] .message-title { color: #fff; }
+
 .info-box {
   background: rgba(128,128,128,0.05); border-radius: 16px; padding: 20px;
   border: 1px solid rgba(128,128,128,0.1); margin-bottom: 30px; width: 100%;
@@ -1322,6 +1333,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCustomDropdown();
   setupEventListeners();
 });
+
 function setupEventListeners() {
   setListener(els.openAccount, 'click', (e) => {
     e.stopPropagation(); 
@@ -1388,6 +1400,14 @@ function setupEventListeners() {
      e.stopPropagation(); 
      
      if(window.innerWidth > 768 && currentHeroContext === 'owned' && selectedHeroItem) {
+        // ★修正: 解禁時間前のカウントダウン中はクリックを無効化
+        if (selectedHeroItem.releaseDateIso) {
+            const releaseDate = new Date(selectedHeroItem.releaseDateIso);
+            if (releaseDate > new Date()) {
+                return; // 解禁前は何もしない
+            }
+        }
+        
         const targetUrl = selectedHeroItem.url || selectedHeroItem.actionUrl;
         if(targetUrl) {
             window.open(targetUrl, '_blank');
@@ -1464,7 +1484,7 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       // ★要望により、自動で確認処理を走らせるよう元に戻しました
+       // ★要望により自動で確認処理を走らせる
        performAuth(els.code.value); 
      }
    }, 800);
@@ -1630,6 +1650,8 @@ function showMobileItemDetail(item) {
             els.btnDownload.style.pointerEvents = 'none';
             els.btnDownload.style.opacity = '0.6';
             els.btnDownload.removeAttribute('href'); 
+            // ★修正: カウントダウン中のクリックを無効化
+            els.btnDownload.onclick = (e) => { e.preventDefault(); };
 
             if (diff > oneDay) {
                const y = releaseDate.getFullYear();
@@ -1650,6 +1672,7 @@ function showMobileItemDetail(item) {
             els.btnDownload.style.pointerEvents = 'auto';
             els.btnDownload.style.opacity = '1';
             els.btnDownload.href = item.url;
+            els.btnDownload.onclick = null; // ★修正: 解禁時はクリック無効化を解除
             els.btnDownload.target = "_blank";
             const btnLabel = item.buttonLabel || t.btn_hero_download || "Download";
             const btnIcon = item.icon || "download";
@@ -1876,7 +1899,6 @@ async function performAuthAction() {
               openAuthModal(); 
               const codeToUse = formatCodeInput(pendingActivationCode);
               els.code.value = codeToUse;
-              // ★要望により、自動で確認処理を走らせるよう元に戻しました
               performAuth(codeToUse); 
               pendingActivationCode = null;
           }, 500);
