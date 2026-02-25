@@ -1734,8 +1734,7 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       // 先ほどの提案通り自動入力のみにし、自動認証は行わない
-       // performAuth(els.code.value); 
+       performAuth(els.code.value); 
      }
    }, 800);
  }
@@ -2153,7 +2152,7 @@ async function performAuthAction() {
               const codeToUse = formatCodeInput(pendingActivationCode);
               els.code.value = codeToUse;
               // 先ほどの提案通り自動入力のみにし、自動認証は行わない
-              // performAuth(codeToUse); 
+              performAuth(codeToUse); 
               pendingActivationCode = null;
           }, 500);
       } else if (pendingAction === 'open_activation') {
