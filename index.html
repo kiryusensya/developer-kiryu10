@@ -514,25 +514,6 @@ button, input, textarea { font-family: var(--font-stack); }
 .modal-overlay.active .modal-sheet { transform: scale(1); }
 [data-theme="dark"] .modal-sheet { background: #1a1a1a; }
 
-/* ニュースモーダルのすりガラス化 */
-#newsModal .modal-sheet { 
-    width: fit-content; 
-    min-width: 500px; 
-    max-width: 900px; 
-    text-align: left;
-    background-color: rgba(255, 255, 255, 0.6) !important; 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-/* ダークモード時のニュースモーダル */
-[data-theme="dark"] #newsModal .modal-sheet {
-    background-color: rgba(30, 30, 30, 0.6) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 /* Success Expansion */
 .modal-sheet.is-success {
   max-width: 850px; padding: 0;
@@ -965,7 +946,6 @@ button, input, textarea { font-family: var(--font-stack); }
     /* 遅延表示 */
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(1) { transition-delay: 0.1s; }
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(2) { transition-delay: 0.2s; }
-    .mobile-nav-overlay.active .mobile-nav-item:nth-child(3) { transition-delay: 0.3s; }
     
     /* ★追加: メニュー内の言語切り替え配置用 */
     .mobile-menu-footer {
@@ -974,7 +954,7 @@ button, input, textarea { font-family: var(--font-stack); }
         border-top: 1px solid rgba(128,128,128,0.1);
         opacity: 0;
         transform: translateY(20px);
-        transition: all 0.3s ease 0.4s; /* 遅延アニメーション */
+        transition: all 0.3s ease 0.3s; /* 遅延アニメーション */
         position: relative; /* リスト表示の基準 */
     }
     .mobile-nav-overlay.active .mobile-menu-footer {
@@ -1068,15 +1048,6 @@ button, input, textarea { font-family: var(--font-stack); }
     .success-visual { width: 100%; height: 220px; flex: none; }
     .success-details { padding: 24px; flex: auto; }
     
-    /* モバイル用ニュースモーダルの全幅調整 */
-    #newsModal .modal-sheet {
-        width: 92% !important;
-        min-width: 0 !important;
-        max-height: 80vh;
-        overflow-y: auto;
-        padding: 24px !important;
-    }
-    
     /* ★重要修正: スマホ用アカウントドロップダウンの位置固定 */
     .account-dropdown {
         position: fixed; /* 固定配置に変更 */
@@ -1133,7 +1104,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     <button class="mobile-menu-close" id="mobileMenuCloseBtn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
     <div class="mobile-nav-content">
         <a href="index.html" class="mobile-nav-item" data-translate="card1_title">ホーム</a>
-        <a href="#" class="mobile-nav-item" id="btnMobileNewsLink" data-translate="card2_title">ニュース</a>
         <a href="support.html" class="mobile-nav-item" data-translate="card3_title">サポート</a>
     </div>
     <div class="mobile-menu-footer">
@@ -1202,7 +1172,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         <nav class="rgl-header">
             <div class="rgl-tabs">
                 <a href="index.html" class="rgl-tab active" data-translate="card1_title">ホーム</a>
-                <a href="#" class="rgl-tab" id="btnOpenNews" data-translate="card2_title">ニュース</a>
                 <a href="support.html" class="rgl-tab" data-translate="card3_title">サポート</a>
             </div>
             
@@ -1360,14 +1329,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   </div>
 </div>
 
-<div id="newsModal" class="modal-overlay">
-  <div class="modal-sheet" style="padding:40px;">
-    <div style="position:absolute; top:20px; right:20px; cursor:pointer;" id="newsCloseX"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" size="24" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
-    <h2 data-translate="news_title" style="margin:0 0 20px 0; color:var(--modal-text-main);">最新情報</h2>
-    <ul id="newsList" style="list-style:none; padding:0; max-height:400px; overflow-y:auto;"><li style="text-align:center;opacity:0.6;padding:20px;">Error</li></ul>
-  </div>
-</div>
-
 <script>
 const GAS_API_URL="api/proxy"; 
 
@@ -1401,7 +1362,7 @@ const formatDisplayCode = (code) => {
 const TRANSLATIONS={
  ja:{
   header_brand:"kr_開発者版", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理。プロダクトコードを入力してコンテンツを解除してください。",
-  card1_title:"ホーム",card2_title:"ニュース",card3_title:"サポート",
+  card1_title:"ホーム",card3_title:"サポート",
   modal_title:"アクティベーション",modal_sub:"アクティベーションコードを使用すると、コンテンツにアクセスできます。アクティベーションコードを利用するには、以下の入力欄に入力してください。",modal_placeholder:"アクティベーションコード",modal_btn_auth:"確認",
   msg_verifying:"確認中",msg_success_btn:"成功",
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました", 
@@ -1411,7 +1372,7 @@ const TRANSLATIONS={
   msg_preview_sub:"続行すると以下のコンテンツを受け取ります:", 
   success_title_final:"認証成功!!", 
   msg_success_sub: "このコードで以下のコンテンツが認証されました:",
-  btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード",news_title:"最新情報",news_loading:"更新を確認中",
+  btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード",
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント", lib_updating: "読み込み中",
   label_logged_in: "ユーザーID", label_library: "ライブラリ", label_welcome: "ようこそ", label_sync_desc: "ログインして同期を開始",
@@ -1425,7 +1386,7 @@ const TRANSLATIONS={
  },
  en:{
   header_brand:"kr_Dev E", hero_title:"Personal Activation Center", hero_sub:"Manage your access and resources. Redeem your product code to unlock exclusive content.",
-  card1_title:"Home",card2_title:"News",card3_title:"Support",
+  card1_title:"Home",card3_title:"Support",
   modal_title:"Activation",modal_sub:"Redeem the activation code to download the content. To use the activation code, please enter it in the field below.",modal_placeholder:"Activation Code",modal_btn_auth:"CHECK",
   msg_verifying:"Checking",msg_success_btn:"Success",
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred", 
@@ -1435,7 +1396,7 @@ const TRANSLATIONS={
   msg_preview_sub: "The code will activate the following contents:", 
   success_title_final:"Activation Successful!!", 
   msg_success_sub: "The code has activated the following contents:",
-  btn_close:"Close",btn_continue:"Redeem",btn_download:"Download",news_title:"News",news_loading:"Checking for updates",
+  btn_close:"Close",btn_continue:"Redeem",btn_download:"Download",
   footer_admin:"Enforcement Administrator",
   menu_login: "Login", menu_account: "Account", lib_updating: "Loading",
   label_logged_in: "USER ID", label_library: "Library", label_welcome: "Welcome", label_sync_desc: "Login to sync content.",
@@ -1449,7 +1410,7 @@ const TRANSLATIONS={
  },
  zh:{ 
   header_brand:"kr_开发者版", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。兑换产品代码以解锁独家内容。", 
-  card1_title:"首页",card2_title:"新闻",card3_title:"支持", 
+  card1_title:"首页",card3_title:"支持", 
   modal_title:"激活",modal_sub:"请兑换激活码以下载内容。使用激活码时请将其输入下方字段",modal_placeholder:"激活码",modal_btn_auth:"检查", 
   msg_verifying:"正在检查",msg_success_btn:"成功", 
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
@@ -1459,7 +1420,7 @@ const TRANSLATIONS={
   msg_preview_sub: "该代码将激活以下内容:", 
   success_title_final:"激活成功!!", 
   msg_success_sub: "该代码已激活以下内容:",
-  btn_close:"关闭",btn_continue:"兑换",btn_download:"下载",news_title:"最新消息",news_loading:"正在检查更新", 
+  btn_close:"关闭",btn_continue:"兑换",btn_download:"下载", 
   footer_admin:"系统管理长",
   menu_login: "登录", menu_account: "账户", lib_updating: "正在加载",
   label_logged_in: "用户ID", label_library: "我的库", label_welcome: "欢迎", label_sync_desc: "登录以同步内容",
@@ -1473,7 +1434,7 @@ const TRANSLATIONS={
  },
  "zh-TW":{ 
   header_brand:"kr_開發者版", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。兌換產品代碼以解鎖獨家內容。", 
-  card1_title:"首頁",card2_title:"新聞",card3_title:"支援", 
+  card1_title:"首頁",card3_title:"支援", 
   modal_title:"激活",modal_sub:"請兌換啟用碼以下載內容。使用啟用碼時請於下方欄位輸入",modal_placeholder:"啟動碼",modal_btn_auth:"檢查", 
   msg_verifying:"正在檢查",msg_success_btn:"成功", 
   msg_invalid:"該代碼無效",msg_used:"該代碼已被使用",msg_error:"錯誤", 
@@ -1483,7 +1444,7 @@ const TRANSLATIONS={
   msg_preview_sub: "該代碼將激活以下內容:", 
   success_title_final:"激活成功!!", 
   msg_success_sub: "該程式碼已啟動以下內容:",
-  btn_close:"關閉",btn_continue:"兌換",btn_download:"下載",news_title:"最新消息",news_loading:"正在檢查更新", 
+  btn_close:"關閉",btn_continue:"兌換",btn_download:"下載", 
   footer_admin:"系統管理長",
   menu_login: "登入", menu_account: "帳戶", lib_updating: "載入中",
   label_logged_in: "用戶ID", label_library: "我的庫", label_welcome: "歡迎", label_sync_desc: "登入以同步內容",
@@ -1497,7 +1458,7 @@ const TRANSLATIONS={
  },
  ko:{ 
   header_brand:"kr_개발자용", hero_title:"개인 코드 검사 센터", hero_sub:"액세스 권한 및 리소스 관리. 제품 코드를 사용하여 콘텐츠 잠금을 해제하세요.", 
-  card1_title:"메인 페이지",card2_title:"뉴스",card3_title:"지원", 
+  card1_title:"메인 페이지",card3_title:"지원", 
   modal_title:"활성화",modal_sub:"활성화 코드를 사용해 콘텐츠를 다운로드하세요. 활성화 코드를 사용하려면 아래 필드에 입력해 주세요.",modal_placeholder:"활성화 코드",modal_btn_auth:"확인", 
   msg_verifying:"확인 중",msg_success_btn:"성공", 
   msg_invalid:"유효하지 않은 코드입니다.",msg_used:"이미 사용된 코드입니다.",msg_error:"오류", 
@@ -1507,7 +1468,7 @@ const TRANSLATIONS={
   msg_preview_sub: "해당 코드를 실행하면 다음 콘텐츠가 활성화됩니다:", 
   success_title_final:"활성화 완료!!", 
   msg_success_sub: "해당 코드가 다음 콘텐츠를 활성화했습니다:",
-  btn_close:"닫기",btn_continue:"사용",btn_download:"다운로드",news_title:"뉴스",news_loading:"업데이트 확인 중", 
+  btn_close:"닫기",btn_continue:"사용",btn_download:"다운로드", 
   footer_admin:"시스템 관리자",
   menu_login: "로그인", menu_account: "계정", lib_updating: "로딩 중",
   label_logged_in: "사용자 ID", label_library: "라이브러리", label_welcome: "환영합니다", label_sync_desc: "동기화하려면 로그인",
@@ -1521,7 +1482,7 @@ const TRANSLATIONS={
  },
  ru:{ 
   header_brand:"kr_Разработчик", hero_title:"Центр личной активации", hero_sub:"Управление доступом и ресурсами. Активируйте код продукта для разблокировки.", 
-  card1_title:"главная страница",card2_title:"Новости",card3_title:"Поддержка", 
+  card1_title:"главная страница",card3_title:"Поддержка", 
   modal_title:"Проверка",modal_sub:"Погасите код активации, чтобы загрузить контент. Чтобы использовать код активации, введите его в поле ниже.",modal_placeholder:"Код активации",modal_btn_auth:"Подтверждение", 
   msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
   msg_invalid:"Неверный код",msg_used:"Этот код уже был использован.",msg_error:"Ошибка", 
@@ -1531,7 +1492,7 @@ const TRANSLATIONS={
   msg_preview_sub: "Данный код активирует следующее содержимое:", 
   success_title_final:"Успешно!!", 
   msg_success_sub: "Код активировал следующее содержимое:",
-  btn_close:"Закрыть",btn_continue:"Погасить",btn_download:"Скачать",news_title:"Новости",news_loading:"Проверка обновлений", 
+  btn_close:"Закрыть",btn_continue:"Погасить",btn_download:"Скачать", 
   footer_admin:"Администратор",
   menu_login: "Вход", menu_account: "Учетная запись", lib_updating: "Загрузка",
   label_logged_in: "ID пользователя", label_library: "Библиотека", label_welcome: "Привет", label_sync_desc: "Войдите для синхронизации",
@@ -1558,7 +1519,6 @@ const els={
  sInfoSec: gId('infoSection'), sNameDisp: gId('successNameDisplay'), sExtra: gId('successExtraInfo'), sBadge: gId('successBadge'), 
  redeemErrorMsg: gId('redeemErrorMsg'),
  btnRedeem: gId('btnRedeem'), btnDownload: gId('btnDownload'), btnOpenLibraryMobile: gId('btnOpenLibraryMobile'),
- newsList: gId('newsList'), newsModal: gId('newsModal'), openNews: gId('btnOpenNews'), closeNews: gId('newsCloseX'),
  langWrapper: gId('customLangWrapper'), langTrigger: gId('langTrigger'), langMenu: gId('langMenu'), currentLangLabel: gId('currentLangLabel'),
  accountDropdown: gId('accountDropdown'), openAccount: gId('btnOpenAccount'),
  loggedInView: gId('loggedInView'), loggedOutView: gId('loggedOutView'), displayUserId: gId('displayUserId'), displayUserEmail: gId('displayUserEmail'),
@@ -1575,7 +1535,6 @@ const els={
  mobileMenuBtn: gId('mobileMenuBtn'),
  mobileNav: gId('mobileNav'),
  mobileMenuCloseBtn: gId('mobileMenuCloseBtn'),
- btnMobileNewsLink: gId('btnMobileNewsLink'),
  mobileLangTrigger: gId('mobileLangTrigger'),
  mobileCurrentLangLabel: gId('mobileCurrentLangLabel')
 };
@@ -1683,10 +1642,6 @@ function setupEventListeners() {
   setListener(els.closeSub, 'click', closeAuthModal);
   if(els.authModal) setListener(els.authModal, 'click', (e) => { if(e.target === els.authModal) closeAuthModal(); });
 
-  setListener(els.openNews, 'click', () => els.newsModal.classList.add('active'));
-  setListener(els.closeNews, 'click', () => els.newsModal.classList.remove('active'));
-  if(els.newsModal) setListener(els.newsModal, 'click', (e) => { if(e.target === els.newsModal) els.newsModal.classList.remove('active'); });
-
   setListener(els.adminCloseBtn, 'click', () => els.adminModal.classList.remove('active'));
   if(els.adminModal) setListener(els.adminModal, 'click', (e) => { if(e.target === els.adminModal) els.adminModal.classList.remove('active'); });
   setListener(els.btnAdminSearch, 'click', performAdminSearch);
@@ -1741,13 +1696,6 @@ function setupEventListeners() {
           els.mobileNav.classList.remove('active');
       });
   }
-  if (els.btnMobileNewsLink) {
-      els.btnMobileNewsLink.addEventListener('click', (e) => {
-          e.preventDefault();
-          els.mobileNav.classList.remove('active'); 
-          els.newsModal.classList.add('active');    
-      });
-  }
   if (els.mobileLangTrigger) {
       els.mobileLangTrigger.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1786,11 +1734,11 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       performAuth(els.code.value); 
+       // 先ほどの提案通り自動入力のみにし、自動認証は行わない
+       // performAuth(els.code.value); 
      }
    }, 800);
-   setTimeout(fetchNews, 3000);
- } else fetchNews();
+ }
 }
 
 function initCustomDropdown() {
@@ -1805,7 +1753,6 @@ function initCustomDropdown() {
             // 共通処理: 言語設定、表示更新、コンテンツ再取得
             localStorage.setItem('user_lang', val);
             updateLanguage(val);
-            fetchNews();
             
             // 重要: ログイン中なら履歴とAvailableリストを再取得して言語を反映させる
             if (currentUser) {
@@ -1859,27 +1806,6 @@ function updateLanguage(lang){
   if(els.mobileCurrentLangLabel) els.mobileCurrentLangLabel.textContent = langMap[lang] || 'Language'; 
   if(t.modal_placeholder && els.code) els.code.placeholder = t.modal_placeholder;
   updateAccountUI();
-}
-
-async function fetchNews(){
-  if(!els.newsList)return;
-  const t=TRANSLATIONS[CURRENT_LANG];
-  els.newsList.innerHTML=`<li style="text-align:center;opacity:0.6;padding:20px;"><span class="loading-dots">${t.news_loading||"Loading"}</span></li>`;
-  try{
-    const d = await(await fetch(`${GAS_API_URL}?type=news&lang=${CURRENT_LANG}&_t=${Date.now()}`)).json();
-    els.newsList.innerHTML='';
-    if(d.success&&d.news&&d.news.length>0){
-      d.news.forEach(i=>{ 
-        const formattedDate = formatDateByLang(i.date, CURRENT_LANG);
-        els.newsList.insertAdjacentHTML('beforeend',`
-          <li style="padding:15px 0; border-bottom:1px solid rgba(128,128,128,0.1);">
-            <div style="font-size:21px; color:var(--primary); font-weight:700;">${formattedDate}</div>
-            <div style="font-size:14px; margin-top:4px;">${i.content}</div>
-          </li>`
-        ); 
-      });
-    }else els.newsList.innerHTML=`<li style="text-align:center;opacity:0.6;padding:20px;">-</li>`;
-  }catch(e){ els.newsList.innerHTML=`<li style="text-align:center;opacity:0.6;padding:20px;">Error</li>`; }
 }
 
 function formatDateByLang(dateStr, lang) {
@@ -2182,6 +2108,10 @@ async function performAuthAction() {
   els.btnAuthAction.innerHTML = `<span class="loading-dots">${mode === 'login' ? t.msg_logging_in : t.msg_signing_up}</span>`;
   try {
     const actionType = mode === 'login' ? 'user_login' : 'register';
+    // --------------------------------------------------------------------------------------------------------------------
+    // ★セキュリティ修正推奨ポイント: GET通信ではなくPOST通信に変更することをお勧めします。
+    // 以下は現在のコードのままですが、API側を変更できる場合は以下のfetchをPOST化してください。
+    // --------------------------------------------------------------------------------------------------------------------
     const res = await fetch(`${GAS_API_URL}?type=${actionType}&email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`);
     const data = await res.json();
     if (data.success) {
@@ -2208,7 +2138,8 @@ async function performAuthAction() {
               openAuthModal(); 
               const codeToUse = formatCodeInput(pendingActivationCode);
               els.code.value = codeToUse;
-              performAuth(codeToUse); 
+              // 先ほどの提案通り自動入力のみにし、自動認証は行わない
+              // performAuth(codeToUse); 
               pendingActivationCode = null;
           }, 500);
       } else if (pendingAction === 'open_activation') {
