@@ -27,8 +27,6 @@
   --bg-color: #F1F3F5;
   --card-bg: rgba(255, 255, 255, 0.6);
   --card-border: rgba(255, 255, 255, 0.6);
-  --modal-bg-success: rgba(255, 255, 255, 0.95); 
-  --modal-backdrop: blur(40px);
   --modal-text-main: #000000;
   --modal-text-sub: #666666;
   --success-text-green: #04CF22;
@@ -66,8 +64,6 @@
   --bg-color: #121212;
   --card-bg: rgba(40, 40, 40, 0.5);
   --card-border: rgba(255, 255, 255, 0.1);
-  --modal-bg-success: #111111;
-  --modal-backdrop: none;
   --modal-text-main: #FFFFFF;
   --modal-text-sub: #A0A0A0;
   --success-text-green: #04CF22;
@@ -491,7 +487,9 @@ button, input, textarea { font-family: var(--font-stack); }
 .font-kr { font-family: 'Noto Sans KR', sans-serif; }
 .font-ru { font-family: 'HarmonyOS Sans', sans-serif; }
 
-/* --- MODAL SYSTEM (Base) --- */
+/* ====================================================
+   ★ MODAL SYSTEM (グラスモーフィズム & Dynamic Island風)
+   ==================================================== */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px);
   z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -499,28 +497,73 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
+/* 1. 入力・確認画面のモーダル（少し白っぽく、ぼかし強め） */
 .modal-sheet {
-  background: var(--bg-color);
-  border-radius: 32px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.3);
-  border: 1px solid rgba(128,128,128,0.1);
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+  
   position: relative; overflow: hidden;
   width: 90%; max-width: 470px; 
   padding: 40px;
-  transform: scale(0.95);
-  transition: all 0.5s var(--spring-ease);
   font-family: var(--font-stack);
+  
+  /* Dynamic Island風アニメーション：初期状態は中央に小さくクリップ */
+  clip-path: inset(45% 35% 45% 35% round 50px);
+  transform: translateY(20px) scale(0.9);
+  opacity: 0;
+  
+  /* バネ感（スプリング）のあるイージングで滑らかに展開 */
+  transition: clip-path 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.5s ease,
+              opacity 0.3s ease,
+              max-width 0.5s ease;
 }
-.modal-overlay.active .modal-sheet { transform: scale(1); }
-[data-theme="dark"] .modal-sheet { background: #1a1a1a; }
 
-/* Success Expansion */
+/* モーダルが開いた状態 */
+.modal-overlay.active .modal-sheet {
+  clip-path: inset(0% 0% 0% 0% round 32px);
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* 2. 完了画面のモーダル（透け感強め、背景がよく見える） */
 .modal-sheet.is-success {
-  max-width: 850px; padding: 0;
-  background: var(--modal-bg-success);
-  backdrop-filter: var(--modal-backdrop);
-  -webkit-backdrop-filter: var(--modal-backdrop);
-  border-color: var(--modal-border);
+  max-width: 850px; 
+  padding: 0;
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+.modal-overlay.active .modal-sheet.is-success {
+  clip-path: inset(0% 0% 0% 0% round 24px);
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .modal-sheet {
+  background: rgba(30, 30, 30, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .modal-sheet.is-success {
+  background: rgba(20, 20, 20, 0.45) !important;
+}
+
+/* 閉じるボタン（展開アニメーション中に見えないよう遅延表示） */
+#modalCloseBtn {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease 0.3s, transform 0.3s ease 0.3s;
+  z-index: 10;
+}
+.modal-overlay.active #modalCloseBtn {
+  opacity: 0.6;
+  transform: scale(1);
+}
+.modal-overlay.active #modalCloseBtn:hover {
+  opacity: 1;
 }
 
 /* INPUT PHASE */
@@ -560,7 +603,7 @@ button, input, textarea { font-family: var(--font-stack); }
 #successPhase { display: none; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease; }
 
 .success-container { display: flex; flex-direction: row; width: 100%; min-height: 480px; }
-.success-visual { flex: 1; position: relative; background: #000; overflow: hidden; min-height: 300px; }
+.success-visual { flex: 1; position: relative; background: transparent; overflow: hidden; min-height: 300px; }
 .success-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .success-details {
@@ -569,37 +612,30 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 [data-theme="dark"] .success-details { color: #fff; }
 
-.success-badge {
-  display: none !important; /* ★修正: 全デバイスで完全に非表示 */
-}
+.success-badge { display: none !important; }
 
 .content-title { font-size: 28px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.2; color: var(--modal-text-main); }
 
-/* --- PRODUCT DISPLAY (No Underline) --- */
-.product-display {
-  margin-bottom: 30px;
-}
+/* --- PRODUCT DISPLAY --- */
+.product-display { margin-bottom: 30px; }
 .product-name-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 0 8px 8px 8px; /* Padding for spacing */
+  padding: 0 8px 8px 8px;
   font-size: 20px; font-weight: 700; color: var(--modal-text-main);
 }
 [data-theme="dark"] .product-name-row { color: #fff; }
 
-/* --- INFO SECTION (Step 1) --- */
+/* --- INFO SECTION --- */
 #infoSection { transition: opacity 0.3s; }
-
 .message-title {
   font-size: 20px; font-weight: 700; color: var(--modal-text-main);
   margin-bottom: 12px; display: block; line-height: 1.4;
 }
 [data-theme="dark"] .message-title { color: #fff; }
-
 .info-box {
   background: rgba(128,128,128,0.05); border-radius: 16px; padding: 20px;
   border: 1px solid rgba(128,128,128,0.1); margin-bottom: 30px; width: 100%;
 }
-
 .info-extra { 
   font-size: 13px; opacity: 0.7; margin-top: 0; 
   line-height: 1.6; white-space: pre-wrap; 
@@ -635,38 +671,21 @@ button, input, textarea { font-family: var(--font-stack); }
 /* PCでボタンを隠すためのCSS */
 @media (min-width: 769px) {
     #btnDownload { display: none !important; }
-    /* PCではアカウントメニュー内のライブラリボタンも隠す */
     #btnShowLibrary { display: none !important; }
 }
 
-/* --- ACCOUNT DROPDOWN STYLES (修正版) --- */
+/* --- ACCOUNT DROPDOWN STYLES --- */
 .account-dropdown {
-  position: absolute;
-  top: 80px; 
-  right: 40px;
-  width: 320px; 
+  position: absolute; top: 80px; right: 40px; width: 320px; 
   background: var(--dropdown-bg);
   backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(128,128,128,0.2);
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  padding: 24px;
-  z-index: 2000;
-  opacity: 0;
-  transform: translateY(-10px) scale(0.98);
-  pointer-events: none; 
-  transition: all 0.3s var(--spring-ease);
-  transform-origin: top right;
-  text-align: left; 
-  display: flex; flex-direction: column;
+  border: 1px solid rgba(128,128,128,0.2); border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2); padding: 24px;
+  z-index: 2000; opacity: 0; transform: translateY(-10px) scale(0.98);
+  pointer-events: none; transition: all 0.3s var(--spring-ease);
+  transform-origin: top right; text-align: left; display: flex; flex-direction: column;
 }
-
-.account-dropdown.open {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto; 
-  visibility: visible;
-}
+.account-dropdown.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; visibility: visible; }
 
 /* Header inside Dropdown */
 .account-mini-header { 
@@ -681,8 +700,7 @@ button, input, textarea { font-family: var(--font-stack); }
 .menu-btn {
   background: transparent; border: none; text-align: left;
   padding: 14px 12px; font-size: 16px; font-weight: 700;
-  color: var(--modal-text-main); cursor: pointer;
-  border-radius: 12px;
+  color: var(--modal-text-main); cursor: pointer; border-radius: 12px;
   display: flex; justify-content: space-between; align-items: center;
   transition: background 0.2s; font-family: var(--font-stack);
 }
@@ -699,153 +717,53 @@ button, input, textarea { font-family: var(--font-stack); }
 .form-input:focus { border-color: var(--primary); background: rgba(128,128,128,0.05); }
 
 /* --- Mobile Adjustment (BLOCK) --- */
-#mobile-warning {
-  display: none;
-}
+#mobile-warning { display: none; }
+[data-theme="dark"] .btn-close-sub { border-color: rgba(255, 255, 255, 0.6) !important; color: #fff !important; }
+[data-theme="dark"] .btn-close-sub:hover { border-color: #fff !important; background: rgba(255, 255, 255, 0.1); }
 
-[data-theme="dark"] .btn-close-sub {
-    border-color: rgba(255, 255, 255, 0.6) !important;
-    color: #fff !important;
-}
-
-[data-theme="dark"] .btn-close-sub:hover {
-    border-color: #fff !important;
-    background: rgba(255, 255, 255, 0.1);
-}
-/* --- ヘッダーナビゲーション修正版 --- */
-
+/* --- ヘッダーナビゲーション --- */
 .rgl-tab {
-    position: relative;
-    margin: 0 4px !important; 
-    padding: 0 !important; 
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-weight: 700;
-    opacity: 0.6;
-    transition: opacity 0.2s ease;
-    z-index: 1;
+    position: relative; margin: 0 4px !important; padding: 0 !important; border: none !important;
+    background: transparent !important; box-shadow: none !important; backdrop-filter: none !important;
+    display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+    font-weight: 700; opacity: 0.6; transition: opacity 0.2s ease; z-index: 1;
 }
-
 .rgl-tab::after { display: none !important; }
-
-.rgl-tab:hover, 
-.rgl-tab.active { 
-    opacity: 1; 
-}
-
-/* --- 背景のカプセル（疑似要素） --- */
+.rgl-tab:hover, .rgl-tab.active { opacity: 1; }
 .rgl-tab::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: calc(100% + 37px); 
-    height: 38px;
-    border-radius: 50px;
-    
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    
-    transform: translate(-50%, -50%) scale(0.9);
-    opacity: 0;
-    z-index: -1;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    content: ''; position: absolute; top: 50%; left: 50%; width: calc(100% + 37px); height: 38px; border-radius: 50px;
+    background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3); transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0; z-index: -1; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-
-.rgl-tab:hover::before,
-.rgl-tab.active::before {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-
+.rgl-tab:hover::before, .rgl-tab.active::before { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 [data-theme="dark"] .rgl-tab { color: #fff; }
-[data-theme="dark"] .rgl-tab::before {
-    background: rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.1);
-}
+[data-theme="dark"] .rgl-tab::before { background: rgba(0, 0, 0, 0.3); border-color: rgba(255, 255, 255, 0.1); }
 
-/* =========================================
-   ★ここから追加：スマホ用ライブラリモーダルCSS
-   ========================================= */
-
-/* スマホ用「ライブラリを開く」ボタン（デフォルト非表示） */
-#btnShowLibrary {
-    display: none; 
-}
-
-/* スマホ表示時（768px以下）のみ表示 */
-@media (max-width: 768px) {
-    #btnShowLibrary {
-        display: flex; 
-    }
-}
-
-/* ライブラリモーダル（2つ目のコードのデザインを移植） */
+/* --- スマホ用ライブラリモーダルCSS --- */
+#btnShowLibrary { display: none; }
+@media (max-width: 768px) { #btnShowLibrary { display: flex; } }
 #libraryModal .modal-sheet {
-  background: var(--modal-bg-standard);
-  border-radius: 28px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.3);
-  width: 90%; max-width: 600px;
-  padding: 40px;
-  text-align: left;
+  background: var(--modal-bg-standard) !important;
+  border-radius: 28px; box-shadow: 0 40px 100px rgba(0,0,0,0.3); width: 90%; max-width: 600px; padding: 40px; text-align: left;
+  clip-path: none !important; /* ライブラリはDynamic展開しない */
 }
-
-.lib-modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 30px;
-}
+.lib-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
 .lib-header-left { display: flex; align-items: center; gap: 16px; }
-.lib-header-icon {
-  width: 56px; height: 56px; background: #007DFF; border-radius: 16px;
-  display: flex; align-items: center; justify-content: center; color: white;
-  box-shadow: 0 10px 25px rgba(0, 125, 255, 0.25);
-}
+.lib-header-icon { width: 56px; height: 56px; background: #007DFF; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 10px 25px rgba(0, 125, 255, 0.25); }
 .lib-header-title { font-size: 32px; font-weight: 800; color: var(--modal-text-main); line-height: 1; letter-spacing: -1px; }
-
 .lib-list-scroll { list-style: none; padding: 0; margin: 0; max-height: 450px; overflow-y: auto; }
-
-/* Library Card Item */
-.lib-item-card {
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(128, 128, 128, 0.04);
-  border: 1px solid rgba(128, 128, 128, 0.08);
-  border-radius: 20px; padding: 16px; margin-bottom: 12px;
-  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
-  cursor: pointer; /* クリック可能にするため追加 */
-}
+.lib-item-card { display: flex; align-items: center; justify-content: space-between; background: rgba(128, 128, 128, 0.04); border: 1px solid rgba(128, 128, 128, 0.08); border-radius: 20px; padding: 16px; margin-bottom: 12px; transition: transform 0.2s, background 0.2s, box-shadow 0.2s; cursor: pointer; }
 .lib-item-card:hover { transform: translateY(-2px); background: rgba(128, 128, 128, 0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-
 .lib-card-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
-.lib-card-thumb {
-  width: 72px; height: 72px; border-radius: 14px; object-fit: cover;
-  background: #eee; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+.lib-card-thumb { width: 72px; height: 72px; border-radius: 14px; object-fit: cover; background: #eee; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 .lib-card-info { display: flex; flex-direction: column; overflow: hidden; justify-content: center; }
 .lib-card-meta { font-size: 12px; color: var(--modal-text-sub); font-weight: 600; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
 .lib-card-title { font-size: 18px; font-weight: 800; color: var(--modal-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+.lib-card-arrow { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; opacity: 0.3; }
 
-.lib-card-arrow { /* 右端の矢印 */
-  width: 32px; height: 32px; 
-  display: flex; align-items: center; justify-content: center; 
-  opacity: 0.3;
-}
-
-/* スマホ用ライブラリ表示調整 */
 @media (max-width: 480px) {
-  #libraryModal .modal-sheet {
-    width: 96%; 
-    padding: 20px; 
-  }
+  #libraryModal .modal-sheet { width: 96%; padding: 20px; }
   .lib-item-card { padding: 8px; }
   .lib-card-thumb { width: 32px; height: 32px; }
   .lib-card-left { gap: 8px; }
@@ -853,230 +771,48 @@ button, input, textarea { font-family: var(--font-stack); }
   .lib-card-meta { font-size: 8px; white-space: nowrap; letter-spacing: -0.5px; }
 }
 
-/* =========================================
-   ★追加：スマホ用全画面メニューCSS
-   ========================================= */
-
-/* デフォルトでは非表示 */
+/* --- スマホ用全画面メニューCSS --- */
 .mobile-menu-trigger { display: none; }
 .mobile-nav-overlay { display: none; }
-
-/* スマホ表示時（768px以下） */
 @media (max-width: 768px) {
-    /* ハンバーガーアイコン */
-    .mobile-menu-trigger { 
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-        background: transparent; 
-        border: none; 
-        color: var(--sidebar-text); 
-        cursor: pointer;
-        padding: 8px;
-        margin-right: 4px; /* ロゴとの間隔を詰める */
-    }
-    
-    /* ブランドエリアの配置調整 */
-    .rgl-brand {
-        /* ハンバーガーアイコンの後ろにロゴを表示するための調整 */
-        order: 2; 
-    }
-    .mobile-menu-trigger {
-        order: 1;
-    }
-    
-    /* 全画面メニューオーバーレイ */
-    .mobile-nav-overlay {
-        display: flex; 
-        flex-direction: column;
-        position: fixed; 
-        inset: 0; 
-        background: var(--bg-color); 
-        z-index: 10001; /* アカウントメニューより上 */
-        padding: 40px;
-        transform: translateX(-100%); /* 左からスライド */
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        visibility: hidden;
-    }
-    
-    .mobile-nav-overlay.active { 
-        transform: translateX(0); 
-        visibility: visible;
-    }
-    
-    /* 閉じるボタン */
-    .mobile-menu-close {
-        align-self: flex-end;
-        background: transparent;
-        border: 1px solid var(--btn-close-border);
-        color: var(--modal-text-main);
-        width: 44px; height: 44px;
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
-        margin-bottom: 40px;
-    }
-    
-    /* メニューコンテンツ */
-    .mobile-nav-content { 
-        display: flex; 
-        flex-direction: column; 
-        gap: 40px; /* アイテム間隔 */
-        flex: 1; /* 残りのスペースを埋める */
-    }
-    
-    .mobile-nav-item { 
-        font-family: var(--font-stack);
-        font-size: 32px; 
-        font-weight: 800; 
-        color: var(--modal-text-main); 
-        text-decoration: none; 
-        text-align: left; 
-        opacity: 0;
-        transform: translateX(-20px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    
-    /* メニューオープン時のアニメーション */
-    .mobile-nav-overlay.active .mobile-nav-item {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    
-    /* 遅延表示 */
+    .mobile-menu-trigger { display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--sidebar-text); cursor: pointer; padding: 8px; margin-right: 4px; }
+    .rgl-brand { order: 2; }
+    .mobile-menu-trigger { order: 1; }
+    .mobile-nav-overlay { display: flex; flex-direction: column; position: fixed; inset: 0; background: var(--bg-color); z-index: 10001; padding: 40px; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); visibility: hidden; }
+    .mobile-nav-overlay.active { transform: translateX(0); visibility: visible; }
+    .mobile-menu-close { align-self: flex-end; background: transparent; border: 1px solid var(--btn-close-border); color: var(--modal-text-main); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 40px; }
+    .mobile-nav-content { display: flex; flex-direction: column; gap: 40px; flex: 1; }
+    .mobile-nav-item { font-family: var(--font-stack); font-size: 32px; font-weight: 800; color: var(--modal-text-main); text-decoration: none; text-align: left; opacity: 0; transform: translateX(-20px); transition: opacity 0.3s ease, transform 0.3s ease; }
+    .mobile-nav-overlay.active .mobile-nav-item { opacity: 1; transform: translateX(0); }
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(1) { transition-delay: 0.1s; }
     .mobile-nav-overlay.active .mobile-nav-item:nth-child(2) { transition-delay: 0.2s; }
+    .mobile-menu-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.1); opacity: 0; transform: translateY(20px); transition: all 0.3s ease 0.3s; position: relative; }
+    .mobile-nav-overlay.active .mobile-menu-footer { opacity: 1; transform: translateY(0); }
+    .mobile-menu-footer .lang-list { position: absolute; bottom: 60px; left: 0; width: 100%; display: none; }
+    .mobile-menu-footer .lang-list.open { display: block; animation: fadeInUp 0.3s ease; }
     
-    /* ★追加: メニュー内の言語切り替え配置用 */
-    .mobile-menu-footer {
-        margin-top: auto;
-        padding-top: 20px;
-        border-top: 1px solid rgba(128,128,128,0.1);
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.3s ease 0.3s; /* 遅延アニメーション */
-        position: relative; /* リスト表示の基準 */
-    }
-    .mobile-nav-overlay.active .mobile-menu-footer {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    
-    /* 言語リストのポップアップ位置調整 (ボタンの上に出す) */
-    .mobile-menu-footer .lang-list {
-        position: absolute;
-        bottom: 60px; /* ボタンの上に */
-        left: 0;
-        width: 100%;
-        display: none;
-    }
-    .mobile-menu-footer .lang-list.open {
-        display: block;
-        animation: fadeInUp 0.3s ease;
-    }
-    
-    /* =========================================
-       ★重要修正: スマホヘッダー（右上のアカウント表示）
-       ========================================= */
-    
-    /* モバイルRGL調整 */
     .rgl-wrapper { flex-direction: column; }
-    
-    /* サイドバー（モバイルでは左上のハンバーガーエリアとして機能） */
-    .rgl-sidebar { 
-        width: 100%; 
-        height: auto; 
-        padding: 0; 
-        border-right: none; 
-        border-bottom: 1px solid rgba(128,128,128,0.1); 
-        overflow: visible;
-        position: relative;
-        z-index: 100;
-        /* 背景色を「こい灰色」（変数の色）に */
-        background-color: var(--sidebar-bg); 
-    }
-    
-    .rgl-brand-area { 
-        padding: 16px 12px; /* 左寄せのためにpaddingを減らす */
-        display: flex;
-        align-items: center;
-        justify-content: flex-start; /* 左揃え */
-        gap: 8px; /* アイコンとロゴの間隔を詰める */
-        width: 100%;
-        /* 右側にスペースを空ける（アカウントアイコン用） */
-        padding-right: 120px; 
-    }
-    
-    /* ★修正: スマホのみサイドバー内のリストを確実に非表示 */
-    .rgl-scroll-content, 
-    .rgl-menu-section, 
-    #secAvailable, 
-    #secLibrary { display: none !important; }
+    .rgl-sidebar { width: 100%; height: auto; padding: 0; border-right: none; border-bottom: 1px solid rgba(128,128,128,0.1); overflow: visible; position: relative; z-index: 100; background-color: var(--sidebar-bg); }
+    .rgl-brand-area { padding: 16px 12px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%; padding-right: 120px; }
+    .rgl-scroll-content, .rgl-menu-section, #secAvailable, #secLibrary { display: none !important; }
     .rgl-bottom-controls { display: none; } 
-    
-    /* ★修正: ヘッダーを絶対配置で右上に固定 */
-    .rgl-header { 
-        position: fixed !important; /* Fixedに変更して画面追従 */
-        top: 0;
-        right: 0;
-        width: auto;
-        height: 70px; /* サイドバーの高さ(approx 60-70px)に合わせる */
-        background: transparent !important;
-        padding: 0 16px;
-        z-index: 200; /* サイドバーより手前 */
-        display: flex !important;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 10px;
-        pointer-events: none; /* コンテナ自体はクリック透過 */
-    }
-    
-    /* ヘッダー内の要素はクリック可能にする */
-    .rgl-header > * {
-        pointer-events: auto;
-    }
-
-    /* タブは消す */
+    .rgl-header { position: fixed !important; top: 0; right: 0; width: auto; height: 70px; background: transparent !important; padding: 0 16px; z-index: 200; display: flex !important; align-items: center; justify-content: flex-end; gap: 10px; pointer-events: none; }
+    .rgl-header > * { pointer-events: auto; }
     .rgl-tabs { display: none !important; }
-    
     .rgl-hero { padding: 30px 20px; min-height: 50vh; }
     .rgl-logo-text { font-size: 32px; }
-    
-    /* ニュースモーダル（モバイル用調整） */
     .modal-sheet.is-success { max-width: 92%; border-radius: 24px; height: auto; max-height: 85vh; overflow-y: auto; }
     .success-container { flex-direction: column; min-height: auto; }
     .success-visual { width: 100%; height: 220px; flex: none; }
     .success-details { padding: 24px; flex: auto; }
-    
-    /* ★重要修正: スマホ用アカウントドロップダウンの位置固定 */
-    .account-dropdown {
-        position: fixed; /* 固定配置に変更 */
-        top: 70px;       /* ヘッダーの下 */
-        right: 5%;       /* 右端から少し空ける */
-        width: 90%;      /* 画面幅の90% */
-        left: auto;
-        transform: translateY(-10px);
-    }
-    
-    .account-dropdown.open {
-        transform: translateY(0);
-    }
+    .account-dropdown { position: fixed; top: 70px; right: 5%; width: 90%; left: auto; transform: translateY(-10px); }
+    .account-dropdown.open { transform: translateY(0); }
 }
 
 footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font-size: 12px; }
 [data-theme="dark"] footer { color: #888; }
 
-.loading-spinner {
-  display: inline-block; 
-  vertical-align: middle; 
-  width: 24px;            
-  height: 24px;
-  border: 3px solid rgba(128,128,128,0.2);
-  border-top: 3px solid var(--primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-right: 8px;      
-}
+.loading-spinner { display: inline-block; vertical-align: middle; width: 24px; height: 24px; border: 3px solid rgba(128,128,128,0.2); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; }
 @keyframes spin { to{transform: rotate(360deg);} }
 
 </style>
@@ -1286,7 +1022,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 
 <div id="authModal" class="modal-overlay">
   <div class="modal-sheet" id="modalContainer">
-    <div style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.6; z-index:10;" id="modalCloseBtn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" size="24" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
+    <div style="position:absolute; top:20px; right:20px; cursor:pointer; z-index:10;" id="modalCloseBtn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" size="24" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
     <div id="inputPhase" style="display: flex; opacity: 1;">
       <h2 class="modal-title" data-translate="modal_title">アクティベーション</h2>
       <p class="modal-sub" data-translate="modal_sub">アクティベーションコードを使用すると、コンテンツにアクセスできます。アクティベーションコードを利用するには、以下の入力欄に入力してください。</p>
@@ -1550,14 +1286,11 @@ const formatCodeInput = (val) => {
 document.addEventListener('DOMContentLoaded', () => {
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
   
-  // 1. ユーザーが手動で選んだ言語の保存データがあるか確認
   let sLang = localStorage.getItem('user_lang');
   
-  // 2. データがない（初回アクセス）場合は、端末の言語を読み取る
   if (!sLang) {
       const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
       
-      // 言語コードの判定
       if (browserLang.startsWith('ja')) {
           sLang = 'ja';
       } else if (browserLang.includes('zh-tw') || browserLang.includes('zh-hk') || browserLang.includes('zh-hant')) {
@@ -1569,11 +1302,10 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (browserLang.startsWith('ru')) {
           sLang = 'ru';
       } else {
-          sLang = 'en'; // スペイン語など、上記以外の言語はすべて「英語」にする
+          sLang = 'en'; 
       }
   }
   
-  // 3. 判定した言語（または手動で設定済みの言語）を適用して画面を表示
   setInitialLanguage(sLang, true);
 
   const sUser = localStorage.getItem('user_session_identity');
@@ -1633,8 +1365,8 @@ function setupEventListeners() {
   if (els.btnOpenLibraryMobile) {
       els.btnOpenLibraryMobile.addEventListener('click', (e) => {
           e.preventDefault();
-          closeAuthModal(); // アクティベーション画面を閉じる
-          els.libraryModal.classList.add('active'); // ライブラリ画面を開く
+          closeAuthModal(); 
+          els.libraryModal.classList.add('active'); 
       });
   }
 
@@ -1655,8 +1387,6 @@ function setupEventListeners() {
   setListener(els.heroActionBtn, 'click', (e) => {
      e.stopPropagation(); 
      
-     // ★変更: PC（768px超）で所有済みアイテムが選択されている場合はダウンロード等を行う
-     // スマホ（768px以下）では常にコード引き換えモード（モーダルを開く）として動作する
      if(window.innerWidth > 768 && currentHeroContext === 'owned' && selectedHeroItem) {
         const targetUrl = selectedHeroItem.url || selectedHeroItem.actionUrl;
         if(targetUrl) {
@@ -1734,6 +1464,7 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
+       // ★要望により、自動で確認処理を走らせるよう元に戻しました
        performAuth(els.code.value); 
      }
    }, 800);
@@ -1749,22 +1480,18 @@ function initCustomDropdown() {
         opt.addEventListener('click', () => {
             const val = opt.getAttribute('data-value');
             
-            // 共通処理: 言語設定、表示更新、コンテンツ再取得
             localStorage.setItem('user_lang', val);
             updateLanguage(val);
             
-            // 重要: ログイン中なら履歴とAvailableリストを再取得して言語を反映させる
             if (currentUser) {
                 fetchAvailableContent();
                 fetchUserHistory();
             }
 
             if (opt.closest('#mobileLangMenu')) {
-                // スマホ用メニューからの操作
                 gId('mobileLangMenu').classList.remove('open');
                 els.mobileNav.classList.remove('active');
             } else {
-                // PC用メニューからの操作
                 const overlay = gId('langSwitchingOverlay');
                 if(overlay) overlay.style.display = 'flex';
                 els.langMenu.classList.remove('open');
@@ -1897,7 +1624,6 @@ function showMobileItemDetail(item) {
         const releaseDate = item.releaseDateIso ? new Date(item.releaseDateIso) : null;
         
         if (releaseDate && releaseDate > now) {
-            // ロック中
             const diff = releaseDate - now;
             const oneDay = 24 * 60 * 60 * 1000;
             
@@ -1920,7 +1646,6 @@ function showMobileItemDetail(item) {
                els.btnDownload.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
             }
         } else {
-            // 解禁済み
             if(modalDownloadTimer) clearInterval(modalDownloadTimer);
             els.btnDownload.style.pointerEvents = 'auto';
             els.btnDownload.style.opacity = '1';
@@ -2151,7 +1876,7 @@ async function performAuthAction() {
               openAuthModal(); 
               const codeToUse = formatCodeInput(pendingActivationCode);
               els.code.value = codeToUse;
-              // 先ほどの提案通り自動入力のみにし、自動認証は行わない
+              // ★要望により、自動で確認処理を走らせるよう元に戻しました
               performAuth(codeToUse); 
               pendingActivationCode = null;
           }, 500);
@@ -2171,7 +1896,6 @@ async function performAuthAction() {
 }
 
 function setHeroButtonState(state, forceUnlock = false) {
-    // ★追加: スマホの場合はボタンの状態を更新しない（常にコード引き換えのまま）
     if (window.innerWidth <= 768) return;
 
     const btn = els.heroActionBtn;
@@ -2255,7 +1979,6 @@ function startHeroCountdown(targetDate) {
 }
 
 function updateHeroView(item, isOwned) {
-    // ★追加: スマホの場合は背景画像やボタンを更新しない
     if (window.innerWidth <= 768) {
         return; 
     }
@@ -2345,7 +2068,6 @@ function startLibraryTimer() {
     if (libraryTimerId) clearInterval(libraryTimerId);
     libraryTimerId = setInterval(() => {
         const now = Date.now();
-        // ★変更: PC（768px超）の場合のみヒーローセクションを更新
         if (window.innerWidth > 768 && selectedHeroItem && selectedHeroItem.releaseDateIso) {
              const releaseTime = new Date(selectedHeroItem.releaseDateIso).getTime();
              if (releaseTime <= now && currentHeroContext === 'owned' && !els.heroActionBtn.classList.contains('is-download')) {
@@ -2463,7 +2185,6 @@ async function fetchUserHistory() {
             updateHeroView(currentUser.history[0], true);
       }
     } else if (data.message === "User not found") {
-      // ★ 安全装置：スプレッドシート側でユーザーが消されていたら、ブラウザの記憶も消してリロードする
       console.warn("User session invalid. Logging out...");
       localStorage.removeItem('user_session_identity');
       currentUser = null;
