@@ -1958,8 +1958,18 @@ async function performAuth(code, mode = 'check') {
   }
 
   try {
-    let url = `${GAS_API_URL}?key=${encodeURIComponent(safeCode)}&lang=${CURRENT_LANG}&mode=${mode}&userId=${uId}&_t=${Date.now()}`;
-    let d = await (await fetch(url)).json();
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        key: safeCode,
+        lang: CURRENT_LANG,
+        mode: mode,
+        userId: uId,
+        _t: Date.now()
+      })
+    });
+    let d = await res.json();
     if (thisRequestId !== currentAuthRequestId) return;
 
     if (mode === 'check') {
@@ -2108,11 +2118,15 @@ async function performAuthAction() {
   els.btnAuthAction.innerHTML = `<span class="loading-dots">${mode === 'login' ? t.msg_logging_in : t.msg_signing_up}</span>`;
   try {
     const actionType = mode === 'login' ? 'user_login' : 'register';
-    // --------------------------------------------------------------------------------------------------------------------
-    // ★セキュリティ修正推奨ポイント: GET通信ではなくPOST通信に変更することをお勧めします。
-    // 以下は現在のコードのままですが、API側を変更できる場合は以下のfetchをPOST化してください。
-    // --------------------------------------------------------------------------------------------------------------------
-    const res = await fetch(`${GAS_API_URL}?type=${actionType}&email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`);
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        type: actionType,
+        email: email,
+        password: pass
+      })
+    });
     const data = await res.json();
     if (data.success) {
       if (data.isAdmin) {
@@ -2469,7 +2483,17 @@ async function performAdminSearch() {
   if(!target) { alert("Please enter target email."); return; }
   els.btnAdminSearch.disabled = true; els.adminResultArea.innerHTML = `<div style="text-align:center; padding:20px;"><span class="loading-dots">Searching</span></div>`;
   try {
-    const res = await fetch(`${GAS_API_URL}?type=admin_search&adminUser=${encodeURIComponent(tempAdminCreds.user)}&adminPass=${encodeURIComponent(tempAdminCreds.pass)}&targetEmail=${encodeURIComponent(target)}&_t=${Date.now()}`);
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        type: 'admin_search',
+        adminUser: tempAdminCreds.user,
+        adminPass: tempAdminCreds.pass,
+        targetEmail: target,
+        _t: Date.now()
+      })
+    });
     const d = await res.json();
     if(d.success) {
       if(!d.history || d.history.length === 0) {
