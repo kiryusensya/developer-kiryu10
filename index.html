@@ -529,17 +529,9 @@ button, input, textarea { font-family: var(--font-stack); }
   opacity: 1;
 }
 
-/* 2. 完了画面のモーダル（画像2枚目の透明度） */
-.modal-sheet.is-success {
-  max-width: 850px; 
-  padding: 0;
-  background: rgba(255, 255, 255, 0.3) !important; /* 透け感強め */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 40px 100px rgba(0,0,0,0.2);
-}
-.modal-overlay.active .modal-sheet.is-success {
-  clip-path: inset(0% 0% 0% 0% round 24px);
+/* 2. ワイド画面のモーダル（確認・成功・エラー） */
+.modal-sheet.is-wide {
+  max-width: 900px;
 }
 
 /* ダークモード対応 */
@@ -547,19 +539,20 @@ button, input, textarea { font-family: var(--font-stack); }
   background: rgba(50, 50, 50, 0.7) !important;
   box-shadow: 0 30px 80px rgba(0,0,0,0.5);
 }
-[data-theme="dark"] .modal-sheet.is-success {
-  background: rgba(20, 20, 20, 0.3) !important;
-}
 
 /* アニメーション中に中身がはみ出ないようにフェードインさせる */
-.modal-overlay:not(.active) #inputPhase,
-.modal-overlay:not(.active) #successPhase {
+.modal-overlay:not(.active) #phase-input,
+.modal-overlay:not(.active) #phase-preview,
+.modal-overlay:not(.active) #phase-success,
+.modal-overlay:not(.active) #phase-error {
   opacity: 0 !important;
   transform: scale(0.95);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.modal-overlay.active #inputPhase,
-.modal-overlay.active #successPhase {
+.modal-overlay.active #phase-input,
+.modal-overlay.active #phase-preview,
+.modal-overlay.active #phase-success,
+.modal-overlay.active #phase-error {
   transition: opacity 0.5s ease 0.2s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
 }
 
@@ -577,7 +570,7 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 
 /* INPUT PHASE */
-#inputPhase { 
+#phase-input { 
   width: 100%; transition: opacity 0.3s ease; 
   text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; 
 }
@@ -609,80 +602,155 @@ button, input, textarea { font-family: var(--font-stack); }
   margin-top: 0; min-height: 0; position: absolute; bottom: -30px; left: 0; width: 100%; text-align: center;
 }
 
-/* SUCCESS LAYOUT */
-#successPhase { display: none; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease; }
-
-.success-container { display: flex; flex-direction: row; width: 100%; min-height: 480px; }
-.success-visual { flex: 1; position: relative; background: transparent; overflow: hidden; min-height: 300px; }
-.success-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-.success-details {
-  flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center;
-  text-align: left; color: var(--modal-text-main);
+/* --- 新しいモーダルレイアウト (画像18,19,20,21対応) --- */
+.new-modal-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-stack);
 }
-[data-theme="dark"] .success-details { color: #fff; }
-
-.success-badge { display: none !important; }
-
-.content-title { font-size: 28px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.2; color: var(--modal-text-main); }
-
-/* --- PRODUCT DISPLAY --- */
-.product-display { margin-bottom: 30px; }
-.product-name-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0 8px 8px 8px;
-  font-size: 20px; font-weight: 700; color: var(--modal-text-main);
+.modal-title-top {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 24px 0;
+    color: var(--modal-text-main);
 }
-[data-theme="dark"] .product-name-row { color: #fff; }
-
-/* --- INFO SECTION --- */
-#infoSection { transition: opacity 0.3s; }
-.message-title {
-  font-size: 20px; font-weight: 700; color: var(--modal-text-main);
-  margin-bottom: 12px; display: block; line-height: 1.4;
+.modal-body-flex {
+    display: flex;
+    gap: 30px;
+    align-items: stretch; /* 左右の高さを揃える */
 }
-[data-theme="dark"] .message-title { color: #fff; }
-
-.info-box {
-  background: rgba(128,128,128,0.05); border-radius: 16px; padding: 20px;
-  border: 1px solid rgba(128,128,128,0.1); margin-bottom: 30px; width: 100%;
+.modal-left-col {
+    width: 380px; /* 画像幅を拡大 */
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
 }
-.info-extra { 
-  font-size: 13px; opacity: 0.7; margin-top: 0; 
-  line-height: 1.6; white-space: pre-wrap; 
+.modal-left-col img {
+    width: 100%;
+    flex: 1; /* 高さを右側のコンテンツに合わせる */
+    border-radius: 16px;
+    object-fit: cover;
+    background: rgba(128,128,128,0.2);
+}
+.modal-thumb-title {
+    margin-top: 24px; /* 右側のボタンと揃える */
+    height: 48px; /* ボタンと同じ高さ */
+    line-height: 48px; /* 縦方向中央揃え */
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--modal-text-main);
+    text-align: center;
+    width: 100%;
+    white-space: nowrap; /* 改行しない */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.modal-right-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.modal-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--modal-text-main);
+    margin: 0 0 4px 0;
+}
+.modal-main-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--modal-text-main);
+    margin: 0 0 20px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.modal-grey-box {
+    background: rgba(128,128,128,0.1);
+    border-radius: 16px;
+    padding: 20px;
+    flex: 1; /* 下端を画像と揃えるために伸ばす */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.modal-box-text {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--modal-text-main);
+    margin: 0;
+    white-space: pre-wrap;
+}
+.modal-box-time {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--modal-text-main);
+    margin: 20px 0 0 0; /* 上のテキストと離す */
+}
+.modal-btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px; /* サムネイルタイトルと揃える */
+    height: 48px; /* サムネイルタイトルと揃える */
+}
+.btn-outline {
+    flex: 1;
+    height: 48px;
+    border-radius: 24px;
+    border: 2px solid var(--modal-text-main);
+    background: transparent;
+    color: var(--modal-text-main);
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-outline:hover {
+    background: rgba(128,128,128,0.1);
+}
+.btn-solid {
+    flex: 1;
+    height: 48px;
+    border-radius: 24px;
+    border: none;
+    background: var(--modal-text-main);
+    color: var(--bg-color);
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-solid:hover {
+    opacity: 0.8;
 }
 
-.action-row { display: flex; gap: 12px; margin-top: auto; width: 100%; }
-.btn-close-sub {
-  flex: 1; height: 50px; background: transparent;
-  border: 1px solid var(--btn-close-border); color: var(--btn-close-text);
-  border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
-  border-radius: 50px !important;
-  border: 1px solid var(--btn-close-border) !important;
-  font-family: var(--font-stack);
+.error-layout .error-title-color {
+    color: #FF3B30;
 }
-.btn-close-sub:hover { opacity: 0.6; }
-
-/* Buttons */
-.btn-action {
-  flex: 2; height: 50px; border-radius: 12px; border: none; font-weight: 700; 
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  border-radius: 50px !important;
-  text-decoration: none; transition: transform 0.2s; cursor: pointer;
-  font-family: var(--font-stack);
+.modal-body-error {
+    display: flex;
+    flex-direction: column;
 }
-.btn-action:hover { transform: translateY(-2px); }
+.modal-error-main-msg {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--modal-text-main);
+    margin: 0 0 20px 0;
+}
 
-#btnRedeem { background: var(--modal-text-main); color: var(--bg-color); }
-[data-theme="dark"] #btnRedeem { background: #fff; color: #000; }
+[data-theme="dark"] .error-layout .error-title-color { color: #FF453A; }
+[data-theme="dark"] .btn-outline { border-color: rgba(255,255,255,0.6); color: #fff; }
+[data-theme="dark"] .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+[data-theme="dark"] .btn-solid { background: #fff; color: #000; }
+[data-theme="dark"] .modal-grey-box { background: rgba(255,255,255,0.1); }
 
-#btnDownload { background: var(--primary); color: #fff; display: none; }
-#btnDownload:hover { box-shadow: 0 5px 20px rgba(0, 125, 255, 0.4); }
-
-/* PCでボタンを隠すためのCSS */
-@media (min-width: 769px) {
-    #btnDownload { display: none !important; }
-    #btnShowLibrary { display: none !important; }
+@media (max-width: 600px) {
+    .modal-body-flex { flex-direction: column; gap: 20px; }
+    .modal-left-col { width: 100%; }
 }
 
 /* --- ACCOUNT DROPDOWN STYLES --- */
@@ -729,8 +797,6 @@ button, input, textarea { font-family: var(--font-stack); }
 
 /* --- Mobile Adjustment (BLOCK) --- */
 #mobile-warning { display: none; }
-[data-theme="dark"] .btn-close-sub { border-color: rgba(255, 255, 255, 0.6) !important; color: #fff !important; }
-[data-theme="dark"] .btn-close-sub:hover { border-color: #fff !important; background: rgba(255, 255, 255, 0.1); }
 
 /* --- ヘッダーナビゲーション --- */
 .rgl-tab {
@@ -757,7 +823,7 @@ button, input, textarea { font-family: var(--font-stack); }
 #libraryModal .modal-sheet {
   background: var(--modal-bg-standard) !important;
   border-radius: 28px; box-shadow: 0 40px 100px rgba(0,0,0,0.3); width: 90%; max-width: 600px; padding: 40px; text-align: left;
-  clip-path: none !important; /* ライブラリはDynamic展開しない */
+  clip-path: none !important;
 }
 .lib-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
 .lib-header-left { display: flex; align-items: center; gap: 16px; }
@@ -771,7 +837,6 @@ button, input, textarea { font-family: var(--font-stack); }
 .lib-card-info { display: flex; flex-direction: column; overflow: hidden; justify-content: center; }
 .lib-card-meta { font-size: 12px; color: var(--modal-text-sub); font-weight: 600; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
 .lib-card-title { font-size: 18px; font-weight: 800; color: var(--modal-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
-.lib-card-arrow { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; opacity: 0.3; }
 
 @media (max-width: 480px) {
   #libraryModal .modal-sheet { width: 96%; padding: 20px; }
@@ -812,10 +877,6 @@ button, input, textarea { font-family: var(--font-stack); }
     .rgl-tabs { display: none !important; }
     .rgl-hero { padding: 30px 20px; min-height: 50vh; }
     .rgl-logo-text { font-size: 32px; }
-    .modal-sheet.is-success { max-width: 92%; border-radius: 24px; height: auto; max-height: 85vh; overflow-y: auto; }
-    .success-container { flex-direction: column; min-height: auto; }
-    .success-visual { width: 100%; height: 220px; flex: none; }
-    .success-details { padding: 24px; flex: auto; }
     .account-dropdown { position: fixed; top: 70px; right: 5%; width: 90%; left: auto; transform: translateY(-10px); }
     .account-dropdown.open { transform: translateY(0); }
 }
@@ -837,12 +898,12 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
   <div class="intro-container">
     <div class="intro-header"><span class="intro-brand">kiryu10 Developers</span><h2 class="intro-title">Select Language</h2></div>
     <div class="lang-grid">
-      <div class="lang-card font-jp" onclick="setInitialLanguage(&#39;ja&#39;)"><div class="lang-name">日本語</div></div>
-      <div class="lang-card font-en" onclick="setInitialLanguage(&#39;en&#39;)"><div class="lang-name">English</div></div>
-      <div class="lang-card font-cn-s" onclick="setInitialLanguage(&#39;zh&#39;)"><div class="lang-name">简体中文</div></div>
-      <div class="lang-card font-cn-t" onclick="setInitialLanguage(&#39;zh-TW&#39;)"><div class="lang-name">繁體中文</div></div>
-      <div class="lang-card font-kr" onclick="setInitialLanguage(&#39;ko&#39;)"><div class="lang-name">한국어</div></div>
-      <div class="lang-card font-ru" onclick="setInitialLanguage(&#39;ru&#39;)"><div class="lang-name">Русский</div></div>
+      <div class="lang-card font-jp" onclick="setInitialLanguage('ja')"><div class="lang-name">日本語</div></div>
+      <div class="lang-card font-en" onclick="setInitialLanguage('en')"><div class="lang-name">English</div></div>
+      <div class="lang-card font-cn-s" onclick="setInitialLanguage('zh')"><div class="lang-name">简体中文</div></div>
+      <div class="lang-card font-cn-t" onclick="setInitialLanguage('zh-TW')"><div class="lang-name">繁體中文</div></div>
+      <div class="lang-card font-kr" onclick="setInitialLanguage('ko')"><div class="lang-name">한국어</div></div>
+      <div class="lang-card font-ru" onclick="setInitialLanguage('ru')"><div class="lang-name">Русский</div></div>
     </div>
   </div>
 </div>
@@ -1034,44 +1095,69 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
 <div id="authModal" class="modal-overlay">
   <div class="modal-sheet" id="modalContainer">
     <div style="position:absolute; top:20px; right:20px; cursor:pointer; z-index:10;" id="modalCloseBtn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" size="24" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
-    <div id="inputPhase" style="display: flex; opacity: 1;">
+    
+    <div id="phase-input" style="display: flex; opacity: 1;">
       <h2 class="modal-title" data-translate="modal_title">アクティベーション</h2>
       <p class="modal-sub" data-translate="modal_sub">アクティベーションコードを使用すると、コンテンツにアクセスできます。アクティベーションコードを利用するには、以下の入力欄に入力してください。</p>
       <input type="text" id="activationCode" class="code-field" placeholder="アクティベーションコード" autocomplete="off">
       <button id="btnConfirm" class="btn-primary" data-translate="modal_btn_auth">確認</button>
       <div id="statusContainer"></div>
     </div>
-    <div id="successPhase" style="display: none; opacity: 0;">
-      <div class="success-container">
-        <div class="success-visual">
-          <img id="successImage" src="support.html" alt="Content">
-        </div>
-        <div class="success-details">
-          <div style="flex:1;">
-            <div class="success-badge" id="successBadge" style="display:none;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" size="14" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"></path></svg> <span data-translate="success_badge">コードが認証されました。</span></div>
-            <h3 id="successTitle" class="content-title"></h3>
-            <p id="successSubText" style="color:var(--modal-text-sub); margin:-15px 0 16px 2px; font-size:13px; line-height:1.5;"></p>
-            <div id="infoSection" style="display: block;">
-               <div id="successNameDisplay" class="message-title">...</div>
-               <div class="info-box"><div id="successExtraInfo" class="info-extra"></div></div>
-            </div>
-            <div id="productDisplay" class="product-display" style="display:none;">
-               <div class="product-name-row"><span id="productName">...</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" size="26" style="color:var(--rgl-green);" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"></path></svg></div>
-            </div>
-          </div>
-          
-          <div style="margin-top: auto; padding-top: 10px;">
-            <div id="redeemErrorMsg" style="color:#FF3B30; font-size:13px; font-weight:700; text-align:center; margin-bottom:16px; display:none;"></div>
-            <div class="action-row" style="margin-top: 0;">
-              <button id="modalCloseSub" class="btn-close-sub" data-translate="btn_close">閉じる</button>
-              <button id="btnRedeem" class="btn-action" style="display: flex;"><span data-translate="btn_continue">認証する</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" size="18" class="lucide lucide-arrow-right"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button>
-              <a href="index.html" id="btnDownload" class="btn-action" style="display:none;"></a>
-              <button id="btnOpenLibraryMobile" class="btn-action" style="display:none; background: var(--primary); color: white;"><span data-translate="btn_open_library">ライブラリを開く</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="package-open" aria-hidden="true" size="18" class="lucide lucide-package-open"><path d="M12 22v-9"></path><path d="m2.9 14.4 8.1 4.5 8.1-4.5"></path><path d="m19 5.3-7 4-7-4"></path><path d="m12 9.3 8.1 4.6"></path><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg></button>
-            </div>
-          </div>
 
+    <div id="phase-preview" style="display: none; opacity: 0;" class="new-modal-layout">
+        <h2 class="modal-title-top" data-translate="preview_title">コンテンツ確認</h2>
+        <div class="modal-body-flex">
+            <div class="modal-left-col">
+                <img id="previewImage" src="" alt="Thumbnail">
+                <div id="previewTitleUnderImg" class="modal-thumb-title"></div>
+            </div>
+            <div class="modal-right-col">
+                <p class="modal-label" data-translate="preview_desc">続行すると以下のコンテンツを受け取ります:</p>
+                <h3 id="previewTitle" class="modal-main-title"></h3>
+                <div class="modal-grey-box">
+                    <p class="modal-box-text" id="previewWarningText"></p>
+                </div>
+                <div class="modal-btn-row">
+                    <button class="btn-outline" id="btnPreviewClose" data-translate="btn_close">閉じる</button>
+                    <button class="btn-solid" id="btnPreviewRedeem" data-translate="btn_continue">認証する</button>
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
+
+    <div id="phase-success" style="display: none; opacity: 0;" class="new-modal-layout">
+        <h2 class="modal-title-top" data-translate="success_title_final">認証成功!!</h2>
+        <div class="modal-body-flex">
+            <div class="modal-left-col">
+                <img id="successImage2" src="" alt="Thumbnail">
+                <div id="successTitleUnderImg" class="modal-thumb-title"></div>
+            </div>
+            <div class="modal-right-col">
+                <p class="modal-label" data-translate="success_desc">このコードで以下のコンテンツが認証されました:</p>
+                <h3 id="successBundleName" class="modal-main-title"></h3>
+                <div class="modal-grey-box">
+                    <p class="modal-box-text" id="successMessageText"></p>
+                    <p class="modal-box-time" id="successTime"></p>
+                </div>
+                <div class="modal-btn-row">
+                    <button class="btn-outline" style="width: 100%; flex: none;" id="btnSuccessClose" data-translate="btn_close">閉じる</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="phase-error" style="display: none; opacity: 0;" class="new-modal-layout error-layout">
+        <h2 class="modal-title-top error-title-color">⚠エラー <span id="errorCodeText"></span></h2>
+        <div class="modal-body-error">
+            <h3 id="errorMessage" class="modal-error-main-msg"></h3>
+            <div class="modal-grey-box" id="errorInfoBox" style="margin-bottom: 24px;">
+                <p class="modal-box-text" id="errorSubMessage"></p>
+                <p class="modal-box-time" id="errorTime"></p>
+            </div>
+            <div class="modal-btn-row">
+                <button class="btn-outline" style="width: 100%; flex: none;" id="btnErrorClose" data-translate="btn_close">閉じる</button>
+            </div>
+        </div>
     </div>
   </div>
 </div>
@@ -1106,6 +1192,34 @@ const formatDisplayCode = (code) => {
   return res;
 };
 
+// 現在時刻を取得・フォーマット
+function getFormattedCurrentTime(lang) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const h = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    if (['ja', 'zh', 'zh-TW'].includes(lang)) {
+        return `${y}年${m}月${d}日 ${h}:${min}:${s} JST`;
+    } else if (lang === 'ko') {
+        return `${y}년 ${m}월 ${d}일 ${h}:${min}:${s} KST`;
+    } else {
+        return `${y}/${m}/${d} ${h}:${min}:${s}`;
+    }
+}
+
+// ランダムなエラーコードの生成
+function generateErrorCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+';
+    let code = '';
+    for(let i=0; i<20; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code + '.' + Math.floor(Math.random()*10) + '.' + Math.floor(Math.random()*10);
+}
+
 const TRANSLATIONS={
  ja:{
   header_brand:"kr_開発者版", hero_title:"個人認証センター", hero_sub:"アクセス権限とリソースの管理。プロダクトコードを入力してコンテンツを解除してください。",
@@ -1115,10 +1229,14 @@ const TRANSLATIONS={
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました", 
   msg_already_owned: "このコンテンツは既に所有しています。", msg_already_owned_mobile: "このコンテンツは既に所有しています。ライブラリからダウンロードしてください。", btn_open_library: "ライブラリを開く",
   success_badge:"コードが認証されました。",
-  success_title_preview:"コンテンツの確認", 
-  msg_preview_sub:"続行すると以下のコンテンツを受け取ります:", 
-  success_title_final:"認証成功!!", 
-  msg_success_sub: "このコードで以下のコンテンツが認証されました:",
+  preview_title: "コンテンツ確認",
+  preview_desc: "続行すると以下のコンテンツを受け取ります:",
+  success_title_final: "認証成功!!",
+  success_desc: "このコードで以下のコンテンツが認証されました:",
+  success_msg_box: "コードが正常に認証されました。\n左ライブラリメニューからコンテンツを選択してダウンロードしてください。",
+  error_used_msg: "このコードは使用済みです",
+  error_owned_msg: "この %s は所有しているようです。",
+  error_owned_sub: "左ライブラリメニューからコンテンツを選択してダウンロードしてください。",
   btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード",
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント", lib_updating: "読み込み中",
@@ -1139,10 +1257,14 @@ const TRANSLATIONS={
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred", 
   msg_already_owned: "You already own this content.", msg_already_owned_mobile: "You already own this content. Please download it from your library.", btn_open_library: "Open Library",
   success_badge:"Code Verified",
-  success_title_preview:"Confirm Content", 
-  msg_preview_sub: "The code will activate the following contents:", 
-  success_title_final:"Activation Successful!!", 
-  msg_success_sub: "The code has activated the following contents:",
+  preview_title: "Confirm Content",
+  preview_desc: "You will receive the following contents by continuing:",
+  success_title_final: "Activation Successful!!",
+  success_desc: "The following contents have been activated by this code:",
+  success_msg_box: "Code successfully verified.\nPlease select the content from the left library menu to download.",
+  error_used_msg: "This code has already been used.",
+  error_owned_msg: "You seem to already own %s.",
+  error_owned_sub: "Please select the content from the left library menu to download.",
   btn_close:"Close",btn_continue:"Redeem",btn_download:"Download",
   footer_admin:"Enforcement Administrator",
   menu_login: "Login", menu_account: "Account", lib_updating: "Loading",
@@ -1163,10 +1285,14 @@ const TRANSLATIONS={
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
   msg_already_owned: "您已经拥有此内容。", msg_already_owned_mobile: "您已经拥有此内容。请从您的库中下载。", btn_open_library: "打开库",
   success_badge:"代码已检查",
-  success_title_preview:"确认内容", 
-  msg_preview_sub: "该代码将激活以下内容:", 
-  success_title_final:"激活成功!!", 
-  msg_success_sub: "该代码已激活以下内容:",
+  preview_title: "确认内容",
+  preview_desc: "继续操作您将收到以下内容：",
+  success_title_final: "激活成功!!",
+  success_desc: "该代码已激活以下内容:",
+  success_msg_box: "代码已成功验证。\n请从左侧库菜单中选择要下载的内容。",
+  error_used_msg: "该代码已被使用。",
+  error_owned_msg: "您似乎已经拥有 %s。",
+  error_owned_sub: "请从左侧库菜单中选择要下载的内容。",
   btn_close:"关闭",btn_continue:"兑换",btn_download:"下载", 
   footer_admin:"系统管理长",
   menu_login: "登录", menu_account: "账户", lib_updating: "正在加载",
@@ -1187,10 +1313,14 @@ const TRANSLATIONS={
   msg_invalid:"該代碼無效",msg_used:"該代碼已被使用",msg_error:"錯誤", 
   msg_already_owned: "您已經擁有此內容。", msg_already_owned_mobile: "您已經擁有此內容。請從您的庫中下載。", btn_open_library: "打開庫",
   success_badge:"代碼已檢查",
-  success_title_preview:"確認內容", 
-  msg_preview_sub: "該代碼將激活以下內容:", 
-  success_title_final:"激活成功!!", 
-  msg_success_sub: "該程式碼已啟動以下內容:",
+  preview_title: "確認內容",
+  preview_desc: "繼續操作您將收到以下內容：",
+  success_title_final: "激活成功!!",
+  success_desc: "該代碼已激活以下內容:",
+  success_msg_box: "代碼已成功驗證。\n請從左側庫菜單中選擇要下載的內容。",
+  error_used_msg: "該代碼已被使用。",
+  error_owned_msg: "您似乎已經擁有 %s。",
+  error_owned_sub: "請從左側庫菜單中選擇要下載的內容。",
   btn_close:"關閉",btn_continue:"兌換",btn_download:"下載", 
   footer_admin:"系統管理長",
   menu_login: "登入", menu_account: "帳戶", lib_updating: "載入中",
@@ -1211,10 +1341,14 @@ const TRANSLATIONS={
   msg_invalid:"유효하지 않은 코드입니다.",msg_used:"이미 사용된 코드입니다.",msg_error:"오류", 
   msg_already_owned: "이미 이 콘텐츠를 소유하고 있습니다.", msg_already_owned_mobile: "이미 이 콘텐츠를 소유하고 있습니다. 라이브러리에서 다운로드하세요.", btn_open_library: "라이브러리 열기",
   success_badge:"코드 인증됨",
-  success_title_preview:"콘텐츠 확인", 
-  msg_preview_sub: "해당 코드를 실행하면 다음 콘텐츠가 활성화됩니다:", 
-  success_title_final:"활성화 완료!!", 
-  msg_success_sub: "해당 코드가 다음 콘텐츠를 활성화했습니다:",
+  preview_title: "콘텐츠 확인",
+  preview_desc: "계속 진행하면 다음 콘텐츠를 받게 됩니다:",
+  success_title_final: "활성화 완료!!",
+  success_desc: "해당 코드가 다음 콘텐츠를 활성화했습니다:",
+  success_msg_box: "코드가 성공적으로 인증되었습니다.\n왼쪽 라이브러리 메뉴에서 다운로드할 콘텐츠를 선택하세요.",
+  error_used_msg: "이미 사용된 코드입니다.",
+  error_owned_msg: "이미 %s 콘텐츠를 소유하고 있는 것 같습니다.",
+  error_owned_sub: "왼쪽 라이브러리 메뉴에서 다운로드할 콘텐츠를 선택하세요.",
   btn_close:"닫기",btn_continue:"사용",btn_download:"다운로드", 
   footer_admin:"시스템 관리자",
   menu_login: "로그인", menu_account: "계정", lib_updating: "로딩 중",
@@ -1235,10 +1369,14 @@ const TRANSLATIONS={
   msg_invalid:"Неверный код",msg_used:"Этот код уже был использован.",msg_error:"Ошибка", 
   msg_already_owned: "Вы уже владеете этим контентом.", msg_already_owned_mobile: "Вы уже владеете этим контентом. Пожалуйста, загрузите его из вашей библиотеки.", btn_open_library: "Открыть библиотеку",
   success_badge:"Подтверждено", 
-  success_title_preview:"Проверка контента", 
-  msg_preview_sub: "Данный код активирует следующее содержимое:", 
-  success_title_final:"Успешно!!", 
-  msg_success_sub: "Код активировал следующее содержимое:",
+  preview_title: "Подтверждение контента",
+  preview_desc: "Вы получите следующее содержимое:",
+  success_title_final: "Успешно!!",
+  success_desc: "Код активировал следующее содержимое:",
+  success_msg_box: "Код успешно проверен.\nПожалуйста, выберите контент из левого меню библиотеки для загрузки.",
+  error_used_msg: "Этот код уже был использован.",
+  error_owned_msg: "Похоже, вы уже владеете %s.",
+  error_owned_sub: "Пожалуйста, выберите контент из левого меню библиотеки для загрузки.",
   btn_close:"Закрыть",btn_continue:"Погасить",btn_download:"Скачать", 
   footer_admin:"Администратор",
   menu_login: "Вход", menu_account: "Учетная запись", lib_updating: "Загрузка",
@@ -1260,12 +1398,8 @@ if(!TRANSLATIONS.ru) TRANSLATIONS.ru = TRANSLATIONS.en;
 
 const els={
  overlay: gId('langSelectionOverlay'), main: gId('mainContainer'), 
- authModal: gId('authModal'), modalCon: gId('modalContainer'), openAuth: null, closeAuth: gId('modalCloseBtn'), closeSub: gId('modalCloseSub'),
- inputPh: gId('inputPhase'), successPh: gId('successPhase'), code: gId('activationCode'), confirm: gId('btnConfirm'), status: gId('statusContainer'),
- sImg: gId('successImage'), sTitle: gId('successTitle'), sSubText: gId('successSubText'), sProdName: gId('productName'), sProdDisplay: gId('productDisplay'), 
- sInfoSec: gId('infoSection'), sNameDisp: gId('successNameDisplay'), sExtra: gId('successExtraInfo'), sBadge: gId('successBadge'), 
- redeemErrorMsg: gId('redeemErrorMsg'),
- btnRedeem: gId('btnRedeem'), btnDownload: gId('btnDownload'), btnOpenLibraryMobile: gId('btnOpenLibraryMobile'),
+ authModal: gId('authModal'), modalCon: gId('modalContainer'), openAuth: null, closeAuth: gId('modalCloseBtn'), 
+ code: gId('activationCode'), confirm: gId('btnConfirm'), status: gId('statusContainer'),
  langWrapper: gId('customLangWrapper'), langTrigger: gId('langTrigger'), langMenu: gId('langMenu'), currentLangLabel: gId('currentLangLabel'),
  accountDropdown: gId('accountDropdown'), openAccount: gId('btnOpenAccount'),
  loggedInView: gId('loggedInView'), loggedOutView: gId('loggedOutView'), displayUserId: gId('displayUserId'), displayUserEmail: gId('displayUserEmail'),
@@ -1283,7 +1417,29 @@ const els={
  mobileNav: gId('mobileNav'),
  mobileMenuCloseBtn: gId('mobileMenuCloseBtn'),
  mobileLangTrigger: gId('mobileLangTrigger'),
- mobileCurrentLangLabel: gId('mobileCurrentLangLabel')
+ mobileCurrentLangLabel: gId('mobileCurrentLangLabel'),
+
+ phaseInput: gId('phase-input'),
+ phasePreview: gId('phase-preview'),
+ phaseSuccess: gId('phase-success'),
+ phaseError: gId('phase-error'),
+ previewImage: gId('previewImage'),
+ previewTitleUnderImg: gId('previewTitleUnderImg'),
+ previewTitle: gId('previewTitle'),
+ previewWarningText: gId('previewWarningText'),
+ btnPreviewClose: gId('btnPreviewClose'),
+ btnPreviewRedeem: gId('btnPreviewRedeem'),
+ successImage: gId('successImage2'),
+ successTitleUnderImg: gId('successTitleUnderImg'),
+ successBundleName: gId('successBundleName'),
+ successMessageText: gId('successMessageText'),
+ successTime: gId('successTime'),
+ btnSuccessClose: gId('btnSuccessClose'),
+ errorCodeText: gId('errorCodeText'),
+ errorMessage: gId('errorMessage'),
+ errorSubMessage: gId('errorSubMessage'),
+ errorTime: gId('errorTime'),
+ btnErrorClose: gId('btnErrorClose')
 };
 
 const formatCodeInput = (val) => {
@@ -1373,17 +1529,12 @@ function setupEventListeners() {
         logout();
       });
   }
-  
-  if (els.btnOpenLibraryMobile) {
-      els.btnOpenLibraryMobile.addEventListener('click', (e) => {
-          e.preventDefault();
-          closeAuthModal(); 
-          els.libraryModal.classList.add('active'); 
-      });
-  }
 
   setListener(els.closeAuth, 'click', closeAuthModal);
-  setListener(els.closeSub, 'click', closeAuthModal);
+  setListener(els.btnPreviewClose, 'click', closeAuthModal);
+  setListener(els.btnSuccessClose, 'click', closeAuthModal);
+  setListener(els.btnErrorClose, 'click', closeAuthModal);
+
   if(els.authModal) setListener(els.authModal, 'click', (e) => { if(e.target === els.authModal) closeAuthModal(); });
 
   setListener(els.adminCloseBtn, 'click', () => els.adminModal.classList.remove('active'));
@@ -1400,7 +1551,6 @@ function setupEventListeners() {
      e.stopPropagation(); 
      
      if(window.innerWidth > 768 && currentHeroContext === 'owned' && selectedHeroItem) {
-        // ★修正: 解禁時間前のカウントダウン中はクリックを無効化
         if (selectedHeroItem.releaseDateIso) {
             const releaseDate = new Date(selectedHeroItem.releaseDateIso);
             if (releaseDate > new Date()) {
@@ -1484,8 +1634,7 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       // ★要望により自動で確認処理を走らせる
-       performAuth(els.code.value); 
+       // User Corrected: Stopped automatic authentication.
      }
    }, 800);
  }
@@ -1554,135 +1703,52 @@ function updateLanguage(lang){
   updateAccountUI();
 }
 
-function formatDateByLang(dateStr, lang) {
-  if (!dateStr) return "";
-  const parts = dateStr.replace(/-/g, '/').split('/');
-  if (parts.length !== 3) return dateStr; 
-  const y = parts[0]; const m = parseInt(parts[1], 10); const d = parseInt(parts[2], 10);
-  const mm = m.toString().padStart(2, '0'); const dd = d.toString().padStart(2, '0');
-  const enMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const ruMonths = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
-  switch (lang) {
-    case 'ja': case 'zh': case 'zh-TW': return `${y}年${mm}月${dd}日`;
-    case 'ko': return `${y}년 ${mm}월 ${dd}일`;
-    case 'ru': return `${dd} ${ruMonths[m - 1]} ${y}`;
-    case 'en': default: return `${enMonths[m - 1]} ${dd}, ${y}`;
-  }
-}
-
 function openAuthModal(){ els.authModal.classList.add('active'); resetAuthModal(); els.code.focus(); }
-function closeAuthModal(){ els.authModal.classList.remove('active'); setTimeout(()=>els.modalCon.classList.remove('is-success'), 500); }
+function closeAuthModal(){ els.authModal.classList.remove('active'); setTimeout(()=>els.modalCon.classList.remove('is-wide'), 500); }
 
 let currentAuthRequestId = 0;
+let currentContentData = {};
+let currentAuthTime = "";
 
 function resetAuthModal(){
   currentAuthRequestId++; 
-  els.inputPh.style.display='flex'; els.inputPh.style.opacity='1';
-  els.successPh.style.display='none'; els.successPh.style.opacity='0';
+  els.phaseInput.style.display = 'flex'; els.phaseInput.style.opacity = '1';
+  els.phasePreview.style.display = 'none'; els.phasePreview.style.opacity = '0';
+  els.phaseSuccess.style.display = 'none'; els.phaseSuccess.style.opacity = '0';
+  els.phaseError.style.display = 'none'; els.phaseError.style.opacity = '0';
+  els.modalCon.classList.remove('is-wide');
+
   els.code.value=""; els.code.disabled=false; els.confirm.disabled=false;
   els.confirm.textContent=TRANSLATIONS[CURRENT_LANG].modal_btn_auth;
-  els.status.innerHTML=""; els.modalCon.classList.remove('is-success'); els.sImg.src="";
-  els.sTitle.style.display = ''; 
-  els.sTitle.style.color = "var(--modal-text-main)"; 
-  els.sSubText.innerHTML = ''; 
-  els.sInfoSec.style.display = 'block'; els.sProdDisplay.style.display = 'none'; 
-  els.sBadge.classList.remove('visible');
+  els.status.innerHTML=""; 
   
-  if (els.redeemErrorMsg) els.redeemErrorMsg.style.display = 'none';
-  if (els.btnOpenLibraryMobile) els.btnOpenLibraryMobile.style.display = 'none';
-  
-  els.btnRedeem.disabled = false;
-  els.btnRedeem.style.display = 'flex';
-  els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${TRANSLATIONS[CURRENT_LANG].btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`; 
-  els.btnDownload.style.display = 'none';
-  const newBtn = els.btnRedeem.cloneNode(true);
-  if(els.btnRedeem.parentNode) els.btnRedeem.parentNode.replaceChild(newBtn, els.btnRedeem);
-  els.btnRedeem = newBtn;
-  els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${TRANSLATIONS[CURRENT_LANG].btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
 function showMobileItemDetail(item) {
     if(modalDownloadTimer) clearInterval(modalDownloadTimer); 
-
+    
     els.authModal.classList.add('active');
-    
     currentAuthRequestId++;
-    els.inputPh.style.display='none'; 
-    els.successPh.style.display='block'; 
-    setTimeout(() => els.successPh.style.opacity='1', 50);
-    els.modalCon.classList.add('is-success');
+    els.phaseInput.style.display='none'; 
+    els.phasePreview.style.display='none';
+    els.phaseError.style.display='none';
     
-    els.sBadge.classList.remove('visible');
-    els.sBadge.style.display = 'none';
+    els.phaseSuccess.style.display='block'; 
+    setTimeout(() => els.phaseSuccess.style.opacity='1', 50);
+    els.modalCon.classList.add('is-wide');
     
     const t = TRANSLATIONS[CURRENT_LANG];
-    els.sTitle.style.display = 'block'; 
-    els.sTitle.textContent = t.success_title_final; 
-    els.sTitle.style.color = "var(--modal-text-main)";
     
-    els.sSubText.innerHTML = t.msg_success_sub || "Code verified.";
-    
-    els.sProdName.textContent = item.title;
-    els.sProdDisplay.style.display = 'block';
-    els.sInfoSec.style.display = 'none'; 
-    
-    if (els.redeemErrorMsg) els.redeemErrorMsg.style.display = 'none';
-    if (els.btnOpenLibraryMobile) els.btnOpenLibraryMobile.style.display = 'none';
+    els.successBundleName.textContent = item.title;
+    els.successTitleUnderImg.textContent = item.title;
+    els.successTime.textContent = getFormattedCurrentTime(CURRENT_LANG);
 
     if(item.imageUrl && item.imageUrl.startsWith("http")){ 
-        els.sImg.src=item.imageUrl; 
+        els.successImage.src=item.imageUrl; 
     } else { 
-        els.sImg.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; 
+        els.successImage.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; 
     }
-    
-    els.btnRedeem.style.display = 'none'; 
-    els.btnDownload.style.display = 'flex';
-    
-    const startModalTimer = () => {
-        const now = new Date();
-        const releaseDate = item.releaseDateIso ? new Date(item.releaseDateIso) : null;
-        
-        if (releaseDate && releaseDate > now) {
-            const diff = releaseDate - now;
-            const oneDay = 24 * 60 * 60 * 1000;
-            
-            els.btnDownload.style.pointerEvents = 'none';
-            els.btnDownload.style.opacity = '0.6';
-            els.btnDownload.removeAttribute('href'); 
-            // ★修正: カウントダウン中のクリックを無効化
-            els.btnDownload.onclick = (e) => { e.preventDefault(); };
-
-            if (diff > oneDay) {
-               const y = releaseDate.getFullYear();
-               const m = releaseDate.getMonth() + 1;
-               const d = releaseDate.getDate();
-               els.btnDownload.innerHTML = `<span>${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}</span>`;
-            } else {
-               const h = Math.floor(diff / (1000 * 60 * 60));
-               const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-               const s = Math.floor((diff % (1000 * 60)) / 1000);
-               const hh = String(h).padStart(2, '0');
-               const mm = String(m).padStart(2, '0');
-               const ss = String(s).padStart(2, '0');
-               els.btnDownload.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
-            }
-        } else {
-            if(modalDownloadTimer) clearInterval(modalDownloadTimer);
-            els.btnDownload.style.pointerEvents = 'auto';
-            els.btnDownload.style.opacity = '1';
-            els.btnDownload.href = item.url;
-            els.btnDownload.onclick = null; // ★修正: 解禁時はクリック無効化を解除
-            els.btnDownload.target = "_blank";
-            const btnLabel = item.buttonLabel || t.btn_hero_download || "Download";
-            const btnIcon = item.icon || "download";
-            els.btnDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${btnIcon}" aria-hidden="true" size="18" class="lucide lucide-${btnIcon}"></svg>`;
-            try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
-        }
-    };
-
-    startModalTimer();
-    modalDownloadTimer = setInterval(startModalTimer, 1000);
     
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
@@ -1700,8 +1766,9 @@ async function performAuth(code, mode = 'check') {
     els.confirm.innerHTML = `<span class="loading-dots">${t.msg_verifying}</span>`;
     els.status.innerHTML = "";
   } else if (mode === 'redeem') {
-    els.btnRedeem.disabled = true;
-    els.btnRedeem.innerHTML = `${spinnerHtml}`;
+    els.btnPreviewRedeem.disabled = true;
+    els.btnPreviewRedeem.innerHTML = `${spinnerHtml}`;
+    currentAuthTime = getFormattedCurrentTime(CURRENT_LANG);
   }
 
   try {
@@ -1721,26 +1788,37 @@ async function performAuth(code, mode = 'check') {
 
     if (mode === 'check') {
       if (d.success) {
+        currentContentData = {
+            bundleLabel: d.bundleLabel || d.message || "Unknown Bundle",
+            title: d.message || d.bundleLabel || "Unknown Title",
+            imageUrl: d.imageUrl || "https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"
+        };
+        
         els.confirm.innerHTML = `<i data-lucide="check"></i>`;
         try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         await new Promise(r => setTimeout(r, 600));
         if (thisRequestId !== currentAuthRequestId) return;
-        els.modalCon.classList.add('is-success');
-        els.inputPh.style.opacity = '0';
+        
+        els.previewImage.src = currentContentData.imageUrl;
+        els.previewTitleUnderImg.textContent = currentContentData.title;
+        els.previewTitle.textContent = currentContentData.title;
+        els.previewWarningText.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : "⚠注意\nPC、iOS、iPad、またはAndroid版のいずれかのMinecraft Bedrock版が必要です。\nコンソール版にはRealmsのサブスクリプションが必要です。".replace(/\n/g, '<br>');
+        
+        els.modalCon.classList.add('is-wide');
+        els.phaseInput.style.opacity = '0';
         setTimeout(() => {
           if (thisRequestId !== currentAuthRequestId) return;
-          els.inputPh.style.display = 'none';
-          els.successPh.style.display = 'block';
-          setTimeout(() => els.successPh.style.opacity = '1', 50);
+          els.phaseInput.style.display = 'none';
+          els.phasePreview.style.display = 'block';
+          setTimeout(() => els.phasePreview.style.opacity = '1', 50);
         }, 400);
-        setupPreviewUI(d, t);
-        const newBtn = els.btnRedeem.cloneNode(true);
-        els.btnRedeem.parentNode.replaceChild(newBtn, els.btnRedeem);
-        els.btnRedeem = newBtn;
-        els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
-        try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
-        els.btnRedeem.disabled = false;
-        els.btnRedeem.addEventListener('click', (e) => { 
+        
+        els.btnPreviewRedeem.disabled = false;
+        els.btnPreviewRedeem.innerHTML = t.btn_continue;
+        const newBtn = els.btnPreviewRedeem.cloneNode(true);
+        els.btnPreviewRedeem.parentNode.replaceChild(newBtn, els.btnPreviewRedeem);
+        els.btnPreviewRedeem = newBtn;
+        els.btnPreviewRedeem.addEventListener('click', (e) => { 
             e.preventDefault();
             performAuth(safeCode, 'redeem'); 
         });
@@ -1759,7 +1837,20 @@ async function performAuth(code, mode = 'check') {
            };
            showMobileItemDetail(item);
         } else {
-           transitionToFinal(d);
+           els.successImage.src = currentContentData.imageUrl;
+           els.successTitleUnderImg.textContent = currentContentData.title;
+           els.successBundleName.textContent = currentContentData.bundleLabel;
+           els.successMessageText.innerHTML = t.success_msg_box.replace(/\n/g, '<br>');
+           els.successTime.textContent = currentAuthTime;
+           
+           els.phasePreview.style.opacity = '0';
+           setTimeout(() => {
+             if (thisRequestId !== currentAuthRequestId) return;
+             els.phasePreview.style.display = 'none';
+             els.phaseSuccess.style.display = 'block';
+             setTimeout(() => els.phaseSuccess.style.opacity = '1', 50);
+           }, 400);
+
            if (currentUser.history.length > 0) {
               updateHeroView(currentUser.history[0], true); 
            }
@@ -1767,33 +1858,40 @@ async function performAuth(code, mode = 'check') {
       } else {
         try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         
-        let errorText = t.msg_error;
-        let hideRedeemButton = false;
+        const randomErrorCode = generateErrorCode();
+        els.errorCodeText.textContent = randomErrorCode;
+        els.errorTime.textContent = currentAuthTime;
+
+        let errorMainText = "";
+        let errorSubText = "";
         
         if (d.isAlreadyOwned || d.message === "Already owned") {
-            if (window.innerWidth <= 768) {
-                errorText = t.msg_already_owned_mobile || "このコンテンツは既に所有しています。ライブラリからダウンロードしてください。";
-                if(els.btnOpenLibraryMobile) els.btnOpenLibraryMobile.style.display = 'flex';
-            } else {
-                errorText = t.msg_already_owned || "このコンテンツは既に所有しています。";
-            }
-            hideRedeemButton = true;
+            errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
+            errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
         } else if (d.message === "This code has already been used.") {
-            errorText = t.msg_used;
-            hideRedeemButton = true;
+            errorMainText = t.error_used_msg || t.msg_used;
+            errorSubText = "";
+        } else {
+            errorMainText = t.msg_error;
+            errorSubText = d.message || "";
         }
         
-        if (els.redeemErrorMsg) {
-            els.redeemErrorMsg.textContent = errorText;
-            els.redeemErrorMsg.style.display = 'block';
+        els.errorMessage.textContent = errorMainText;
+        if(errorSubText) {
+            els.errorSubMessage.innerHTML = errorSubText;
+            els.errorSubMessage.style.display = 'block';
+        } else {
+            els.errorSubMessage.innerHTML = "";
+            els.errorSubMessage.style.display = 'none';
         }
 
-        if (hideRedeemButton) {
-            els.btnRedeem.style.display = 'none';
-        } else {
-            els.btnRedeem.disabled = false;
-            els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
-        }
+        els.phasePreview.style.opacity = '0';
+        setTimeout(() => {
+          if (thisRequestId !== currentAuthRequestId) return;
+          els.phasePreview.style.display = 'none';
+          els.phaseError.style.display = 'block';
+          setTimeout(() => els.phaseError.style.opacity = '1', 50);
+        }, 400);
       }
     }
   } catch (e) {
@@ -1806,53 +1904,22 @@ async function performAuth(code, mode = 'check') {
        else if (msg.includes("Invalid") || msg.includes("disabled")) errorText = t.msg_invalid;
        els.status.innerHTML = `<span style="color:#FF3B30; font-size:13px; font-weight:700;">${errorText}</span>`;
     } else {
-      if (els.redeemErrorMsg) {
-          els.redeemErrorMsg.textContent = t.msg_error;
-          els.redeemErrorMsg.style.display = 'block';
-      }
-      els.btnRedeem.disabled = false;
-      els.btnRedeem.style.display = 'flex';
-      els.btnRedeem.innerHTML = `<span data-translate="btn_continue">${t.btn_continue}</span> <i data-lucide="arrow-right" size="18"></i>`;
-      try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+       els.btnPreviewRedeem.disabled = false;
+       els.btnPreviewRedeem.innerHTML = t.btn_continue;
+       els.errorCodeText.textContent = generateErrorCode();
+       els.errorTime.textContent = currentAuthTime;
+       els.errorMessage.textContent = t.msg_error;
+       els.errorSubMessage.innerHTML = "";
+       els.errorSubMessage.style.display = 'none';
+       
+       els.phasePreview.style.opacity = '0';
+       setTimeout(() => {
+         els.phasePreview.style.display = 'none';
+         els.phaseError.style.display = 'block';
+         setTimeout(() => els.phaseError.style.opacity = '1', 50);
+       }, 400);
     }
   }
-}
-
-function setupPreviewUI(d, t) {
- els.sBadge.classList.remove('visible'); els.btnRedeem.style.display = 'flex'; 
- els.sProdDisplay.style.display = 'none'; els.sInfoSec.style.display = 'block'; els.sTitle.style.display = '';                      
- els.sTitle.textContent = t.success_title_preview; 
- els.sTitle.style.color = "var(--modal-text-main)";
- els.sSubText.innerHTML = t.msg_preview_sub || "Please verify content";
- els.sProdName.textContent = d.bundleLabel; els.sNameDisp.textContent = d.message;            
- els.sExtra.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : ""; 
- if(d.imageUrl && d.imageUrl.startsWith("http")){ els.sImg.src=d.imageUrl; } else { els.sImg.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; } 
- try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
-}
-
-function transitionToFinal(d) {
-  const t = TRANSLATIONS[CURRENT_LANG];
-  els.btnRedeem.style.display = 'none'; 
-  
-  els.btnDownload.style.display = 'flex';
-  els.btnDownload.style.pointerEvents = 'auto';
-  els.btnDownload.style.opacity = '1';
-  els.btnDownload.href = d.actionUrl;
-  els.btnDownload.target = "_blank";
-  const btnLabel = d.buttonLabel || t.btn_hero_download || "Download";
-  const btnIcon = d.btnIcon || "download";
-  els.btnDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${btnIcon}" aria-hidden="true" size="18" class="lucide lucide-${btnIcon}"></svg>`;
-
-  els.sInfoSec.style.display = 'none'; 
-  els.sBadge.classList.remove('visible'); 
-  els.sBadge.style.display = 'none';
-  els.sTitle.style.display = 'block'; 
-  els.sTitle.textContent = t.success_title_final; 
-  els.sTitle.style.color = "var(--modal-text-main)";
-  els.sSubText.innerHTML = t.msg_success_sub || "Code verified.";
-  els.sProdDisplay.style.display = 'block'; 
-  
-  try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
 async function performAuthAction() {
@@ -1899,7 +1966,7 @@ async function performAuthAction() {
               openAuthModal(); 
               const codeToUse = formatCodeInput(pendingActivationCode);
               els.code.value = codeToUse;
-              performAuth(codeToUse); 
+              // User Corrected: Stopped automatic authentication.
               pendingActivationCode = null;
           }, 500);
       } else if (pendingAction === 'open_activation') {
