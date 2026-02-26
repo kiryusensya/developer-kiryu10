@@ -531,7 +531,7 @@ button, input, textarea { font-family: var(--font-stack); }
 
 /* 2. ワイド画面のモーダル（確認・成功・エラー） */
 .modal-sheet.is-wide {
-  max-width: 900px;
+  max-width: 900px; /* ウィンドウ最大幅を拡張 */
 }
 
 /* ダークモード対応 */
@@ -602,7 +602,7 @@ button, input, textarea { font-family: var(--font-stack); }
   margin-top: 0; min-height: 0; position: absolute; bottom: -30px; left: 0; width: 100%; text-align: center;
 }
 
-/* --- 新しいモーダルレイアウト (画像18,19,20,21対応) --- */
+/* --- 新しいモーダルレイアウト (PC表示) --- */
 .new-modal-layout {
     display: flex;
     flex-direction: column;
@@ -619,33 +619,33 @@ button, input, textarea { font-family: var(--font-stack); }
 .modal-body-flex {
     display: flex;
     gap: 30px;
-    align-items: stretch; /* 左右の高さを揃える */
+    align-items: stretch; /* 画像カラムとテキストカラムの下端を揃えるために必要 */
 }
 .modal-left-col {
-    width: 380px; /* 画像幅を拡大 */
+    width: 380px; /* 画像の大きさをWixスクリーンショットに合わせて拡大 */
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
 }
 .modal-left-col img {
     width: 100%;
-    flex: 1; /* 高さを右側のコンテンツに合わせる */
+    flex: 1; /* 詳細メッセージボックス（右側）の下端に揃えるために伸縮させる */
     border-radius: 16px;
     object-fit: cover;
     background: rgba(128,128,128,0.2);
 }
 .modal-thumb-title {
-    margin-top: 24px; /* 右側のボタンと揃える */
-    height: 48px; /* ボタンと同じ高さ */
-    line-height: 48px; /* 縦方向中央揃え */
+    margin-top: 24px; /* 右側のボタン群（modal-btn-row）との高さを揃えるための間隔 */
+    height: 48px; /* ボタンと同じ高さに設定 */
+    line-height: 48px; /* 垂直方向中央揃え */
     font-size: 20px;
     font-weight: 800;
     color: var(--modal-text-main);
     text-align: center;
     width: 100%;
-    white-space: nowrap; /* 改行しない */
+    white-space: nowrap; /* タイトルを改行させない */
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis; /* 長すぎる場合は...で省略 */
 }
 .modal-right-col {
     flex: 1;
@@ -672,7 +672,7 @@ button, input, textarea { font-family: var(--font-stack); }
     background: rgba(128,128,128,0.1);
     border-radius: 16px;
     padding: 20px;
-    flex: 1; /* 下端を画像と揃えるために伸ばす */
+    flex: 1; /* これにより下端が左側の画像下端と一致する */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -685,20 +685,24 @@ button, input, textarea { font-family: var(--font-stack); }
     margin: 0;
     white-space: pre-wrap;
 }
+/* GASからの注意文を維持するためのクラス */
+.modal-box-text.is-warning {
+    opacity: 0.7;
+    font-weight: normal;
+}
 .modal-box-time {
     font-size: 16px;
     font-weight: 800;
     color: var(--modal-text-main);
-    margin: 20px 0 0 0; /* 上のテキストと離す */
+    margin: 20px 0 0 0; /* 本文と日付を離すための上部マージン */
 }
 .modal-btn-row {
     display: flex;
     gap: 12px;
-    margin-top: 24px; /* サムネイルタイトルと揃える */
-    height: 48px; /* サムネイルタイトルと揃える */
+    margin-top: 24px; /* 画像下タイトルと開始位置を完璧に揃える */
+    height: 48px; /* 画像下タイトルと高さを完璧に揃える */
 }
 .btn-outline {
-    flex: 1;
     height: 48px;
     border-radius: 24px;
     border: 2px solid var(--modal-text-main);
@@ -713,7 +717,6 @@ button, input, textarea { font-family: var(--font-stack); }
     background: rgba(128,128,128,0.1);
 }
 .btn-solid {
-    flex: 1;
     height: 48px;
     border-radius: 24px;
     border: none;
@@ -748,9 +751,70 @@ button, input, textarea { font-family: var(--font-stack); }
 [data-theme="dark"] .btn-solid { background: #fff; color: #000; }
 [data-theme="dark"] .modal-grey-box { background: rgba(255,255,255,0.1); }
 
-@media (max-width: 600px) {
-    .modal-body-flex { flex-direction: column; gap: 20px; }
-    .modal-left-col { width: 100%; }
+/* --- スマホ表示時のモーダル（Wix画像以前のレイアウトに復元） --- */
+@media (max-width: 768px) {
+    .modal-sheet.is-wide {
+        padding: 0 !important;
+        max-width: 92%;
+        border-radius: 24px;
+        height: auto;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    .modal-title-top {
+        display: none !important; /* スマホでは上部タイトルを隠す */
+    }
+    .modal-body-flex {
+        flex-direction: column;
+        gap: 0;
+        align-items: stretch;
+    }
+    .modal-left-col {
+        width: 100%;
+    }
+    .modal-left-col img {
+        border-radius: 24px 24px 0 0;
+        height: 220px;
+        object-fit: cover;
+        flex: none;
+        width: 100%;
+    }
+    .modal-thumb-title {
+        display: none !important; /* スマホでは重複する画像下タイトルを隠す */
+    }
+    .modal-right-col {
+        padding: 24px;
+    }
+    .modal-main-title {
+        font-size: 20px;
+        white-space: normal; /* スマホでは改行を許可 */
+    }
+    .modal-grey-box {
+        background: rgba(128,128,128,0.05); /* スマホ用は少し明るめに */
+        border: 1px solid rgba(128,128,128,0.1);
+        padding: 16px;
+        margin-bottom: 24px;
+        border-radius: 12px;
+        flex: none;
+    }
+    .modal-btn-row {
+        margin-top: 0;
+        height: 50px;
+    }
+    .btn-outline, .btn-solid {
+        height: 50px;
+        border-radius: 50px;
+    }
+    /* エラー画面用のスマホ調整 */
+    #phase-error .modal-title-top {
+        display: block !important;
+        padding: 24px 24px 0 24px;
+        margin: 0;
+        font-size: 20px;
+    }
+    #phase-error .modal-body-error {
+        padding: 24px;
+    }
 }
 
 /* --- ACCOUNT DROPDOWN STYLES --- */
@@ -816,6 +880,11 @@ button, input, textarea { font-family: var(--font-stack); }
 .rgl-tab:hover::before, .rgl-tab.active::before { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 [data-theme="dark"] .rgl-tab { color: #fff; }
 [data-theme="dark"] .rgl-tab::before { background: rgba(0, 0, 0, 0.3); border-color: rgba(255, 255, 255, 0.1); }
+
+/* --- PC版ではライブラリ関連を非表示にする --- */
+@media (min-width: 769px) {
+    #btnShowLibrary { display: none !important; }
+}
 
 /* --- スマホ用ライブラリモーダルCSS --- */
 #btnShowLibrary { display: none; }
@@ -1115,11 +1184,11 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                 <p class="modal-label" data-translate="preview_desc">続行すると以下のコンテンツを受け取ります:</p>
                 <h3 id="previewTitle" class="modal-main-title"></h3>
                 <div class="modal-grey-box">
-                    <p class="modal-box-text" id="previewWarningText"></p>
+                    <p class="modal-box-text is-warning" id="previewWarningText"></p>
                 </div>
                 <div class="modal-btn-row">
-                    <button class="btn-outline" id="btnPreviewClose" data-translate="btn_close">閉じる</button>
-                    <button class="btn-solid" id="btnPreviewRedeem" data-translate="btn_continue">認証する</button>
+                    <button class="btn-outline" id="btnPreviewClose" style="flex: 3;" data-translate="btn_close">閉じる</button>
+                    <button class="btn-solid" id="btnPreviewRedeem" style="flex: 7;" data-translate="btn_continue">認証する</button>
                 </div>
             </div>
         </div>
@@ -1147,7 +1216,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
     </div>
 
     <div id="phase-error" style="display: none; opacity: 0;" class="new-modal-layout error-layout">
-        <h2 class="modal-title-top error-title-color">⚠エラー <span id="errorCodeText"></span></h2>
+        <h2 class="modal-title-top error-title-color">⚠ <span data-translate="error_title_prefix">エラー</span> <span id="errorCodeText"></span></h2>
         <div class="modal-body-error">
             <h3 id="errorMessage" class="modal-error-main-msg"></h3>
             <div class="modal-grey-box" id="errorInfoBox" style="margin-bottom: 24px;">
@@ -1231,9 +1300,11 @@ const TRANSLATIONS={
   success_badge:"コードが認証されました。",
   preview_title: "コンテンツ確認",
   preview_desc: "続行すると以下のコンテンツを受け取ります:",
+  preview_warning_text: "⚠注意\nPC、iOS、iPad、またはAndroid版のいずれかのMinecraft Bedrock版が必要です。\nコンソール版にはRealmsのサブスクリプションが必要です。",
   success_title_final: "認証成功!!",
   success_desc: "このコードで以下のコンテンツが認証されました:",
   success_msg_box: "コードが正常に認証されました。\n左ライブラリメニューからコンテンツを選択してダウンロードしてください。",
+  error_title_prefix: "エラー",
   error_used_msg: "このコードは使用済みです",
   error_owned_msg: "この %s は所有しているようです。",
   error_owned_sub: "左ライブラリメニューからコンテンツを選択してダウンロードしてください。",
@@ -1259,9 +1330,11 @@ const TRANSLATIONS={
   success_badge:"Code Verified",
   preview_title: "Confirm Content",
   preview_desc: "You will receive the following contents by continuing:",
+  preview_warning_text: "⚠ Warning\nRequires Minecraft Bedrock Edition on PC, iOS, iPad, or Android.\nConsole versions require a Realms subscription.",
   success_title_final: "Activation Successful!!",
   success_desc: "The following contents have been activated by this code:",
   success_msg_box: "Code successfully verified.\nPlease select the content from the left library menu to download.",
+  error_title_prefix: "Error",
   error_used_msg: "This code has already been used.",
   error_owned_msg: "You seem to already own %s.",
   error_owned_sub: "Please select the content from the left library menu to download.",
@@ -1278,22 +1351,24 @@ const TRANSLATIONS={
   status_owned: "Owned", status_locked: "Not Owned"
  },
  zh:{ 
-  header_brand:"kr_开发者版", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。兑换产品代码以解锁独家内容。", 
+  header_brand:"kr_开发者版", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。兑換产品代码以解锁独家内容。", 
   card1_title:"首页",card3_title:"支持", 
-  modal_title:"激活",modal_sub:"请兑换激活码以下载内容。使用激活码时请将其输入下方字段",modal_placeholder:"激活码",modal_btn_auth:"检查", 
+  modal_title:"激活",modal_sub:"请兑換激活码以下载内容。使用激活码时请将其输入下方字段",modal_placeholder:"激活码",modal_btn_auth:"检查", 
   msg_verifying:"正在检查",msg_success_btn:"成功", 
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
   msg_already_owned: "您已经拥有此内容。", msg_already_owned_mobile: "您已经拥有此内容。请从您的库中下载。", btn_open_library: "打开库",
   success_badge:"代码已检查",
   preview_title: "确认内容",
   preview_desc: "继续操作您将收到以下内容：",
+  preview_warning_text: "⚠ 注意\n需要 PC、iOS、iPad 或 Android 上的 Minecraft Bedrock 版。\n主机版需要 Realms 订阅。",
   success_title_final: "激活成功!!",
   success_desc: "该代码已激活以下内容:",
   success_msg_box: "代码已成功验证。\n请从左侧库菜单中选择要下载的内容。",
+  error_title_prefix: "错误",
   error_used_msg: "该代码已被使用。",
   error_owned_msg: "您似乎已经拥有 %s。",
   error_owned_sub: "请从左侧库菜单中选择要下载的内容。",
-  btn_close:"关闭",btn_continue:"兑换",btn_download:"下载", 
+  btn_close:"关闭",btn_continue:"兑換",btn_download:"下载", 
   footer_admin:"系统管理长",
   menu_login: "登录", menu_account: "账户", lib_updating: "正在加载",
   label_logged_in: "用户ID", label_library: "我的库", label_welcome: "欢迎", label_sync_desc: "登录以同步内容",
@@ -1302,7 +1377,7 @@ const TRANSLATIONS={
   msg_empty_lib: "此处无内容。",
   msg_logging_in: "正在登录", msg_signing_up: "正在注册",
   label_store_cat: "商店", label_available: "可用",
-  btn_redeem_code: "兑换代码", btn_hero_download: "下载",
+  btn_redeem_code: "兑換代码", btn_hero_download: "下载",
   status_owned: "已拥有", status_locked: "未拥有"
  },
  "zh-TW":{ 
@@ -1315,9 +1390,11 @@ const TRANSLATIONS={
   success_badge:"代碼已檢查",
   preview_title: "確認內容",
   preview_desc: "繼續操作您將收到以下內容：",
+  preview_warning_text: "⚠ 注意\n需要 PC、iOS、iPad 或 Android 上的 Minecraft Bedrock 版。\n主機版需要 Realms 訂閱。",
   success_title_final: "激活成功!!",
   success_desc: "該代碼已激活以下內容:",
   success_msg_box: "代碼已成功驗證。\n請從左側庫菜單中選擇要下載的內容。",
+  error_title_prefix: "錯誤",
   error_used_msg: "該代碼已被使用。",
   error_owned_msg: "您似乎已經擁有 %s。",
   error_owned_sub: "請從左側庫菜單中選擇要下載的內容。",
@@ -1343,9 +1420,11 @@ const TRANSLATIONS={
   success_badge:"코드 인증됨",
   preview_title: "콘텐츠 확인",
   preview_desc: "계속 진행하면 다음 콘텐츠를 받게 됩니다:",
+  preview_warning_text: "⚠ 경고\nPC, iOS, iPad 또는 Android의 Minecraft Bedrock Edition이 필요합니다.\n콘솔 버전에는 Realms 구독이 필요합니다.",
   success_title_final: "활성화 완료!!",
   success_desc: "해당 코드가 다음 콘텐츠를 활성화했습니다:",
   success_msg_box: "코드가 성공적으로 인증되었습니다.\n왼쪽 라이브러리 메뉴에서 다운로드할 콘텐츠를 선택하세요.",
+  error_title_prefix: "오류",
   error_used_msg: "이미 사용된 코드입니다.",
   error_owned_msg: "이미 %s 콘텐츠를 소유하고 있는 것 같습니다.",
   error_owned_sub: "왼쪽 라이브러리 메뉴에서 다운로드할 콘텐츠를 선택하세요.",
@@ -1371,9 +1450,11 @@ const TRANSLATIONS={
   success_badge:"Подтверждено", 
   preview_title: "Подтверждение контента",
   preview_desc: "Вы получите следующее содержимое:",
+  preview_warning_text: "⚠ Внимание\nТребуется Minecraft Bedrock Edition на PC, iOS, iPad или Android.\nКонсольным версиям требуется подписка Realms.",
   success_title_final: "Успешно!!",
   success_desc: "Код активировал следующее содержимое:",
   success_msg_box: "Код успешно проверен.\nПожалуйста, выберите контент из левого меню библиотеки для загрузки.",
+  error_title_prefix: "Ошибка",
   error_used_msg: "Этот код уже был использован.",
   error_owned_msg: "Похоже, вы уже владеете %s.",
   error_owned_sub: "Пожалуйста, выберите контент из левого меню библиотеки для загрузки.",
@@ -1802,7 +1883,8 @@ async function performAuth(code, mode = 'check') {
         els.previewImage.src = currentContentData.imageUrl;
         els.previewTitleUnderImg.textContent = currentContentData.title;
         els.previewTitle.textContent = currentContentData.title;
-        els.previewWarningText.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : "⚠注意\nPC、iOS、iPad、またはAndroid版のいずれかのMinecraft Bedrock版が必要です。\nコンソール版にはRealmsのサブスクリプションが必要です。".replace(/\n/g, '<br>');
+        // 注意文はGASからの指定が無ければ辞書ファイルから適用
+        els.previewWarningText.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : t.preview_warning_text.replace(/\n/g, '<br>');
         
         els.modalCon.classList.add('is-wide');
         els.phaseInput.style.opacity = '0';
