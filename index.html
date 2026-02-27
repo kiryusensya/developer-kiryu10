@@ -707,6 +707,9 @@ button, input, textarea { font-family: var(--font-stack); }
     font-size: 16px;
     cursor: pointer;
     transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .btn-outline:hover {
     background: rgba(128,128,128,0.1);
@@ -721,6 +724,10 @@ button, input, textarea { font-family: var(--font-stack); }
     font-size: 16px;
     cursor: pointer;
     transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 .btn-solid:hover {
     opacity: 0.8;
@@ -1193,8 +1200,9 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                     <p class="modal-box-text" id="successMessageText"></p>
                     <p class="modal-box-time" id="successTime"></p>
                 </div>
-                <div class="modal-btn-row">
+                <div class="modal-btn-row" id="successBtnRow">
                     <button class="btn-outline" style="width: 100%; flex: none;" id="btnSuccessClose" data-translate="btn_close">閉じる</button>
+                    <a class="btn-solid" style="flex: 7; display: none; align-items:center; justify-content:center; text-decoration:none;" id="btnSuccessDownload" target="_blank"></a>
                 </div>
             </div>
         </div>
@@ -1208,8 +1216,9 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                 <p class="modal-box-text" id="errorSubMessage"></p>
                 <p class="modal-box-time" id="errorTime"></p>
             </div>
-            <div class="modal-btn-row">
+            <div class="modal-btn-row" id="errorBtnRow">
                 <button class="btn-outline" style="width: 100%; flex: none;" id="btnErrorClose" data-translate="btn_close">閉じる</button>
+                <button class="btn-solid" style="flex: 7; display: none; align-items:center; justify-content:center;" id="btnErrorOpenLibrary" data-translate="btn_open_library">ライブラリを開く</button>
             </div>
         </div>
     </div>
@@ -1281,7 +1290,7 @@ const TRANSLATIONS={
   modal_title:"アクティベーション",modal_sub:"アクティベーションコードを使用すると、コンテンツにアクセスできます。アクティベーションコードを利用するには、以下の入力欄に入力してください。",modal_placeholder:"アクティベーションコード",modal_btn_auth:"確認",
   msg_verifying:"確認中",msg_success_btn:"成功",
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました", 
-  msg_already_owned: "このコンテンツは既に所有しています。", msg_already_owned_mobile: "このコンテンツは既に所有しています。ライブラリからダウンロードしてください。", btn_open_library: "ライブラリを開く",
+  msg_already_owned: "このコンテンツは既に所有しています。", msg_already_owned_mobile: "ライブラリからコンテンツを選択してダウンロードしてください。", btn_open_library: "ライブラリを開く",
   success_badge:"コードが認証されました。",
   preview_title: "コンテンツ確認",
   preview_desc: "続行すると以下のコンテンツを受け取ります:",
@@ -1310,7 +1319,7 @@ const TRANSLATIONS={
   modal_title:"Activation",modal_sub:"Redeem the activation code to download the content. To use the activation code, please enter it in the field below.",modal_placeholder:"Activation Code",modal_btn_auth:"CHECK",
   msg_verifying:"Checking",msg_success_btn:"Success",
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred", 
-  msg_already_owned: "You already own this content.", msg_already_owned_mobile: "You already own this content. Please download it from your library.", btn_open_library: "Open Library",
+  msg_already_owned: "You already own this content.", msg_already_owned_mobile: "Please select the content from the library to download.", btn_open_library: "Open Library",
   success_badge:"Code Verified",
   preview_title: "Confirm Content",
   preview_desc: "You will receive the following contents by continuing:",
@@ -1339,7 +1348,7 @@ const TRANSLATIONS={
   modal_title:"激活",modal_sub:"请兑換激活码以下载内容。使用激活码时请将其输入下方字段",modal_placeholder:"激活码",modal_btn_auth:"检查", 
   msg_verifying:"正在检查",msg_success_btn:"成功", 
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
-  msg_already_owned: "您已经拥有此内容。", msg_already_owned_mobile: "您已经拥有此内容。请从您的库中下载。", btn_open_library: "打开库",
+  msg_already_owned: "您已经拥有此内容。", msg_already_owned_mobile: "请从库中选择内容进行下载。", btn_open_library: "打开库",
   success_badge:"代码已检查",
   preview_title: "确认内容",
   preview_desc: "继续操作您将收到以下内容：",
@@ -1368,7 +1377,7 @@ const TRANSLATIONS={
   modal_title:"激活",modal_sub:"請兌換啟用碼以下載內容。使用啟用碼時請於下方欄位輸入",modal_placeholder:"啟動碼",modal_btn_auth:"檢查", 
   msg_verifying:"正在檢查",msg_success_btn:"成功", 
   msg_invalid:"該代碼無效",msg_used:"該代碼已被使用",msg_error:"錯誤", 
-  msg_already_owned: "您已經擁有此內容。", msg_already_owned_mobile: "您已經擁有此內容。請從您的庫中下載。", btn_open_library: "打開庫",
+  msg_already_owned: "您已經擁有此內容。", msg_already_owned_mobile: "請從庫中選擇內容進行下載。", btn_open_library: "打開庫",
   success_badge:"代碼已檢查",
   preview_title: "確認內容",
   preview_desc: "繼續操作您將收到以下內容：",
@@ -1397,7 +1406,7 @@ const TRANSLATIONS={
   modal_title:"활성화",modal_sub:"활성화 코드를 사용해 콘텐츠를 다운로드하세요. 활성화 코드를 사용하려면 아래 필드에 입력해 주세요.",modal_placeholder:"활성화 코드",modal_btn_auth:"확인", 
   msg_verifying:"확인 중",msg_success_btn:"성공", 
   msg_invalid:"유효하지 않은 코드입니다.",msg_used:"이미 사용된 코드입니다.",msg_error:"오류", 
-  msg_already_owned: "이미 이 콘텐츠를 소유하고 있습니다.", msg_already_owned_mobile: "이미 이 콘텐츠를 소유하고 있습니다. 라이브러리에서 다운로드하세요.", btn_open_library: "라이브러리 열기",
+  msg_already_owned: "이미 이 콘텐츠를 소유하고 있습니다.", msg_already_owned_mobile: "라이브러리에서 콘텐츠를 선택하여 다운로드하세요.", btn_open_library: "라이브러리 열기",
   success_badge:"코드 인증됨",
   preview_title: "콘텐츠 확인",
   preview_desc: "계속 진행하면 다음 콘텐츠를 받게 됩니다:",
@@ -1426,7 +1435,7 @@ const TRANSLATIONS={
   modal_title:"Проверка",modal_sub:"Погасите код активации, чтобы загрузить контент. Чтобы использовать код активации, введите его в поле ниже.",modal_placeholder:"Код активации",modal_btn_auth:"Подтверждение", 
   msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
   msg_invalid:"Неверный код",msg_used:"Этот код уже был использован.",msg_error:"Ошибка", 
-  msg_already_owned: "Вы уже владеете этим контентом.", msg_already_owned_mobile: "Вы уже владеете этим контентом. Пожалуйста, загрузите его из вашей библиотеки.", btn_open_library: "Открыть библиотеку",
+  msg_already_owned: "Вы уже владеете этим контентом.", msg_already_owned_mobile: "Пожалуйста, выберите контент из библиотеки для скачивания.", btn_open_library: "Открыть библиотеку",
   success_badge:"Подтверждено", 
   preview_title: "Подтверждение контента",
   preview_desc: "Вы получите следующее содержимое:",
@@ -1496,11 +1505,13 @@ const els={
  successMessageText: gId('successMessageText'),
  successTime: gId('successTime'),
  btnSuccessClose: gId('btnSuccessClose'),
+ btnSuccessDownload: gId('btnSuccessDownload'),
  errorCodeText: gId('errorCodeText'),
  errorMessage: gId('errorMessage'),
  errorSubMessage: gId('errorSubMessage'),
  errorTime: gId('errorTime'),
- btnErrorClose: gId('btnErrorClose')
+ btnErrorClose: gId('btnErrorClose'),
+ btnErrorOpenLibrary: gId('btnErrorOpenLibrary')
 };
 
 const formatCodeInput = (val) => {
@@ -1595,6 +1606,14 @@ function setupEventListeners() {
   setListener(els.btnPreviewClose, 'click', closeAuthModal);
   setListener(els.btnSuccessClose, 'click', closeAuthModal);
   setListener(els.btnErrorClose, 'click', closeAuthModal);
+
+  if (els.btnErrorOpenLibrary) {
+      els.btnErrorOpenLibrary.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeAuthModal();
+          els.libraryModal.classList.add('active');
+      });
+  }
 
   if(els.authModal) setListener(els.authModal, 'click', (e) => { if(e.target === els.authModal) closeAuthModal(); });
 
@@ -1695,7 +1714,8 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       // User Corrected: Stopped automatic authentication.
+       // User Corrected: Auto auth restored for /?code= parameter
+       performAuth(els.code.value); 
      }
    }, 800);
  }
@@ -1783,6 +1803,14 @@ function resetAuthModal(){
   els.confirm.textContent=TRANSLATIONS[CURRENT_LANG].modal_btn_auth;
   els.status.innerHTML=""; 
   
+  els.btnSuccessClose.style.flex = "none";
+  els.btnSuccessClose.style.width = "100%";
+  els.btnSuccessDownload.style.display = "none";
+  
+  els.btnErrorClose.style.flex = "none";
+  els.btnErrorClose.style.width = "100%";
+  els.btnErrorOpenLibrary.style.display = "none";
+  
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
@@ -1810,6 +1838,54 @@ function showMobileItemDetail(item) {
     } else { 
         els.successImage.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; 
     }
+
+    els.btnSuccessClose.style.flex = "3";
+    els.btnSuccessClose.style.width = "auto";
+    els.btnSuccessDownload.style.display = "flex";
+    
+    const startModalTimer = () => {
+        const now = new Date();
+        const releaseDate = item.releaseDateIso ? new Date(item.releaseDateIso) : null;
+        
+        if (releaseDate && releaseDate > now) {
+            const diff = releaseDate - now;
+            const oneDay = 24 * 60 * 60 * 1000;
+            
+            els.btnSuccessDownload.style.pointerEvents = 'none';
+            els.btnSuccessDownload.style.opacity = '0.6';
+            els.btnSuccessDownload.removeAttribute('href'); 
+            els.btnSuccessDownload.onclick = (e) => { e.preventDefault(); };
+
+            if (diff > oneDay) {
+               const y = releaseDate.getFullYear();
+               const m = releaseDate.getMonth() + 1;
+               const d = releaseDate.getDate();
+               els.btnSuccessDownload.innerHTML = `<span>${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}</span>`;
+            } else {
+               const h = Math.floor(diff / (1000 * 60 * 60));
+               const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+               const s = Math.floor((diff % (1000 * 60)) / 1000);
+               const hh = String(h).padStart(2, '0');
+               const mm = String(m).padStart(2, '0');
+               const ss = String(s).padStart(2, '0');
+               els.btnSuccessDownload.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
+            }
+        } else {
+            if(modalDownloadTimer) clearInterval(modalDownloadTimer);
+            els.btnSuccessDownload.style.pointerEvents = 'auto';
+            els.btnSuccessDownload.style.opacity = '1';
+            els.btnSuccessDownload.href = item.url;
+            els.btnSuccessDownload.onclick = null; 
+            els.btnSuccessDownload.target = "_blank";
+            const btnLabel = item.buttonLabel || t.btn_download || "ダウンロード";
+            const btnIcon = item.icon || "download";
+            els.btnSuccessDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${btnIcon}" aria-hidden="true" size="18" class="lucide lucide-${btnIcon}"></svg>`;
+            try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+        }
+    };
+
+    startModalTimer();
+    modalDownloadTimer = setInterval(startModalTimer, 1000);
     
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
@@ -1932,25 +2008,46 @@ async function performAuth(code, mode = 'check') {
 
         let errorMainText = "";
         let errorSubText = "";
+        let showInfoBox = true;
         
         if (d.isAlreadyOwned || d.message === "Already owned") {
-            errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
-            errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
+            if (window.innerWidth <= 768) {
+                errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
+                errorSubText = t.msg_already_owned_mobile || "ライブラリからコンテンツを選択してダウンロードしてください。";
+                
+                els.btnErrorClose.style.flex = "3";
+                els.btnErrorClose.style.width = "auto";
+                els.btnErrorOpenLibrary.style.display = "flex";
+            } else {
+                errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
+                errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
+                
+                els.btnErrorClose.style.flex = "none";
+                els.btnErrorClose.style.width = "100%";
+                els.btnErrorOpenLibrary.style.display = "none";
+            }
         } else if (d.message === "This code has already been used.") {
             errorMainText = t.error_used_msg || t.msg_used;
             errorSubText = "";
+            els.btnErrorClose.style.flex = "none";
+            els.btnErrorClose.style.width = "100%";
+            els.btnErrorOpenLibrary.style.display = "none";
+            showInfoBox = false;
         } else {
             errorMainText = t.msg_error;
             errorSubText = d.message || "";
+            els.btnErrorClose.style.flex = "none";
+            els.btnErrorClose.style.width = "100%";
+            els.btnErrorOpenLibrary.style.display = "none";
         }
         
         els.errorMessage.textContent = errorMainText;
         if(errorSubText) {
             els.errorSubMessage.innerHTML = errorSubText;
-            els.errorSubMessage.style.display = 'block';
+            els.errorInfoBox.style.display = 'block';
         } else {
             els.errorSubMessage.innerHTML = "";
-            els.errorSubMessage.style.display = 'none';
+            els.errorInfoBox.style.display = 'none';
         }
 
         els.phasePreview.style.opacity = '0';
@@ -1978,7 +2075,11 @@ async function performAuth(code, mode = 'check') {
        els.errorTime.textContent = currentAuthTime;
        els.errorMessage.textContent = t.msg_error;
        els.errorSubMessage.innerHTML = "";
-       els.errorSubMessage.style.display = 'none';
+       els.errorInfoBox.style.display = 'none';
+       
+       els.btnErrorClose.style.flex = "none";
+       els.btnErrorClose.style.width = "100%";
+       els.btnErrorOpenLibrary.style.display = "none";
        
        els.phasePreview.style.opacity = '0';
        setTimeout(() => {
@@ -2034,7 +2135,7 @@ async function performAuthAction() {
               openAuthModal(); 
               const codeToUse = formatCodeInput(pendingActivationCode);
               els.code.value = codeToUse;
-              // User Corrected: Stopped automatic authentication.
+              performAuth(codeToUse); 
               pendingActivationCode = null;
           }, 500);
       } else if (pendingAction === 'open_activation') {
