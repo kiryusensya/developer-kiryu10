@@ -1280,12 +1280,49 @@ function getFormattedCurrentTime(lang) {
     const h = String(now.getHours()).padStart(2, '0');
     const min = String(now.getMinutes()).padStart(2, '0');
     const s = String(now.getSeconds()).padStart(2, '0');
+
     if (['ja', 'zh', 'zh-TW'].includes(lang)) {
         return `${y}年${m}月${d}日 ${h}:${min}:${s} JST`;
     } else if (lang === 'ko') {
         return `${y}년 ${m}월 ${d}일 ${h}:${min}:${s} KST`;
+    } else if (lang === 'ru') {
+        return `${d}.${m}.${y} ${h}:${min}:${s}`;
+    } else if (lang === 'en') {
+        return `${m}/${d}/${y} ${h}:${min}:${s}`;
     } else {
         return `${y}/${m}/${d} ${h}:${min}:${s}`;
+    }
+}
+// 過去の保存された時間を現在の言語に合わせて再フォーマット
+function formatSavedTime(timeStr, lang) {
+    if (!timeStr) return "";
+    // 既にフォーマット済み（JSTなどが含まれている）の場合はそのまま返す
+    if (timeStr.includes('JST') || timeStr.includes('KST')) return timeStr;
+
+    // 文字列をDateオブジェクトに変換 (iOS Safari対応のためハイフンをスラッシュに置換)
+    const d = new Date(timeStr.replace(/-/g, '/'));
+    if (isNaN(d.getTime())) return timeStr;
+
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const h = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    const s = String(d.getSeconds()).padStart(2, '0');
+
+    if (['ja', 'zh', 'zh-TW'].includes(lang)) {
+        return `${y}年${m}月${day}日 ${h}:${min}:${s} JST`;
+    } else if (lang === 'ko') {
+        return `${y}년 ${m}월 ${day}일 ${h}:${min}:${s} KST`;
+    } else if (lang === 'ru') {
+        // ロシア語の一般的な表記: DD.MM.YYYY HH:mm:ss
+        return `${day}.${m}.${y} ${h}:${min}:${s}`;
+    } else if (lang === 'en') {
+        // 英語（米国）の一般的な表記: MM/DD/YYYY HH:mm:ss
+        return `${m}/${day}/${y} ${h}:${min}:${s}`;
+    } else {
+        // デフォルトのフォールバック
+        return `${y}/${m}/${day} ${h}:${min}:${s}`;
     }
 }
 
@@ -1852,7 +1889,8 @@ function showMobileItemDetail(item, isNewRedeem = false) {
     if (isNewRedeem) {
         els.successTime.textContent = currentAuthTime;
     } else {
-        els.successTime.textContent = item.authTime || item.date || "";
+        let savedTime = item.authTime || item.date || "";
+        els.successTime.textContent = formatSavedTime(savedTime, CURRENT_LANG);
     }
 
     if(item.imageUrl && item.imageUrl.startsWith("http")){ 
