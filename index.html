@@ -600,7 +600,7 @@ button, input, textarea { font-family: var(--font-stack); }
 
 /* --- 新しいモーダルレイアウト (PC表示) --- */
 .new-modal-layout {
-    display: flex;
+    display: flex; /* ブロック要素だと崩れるため修正 */
     flex-direction: column;
     width: 100%;
     text-align: left;
@@ -648,6 +648,9 @@ button, input, textarea { font-family: var(--font-stack); }
     display: flex;
     flex-direction: column;
     min-width: 0;
+}
+.mobile-title {
+    display: none; /* PCでは非表示 */
 }
 .modal-label {
     font-size: 14px;
@@ -766,6 +769,13 @@ button, input, textarea { font-family: var(--font-stack); }
     .modal-title-top {
         display: none !important; 
     }
+    .mobile-title {
+        display: block; /* スマホではタイトルを画像の直下に表示 */
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--modal-text-main);
+        margin: 0 0 16px 0;
+    }
     .modal-body-flex {
         flex-direction: column;
         gap: 0;
@@ -792,7 +802,7 @@ button, input, textarea { font-family: var(--font-stack); }
         white-space: normal; 
     }
     .modal-grey-box {
-        background: transparent !important; /* スマホ時は背景グレーを消す */
+        background: transparent !important;
         border: none !important;
         padding: 0 !important;
         margin-bottom: 24px;
@@ -802,7 +812,7 @@ button, input, textarea { font-family: var(--font-stack); }
         font-size: 13px;
         font-weight: 500;
         color: var(--modal-text-sub);
-        background: rgba(128,128,128,0.05); /* スマホの注意文だけ少し背景をつける */
+        background: rgba(128,128,128,0.05);
         padding: 16px;
         border-radius: 12px;
         border: 1px solid rgba(128,128,128,0.1);
@@ -1173,6 +1183,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                 <div id="previewTitleUnderImg" class="modal-thumb-title"></div>
             </div>
             <div class="modal-right-col">
+                <h2 class="mobile-title" data-translate="preview_title">コンテンツ確認</h2>
                 <p class="modal-label" data-translate="preview_desc">続行すると以下のコンテンツを受け取ります:</p>
                 <h3 id="previewTitle" class="modal-main-title"></h3>
                 <div class="modal-grey-box" id="previewWarningBox">
@@ -1194,6 +1205,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                 <div id="successTitleUnderImg" class="modal-thumb-title"></div>
             </div>
             <div class="modal-right-col">
+                <h2 class="mobile-title" data-translate="success_title_final">認証成功!!</h2>
                 <p class="modal-label" data-translate="success_desc">このコードで以下のコンテンツが認証されました:</p>
                 <h3 id="successBundleName" class="modal-main-title"></h3>
                 <div class="modal-grey-box">
@@ -1426,7 +1438,7 @@ const TRANSLATIONS={
   msg_empty_lib: "콘텐츠가 없습니다. ",
   msg_logging_in: "로그인 중", msg_signing_up: "계정 생성 중",
   label_store_cat: "상점", label_available: "사용 가능",
-  btn_redeem_code: "코드 교환", btn_hero_download: "다운로드",
+  btn_redeem_code: "코드 교환", 정_hero_download: "다운로드",
   status_owned: "소유함", status_locked: "미소유"
  },
  ru:{ 
@@ -1509,6 +1521,7 @@ const els={
  errorCodeText: gId('errorCodeText'),
  errorMessage: gId('errorMessage'),
  errorSubMessage: gId('errorSubMessage'),
+ errorInfoBox: gId('errorInfoBox'),
  errorTime: gId('errorTime'),
  btnErrorClose: gId('btnErrorClose'),
  btnErrorOpenLibrary: gId('btnErrorOpenLibrary')
@@ -1634,7 +1647,7 @@ function setupEventListeners() {
         if (selectedHeroItem.releaseDateIso) {
             const releaseDate = new Date(selectedHeroItem.releaseDateIso);
             if (releaseDate > new Date()) {
-                return; // 解禁前は何もしない
+                return; 
             }
         }
         
@@ -1714,7 +1727,7 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       // User Corrected: Auto auth restored for /?code= parameter
+       // User Corrected: Auto auth restored
        performAuth(els.code.value); 
      }
    }, 800);
@@ -1823,7 +1836,7 @@ function showMobileItemDetail(item) {
     els.phasePreview.style.display='none';
     els.phaseError.style.display='none';
     
-    els.phaseSuccess.style.display='block'; 
+    els.phaseSuccess.style.display='flex'; 
     setTimeout(() => els.phaseSuccess.style.opacity='1', 50);
     els.modalCon.classList.add('is-wide');
     
@@ -1953,7 +1966,7 @@ async function performAuth(code, mode = 'check') {
         setTimeout(() => {
           if (thisRequestId !== currentAuthRequestId) return;
           els.phaseInput.style.display = 'none';
-          els.phasePreview.style.display = 'block';
+          els.phasePreview.style.display = 'flex';
           setTimeout(() => els.phasePreview.style.opacity = '1', 50);
         }, 400);
         
@@ -1991,7 +2004,7 @@ async function performAuth(code, mode = 'check') {
            setTimeout(() => {
              if (thisRequestId !== currentAuthRequestId) return;
              els.phasePreview.style.display = 'none';
-             els.phaseSuccess.style.display = 'block';
+             els.phaseSuccess.style.display = 'flex';
              setTimeout(() => els.phaseSuccess.style.opacity = '1', 50);
            }, 400);
 
@@ -2000,63 +2013,72 @@ async function performAuth(code, mode = 'check') {
            }
         }
       } else {
-        try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
-        
-        const randomErrorCode = generateErrorCode();
-        els.errorCodeText.textContent = randomErrorCode;
-        els.errorTime.textContent = currentAuthTime;
+        // UI更新時の安全性を高めるためtry-catchで囲む
+        try {
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+            
+            const randomErrorCode = generateErrorCode();
+            els.errorCodeText.textContent = randomErrorCode;
+            els.errorTime.textContent = currentAuthTime;
 
-        let errorMainText = "";
-        let errorSubText = "";
-        let showInfoBox = true;
-        
-        if (d.isAlreadyOwned || d.message === "Already owned") {
-            if (window.innerWidth <= 768) {
-                errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
-                errorSubText = t.msg_already_owned_mobile || "ライブラリからコンテンツを選択してダウンロードしてください。";
-                
-                els.btnErrorClose.style.flex = "3";
-                els.btnErrorClose.style.width = "auto";
-                els.btnErrorOpenLibrary.style.display = "flex";
-            } else {
-                errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
-                errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
-                
+            let errorMainText = "";
+            let errorSubText = "";
+            let showInfoBox = true;
+            
+            const msg = d.message || "";
+            // GASからのエラー内容に柔軟に対応する判定
+            if (d.isAlreadyOwned || msg === "Already owned" || msg.includes("所有") || msg.includes("済") || msg.includes("owned")) {
+                if (window.innerWidth <= 768) {
+                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
+                    errorSubText = t.msg_already_owned_mobile || "ライブラリからコンテンツを選択してダウンロードしてください。";
+                    
+                    els.btnErrorClose.style.flex = "3";
+                    els.btnErrorClose.style.width = "auto";
+                    els.btnErrorOpenLibrary.style.display = "flex";
+                } else {
+                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
+                    errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
+                    
+                    els.btnErrorClose.style.flex = "none";
+                    els.btnErrorClose.style.width = "100%";
+                    els.btnErrorOpenLibrary.style.display = "none";
+                }
+            } else if (msg === "This code has already been used." || msg.includes("使用済") || msg.includes("used")) {
+                errorMainText = t.error_used_msg || t.msg_used;
+                errorSubText = "";
                 els.btnErrorClose.style.flex = "none";
                 els.btnErrorClose.style.width = "100%";
                 els.btnErrorOpenLibrary.style.display = "none";
+                showInfoBox = false;
+            } else {
+                errorMainText = t.msg_error;
+                errorSubText = msg;
+                els.btnErrorClose.style.flex = "none";
+                els.btnErrorClose.style.width = "100%";
+                els.btnErrorOpenLibrary.style.display = "none";
+                showInfoBox = errorSubText ? true : false;
             }
-        } else if (d.message === "This code has already been used.") {
-            errorMainText = t.error_used_msg || t.msg_used;
-            errorSubText = "";
-            els.btnErrorClose.style.flex = "none";
-            els.btnErrorClose.style.width = "100%";
-            els.btnErrorOpenLibrary.style.display = "none";
-            showInfoBox = false;
-        } else {
-            errorMainText = t.msg_error;
-            errorSubText = d.message || "";
-            els.btnErrorClose.style.flex = "none";
-            els.btnErrorClose.style.width = "100%";
-            els.btnErrorOpenLibrary.style.display = "none";
+            
+            els.errorMessage.textContent = errorMainText;
+            if(showInfoBox && errorSubText) {
+                els.errorSubMessage.innerHTML = errorSubText.replace(/\n/g, '<br>');
+                els.errorInfoBox.style.display = 'flex';
+            } else {
+                els.errorSubMessage.innerHTML = "";
+                els.errorInfoBox.style.display = 'none';
+            }
+        } catch(err) {
+            console.error("UI Update Error", err);
+            els.errorMessage.textContent = t.msg_error;
+        } finally {
+            els.phasePreview.style.opacity = '0';
+            setTimeout(() => {
+              if (thisRequestId !== currentAuthRequestId) return;
+              els.phasePreview.style.display = 'none';
+              els.phaseError.style.display = 'flex';
+              setTimeout(() => els.phaseError.style.opacity = '1', 50);
+            }, 400);
         }
-        
-        els.errorMessage.textContent = errorMainText;
-        if(errorSubText) {
-            els.errorSubMessage.innerHTML = errorSubText;
-            els.errorInfoBox.style.display = 'block';
-        } else {
-            els.errorSubMessage.innerHTML = "";
-            els.errorInfoBox.style.display = 'none';
-        }
-
-        els.phasePreview.style.opacity = '0';
-        setTimeout(() => {
-          if (thisRequestId !== currentAuthRequestId) return;
-          els.phasePreview.style.display = 'none';
-          els.phaseError.style.display = 'block';
-          setTimeout(() => els.phaseError.style.opacity = '1', 50);
-        }, 400);
       }
     }
   } catch (e) {
@@ -2084,7 +2106,7 @@ async function performAuth(code, mode = 'check') {
        els.phasePreview.style.opacity = '0';
        setTimeout(() => {
          els.phasePreview.style.display = 'none';
-         els.phaseError.style.display = 'block';
+         els.phaseError.style.display = 'flex';
          setTimeout(() => els.phaseError.style.opacity = '1', 50);
        }, 400);
     }
@@ -2135,7 +2157,7 @@ async function performAuthAction() {
               openAuthModal(); 
               const codeToUse = formatCodeInput(pendingActivationCode);
               els.code.value = codeToUse;
-              performAuth(codeToUse); 
+              // User Corrected: Stopped automatic authentication.
               pendingActivationCode = null;
           }, 500);
       } else if (pendingAction === 'open_activation') {
