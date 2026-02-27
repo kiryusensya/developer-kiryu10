@@ -1731,7 +1731,7 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       // User Corrected: Auto auth restored
+       // URLからの自動認証
        performAuth(els.code.value); 
      }
    }, 800);
