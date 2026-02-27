@@ -497,7 +497,7 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
-/* 1. 入力・確認画面のモーダル（画像1枚目の透明度、枠線なし） */
+/* 1. 入力画面のモーダル */
 .modal-sheet {
   background: rgba(255, 255, 255, 0.7) !important;
   backdrop-filter: blur(40px);
@@ -510,12 +510,10 @@ button, input, textarea { font-family: var(--font-stack); }
   padding: 40px;
   font-family: var(--font-stack);
   
-  /* Dynamic Island風アニメーション：下部中央から拡大 */
   clip-path: inset(80% 30% 0% 30% round 50px);
   transform: translateY(60px) scale(0.85);
   opacity: 0;
   
-  /* バネ感のあるイージング */
   transition: clip-path 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
               transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
               background-color 0.5s ease,
@@ -529,9 +527,9 @@ button, input, textarea { font-family: var(--font-stack); }
   opacity: 1;
 }
 
-/* 2. ワイド画面のモーダル（確認・成功・エラー） */
+/* 2. ワイド画面のモーダル（PCの確認・成功・エラー） */
 .modal-sheet.is-wide {
-  max-width: 900px; /* ウィンドウ最大幅を拡張 */
+  max-width: 900px;
 }
 
 /* ダークモード対応 */
@@ -540,7 +538,6 @@ button, input, textarea { font-family: var(--font-stack); }
   box-shadow: 0 30px 80px rgba(0,0,0,0.5);
 }
 
-/* アニメーション中に中身がはみ出ないようにフェードインさせる */
 .modal-overlay:not(.active) #phase-input,
 .modal-overlay:not(.active) #phase-preview,
 .modal-overlay:not(.active) #phase-success,
@@ -556,7 +553,6 @@ button, input, textarea { font-family: var(--font-stack); }
   transition: opacity 0.5s ease 0.2s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
 }
 
-/* 閉じるボタンのフェード調整 */
 .modal-overlay:not(.active) #modalCloseBtn {
   opacity: 0 !important;
   transition: opacity 0.2s ease;
@@ -619,33 +615,33 @@ button, input, textarea { font-family: var(--font-stack); }
 .modal-body-flex {
     display: flex;
     gap: 30px;
-    align-items: stretch; /* 画像カラムとテキストカラムの下端を揃えるために必要 */
+    align-items: stretch;
 }
 .modal-left-col {
-    width: 380px; /* 画像の大きさをWixスクリーンショットに合わせて拡大 */
+    width: 380px; 
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
 }
 .modal-left-col img {
     width: 100%;
-    flex: 1; /* 詳細メッセージボックス（右側）の下端に揃えるために伸縮させる */
+    flex: 1; 
     border-radius: 16px;
     object-fit: cover;
     background: rgba(128,128,128,0.2);
 }
 .modal-thumb-title {
-    margin-top: 24px; /* 右側のボタン群（modal-btn-row）との高さを揃えるための間隔 */
-    height: 48px; /* ボタンと同じ高さに設定 */
-    line-height: 48px; /* 垂直方向中央揃え */
+    margin-top: 24px; 
+    height: 48px; 
+    line-height: 48px; 
     font-size: 20px;
     font-weight: 800;
     color: var(--modal-text-main);
     text-align: center;
     width: 100%;
-    white-space: nowrap; /* タイトルを改行させない */
+    white-space: nowrap; 
     overflow: hidden;
-    text-overflow: ellipsis; /* 長すぎる場合は...で省略 */
+    text-overflow: ellipsis; 
 }
 .modal-right-col {
     flex: 1;
@@ -672,7 +668,7 @@ button, input, textarea { font-family: var(--font-stack); }
     background: rgba(128,128,128,0.1);
     border-radius: 16px;
     padding: 20px;
-    flex: 1; /* これにより下端が左側の画像下端と一致する */
+    flex: 1; 
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -685,7 +681,6 @@ button, input, textarea { font-family: var(--font-stack); }
     margin: 0;
     white-space: pre-wrap;
 }
-/* GASからの注意文を維持するためのクラス */
 .modal-box-text.is-warning {
     opacity: 0.7;
     font-weight: normal;
@@ -694,13 +689,13 @@ button, input, textarea { font-family: var(--font-stack); }
     font-size: 16px;
     font-weight: 800;
     color: var(--modal-text-main);
-    margin: 20px 0 0 0; /* 本文と日付を離すための上部マージン */
+    margin: 20px 0 0 0; 
 }
 .modal-btn-row {
     display: flex;
     gap: 12px;
-    margin-top: 24px; /* 画像下タイトルと開始位置を完璧に揃える */
-    height: 48px; /* 画像下タイトルと高さを完璧に揃える */
+    margin-top: 24px; 
+    height: 48px; 
 }
 .btn-outline {
     height: 48px;
@@ -762,7 +757,7 @@ button, input, textarea { font-family: var(--font-stack); }
         overflow-y: auto;
     }
     .modal-title-top {
-        display: none !important; /* スマホでは上部タイトルを隠す */
+        display: none !important; 
     }
     .modal-body-flex {
         flex-direction: column;
@@ -780,22 +775,34 @@ button, input, textarea { font-family: var(--font-stack); }
         width: 100%;
     }
     .modal-thumb-title {
-        display: none !important; /* スマホでは重複する画像下タイトルを隠す */
+        display: none !important; 
     }
     .modal-right-col {
         padding: 24px;
     }
     .modal-main-title {
         font-size: 20px;
-        white-space: normal; /* スマホでは改行を許可 */
+        white-space: normal; 
     }
     .modal-grey-box {
-        background: rgba(128,128,128,0.05); /* スマホ用は少し明るめに */
-        border: 1px solid rgba(128,128,128,0.1);
-        padding: 16px;
+        background: transparent !important; /* スマホ時は背景グレーを消す */
+        border: none !important;
+        padding: 0 !important;
         margin-bottom: 24px;
-        border-radius: 12px;
         flex: none;
+    }
+    .modal-box-text.is-warning {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--modal-text-sub);
+        background: rgba(128,128,128,0.05); /* スマホの注意文だけ少し背景をつける */
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(128,128,128,0.1);
+        opacity: 1;
+    }
+    .modal-box-time {
+        margin: 10px 0 0 0;
     }
     .modal-btn-row {
         margin-top: 0;
@@ -858,28 +865,6 @@ button, input, textarea { font-family: var(--font-stack); }
 .form-label { font-size: 11px; font-weight: 700; margin-bottom: 4px; display: block; opacity: 0.7; color: var(--modal-text-main); font-family: var(--font-stack); }
 .form-input { width: 100%; height: 44px; border-radius: 10px; border: 1px solid rgba(128,128,128,0.2); background: transparent; padding: 0 12px; color: var(--modal-text-main); font-family: inherit; outline: none; font-size: 14px; font-weight: 500; }
 .form-input:focus { border-color: var(--primary); background: rgba(128,128,128,0.05); }
-
-/* --- Mobile Adjustment (BLOCK) --- */
-#mobile-warning { display: none; }
-
-/* --- ヘッダーナビゲーション --- */
-.rgl-tab {
-    position: relative; margin: 0 4px !important; padding: 0 !important; border: none !important;
-    background: transparent !important; box-shadow: none !important; backdrop-filter: none !important;
-    display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
-    font-weight: 700; opacity: 0.6; transition: opacity 0.2s ease; z-index: 1;
-}
-.rgl-tab::after { display: none !important; }
-.rgl-tab:hover, .rgl-tab.active { opacity: 1; }
-.rgl-tab::before {
-    content: ''; position: absolute; top: 50%; left: 50%; width: calc(100% + 37px); height: 38px; border-radius: 50px;
-    background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3); transform: translate(-50%, -50%) scale(0.9);
-    opacity: 0; z-index: -1; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.rgl-tab:hover::before, .rgl-tab.active::before { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-[data-theme="dark"] .rgl-tab { color: #fff; }
-[data-theme="dark"] .rgl-tab::before { background: rgba(0, 0, 0, 0.3); border-color: rgba(255, 255, 255, 0.1); }
 
 /* --- PC版ではライブラリ関連を非表示にする --- */
 @media (min-width: 769px) {
@@ -1183,7 +1168,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
             <div class="modal-right-col">
                 <p class="modal-label" data-translate="preview_desc">続行すると以下のコンテンツを受け取ります:</p>
                 <h3 id="previewTitle" class="modal-main-title"></h3>
-                <div class="modal-grey-box">
+                <div class="modal-grey-box" id="previewWarningBox">
                     <p class="modal-box-text is-warning" id="previewWarningText"></p>
                 </div>
                 <div class="modal-btn-row">
@@ -1300,7 +1285,6 @@ const TRANSLATIONS={
   success_badge:"コードが認証されました。",
   preview_title: "コンテンツ確認",
   preview_desc: "続行すると以下のコンテンツを受け取ります:",
-  preview_warning_text: "⚠注意\nPC、iOS、iPad、またはAndroid版のいずれかのMinecraft Bedrock版が必要です。\nコンソール版にはRealmsのサブスクリプションが必要です。",
   success_title_final: "認証成功!!",
   success_desc: "このコードで以下のコンテンツが認証されました:",
   success_msg_box: "コードが正常に認証されました。\n左ライブラリメニューからコンテンツを選択してダウンロードしてください。",
@@ -1330,7 +1314,6 @@ const TRANSLATIONS={
   success_badge:"Code Verified",
   preview_title: "Confirm Content",
   preview_desc: "You will receive the following contents by continuing:",
-  preview_warning_text: "⚠ Warning\nRequires Minecraft Bedrock Edition on PC, iOS, iPad, or Android.\nConsole versions require a Realms subscription.",
   success_title_final: "Activation Successful!!",
   success_desc: "The following contents have been activated by this code:",
   success_msg_box: "Code successfully verified.\nPlease select the content from the left library menu to download.",
@@ -1360,7 +1343,6 @@ const TRANSLATIONS={
   success_badge:"代码已检查",
   preview_title: "确认内容",
   preview_desc: "继续操作您将收到以下内容：",
-  preview_warning_text: "⚠ 注意\n需要 PC、iOS、iPad 或 Android 上的 Minecraft Bedrock 版。\n主机版需要 Realms 订阅。",
   success_title_final: "激活成功!!",
   success_desc: "该代码已激活以下内容:",
   success_msg_box: "代码已成功验证。\n请从左侧库菜单中选择要下载的内容。",
@@ -1390,7 +1372,6 @@ const TRANSLATIONS={
   success_badge:"代碼已檢查",
   preview_title: "確認內容",
   preview_desc: "繼續操作您將收到以下內容：",
-  preview_warning_text: "⚠ 注意\n需要 PC、iOS、iPad 或 Android 上的 Minecraft Bedrock 版。\n主機版需要 Realms 訂閱。",
   success_title_final: "激活成功!!",
   success_desc: "該代碼已激活以下內容:",
   success_msg_box: "代碼已成功驗證。\n請從左側庫菜單中選擇要下載的內容。",
@@ -1420,7 +1401,6 @@ const TRANSLATIONS={
   success_badge:"코드 인증됨",
   preview_title: "콘텐츠 확인",
   preview_desc: "계속 진행하면 다음 콘텐츠를 받게 됩니다:",
-  preview_warning_text: "⚠ 경고\nPC, iOS, iPad 또는 Android의 Minecraft Bedrock Edition이 필요합니다.\n콘솔 버전에는 Realms 구독이 필요합니다.",
   success_title_final: "활성화 완료!!",
   success_desc: "해당 코드가 다음 콘텐츠를 활성화했습니다:",
   success_msg_box: "코드가 성공적으로 인증되었습니다.\n왼쪽 라이브러리 메뉴에서 다운로드할 콘텐츠를 선택하세요.",
@@ -1450,7 +1430,6 @@ const TRANSLATIONS={
   success_badge:"Подтверждено", 
   preview_title: "Подтверждение контента",
   preview_desc: "Вы получите следующее содержимое:",
-  preview_warning_text: "⚠ Внимание\nТребуется Minecraft Bedrock Edition на PC, iOS, iPad или Android.\nКонсольным версиям требуется подписка Realms.",
   success_title_final: "Успешно!!",
   success_desc: "Код активировал следующее содержимое:",
   success_msg_box: "Код успешно проверен.\nПожалуйста, выберите контент из левого меню библиотеки для загрузки.",
@@ -1507,6 +1486,7 @@ const els={
  previewImage: gId('previewImage'),
  previewTitleUnderImg: gId('previewTitleUnderImg'),
  previewTitle: gId('previewTitle'),
+ previewWarningBox: gId('previewWarningBox'),
  previewWarningText: gId('previewWarningText'),
  btnPreviewClose: gId('btnPreviewClose'),
  btnPreviewRedeem: gId('btnPreviewRedeem'),
@@ -1883,8 +1863,14 @@ async function performAuth(code, mode = 'check') {
         els.previewImage.src = currentContentData.imageUrl;
         els.previewTitleUnderImg.textContent = currentContentData.title;
         els.previewTitle.textContent = currentContentData.title;
-        // 注意文はGASからの指定が無ければ辞書ファイルから適用
-        els.previewWarningText.innerHTML = d.extraInfo ? d.extraInfo.replace(/\n/g, '<br>') : t.preview_warning_text.replace(/\n/g, '<br>');
+        
+        if (d.extraInfo) {
+            els.previewWarningText.innerHTML = d.extraInfo.replace(/\n/g, '<br>');
+            els.previewWarningBox.style.display = 'flex';
+        } else {
+            els.previewWarningText.innerHTML = "";
+            els.previewWarningBox.style.display = 'none';
+        }
         
         els.modalCon.classList.add('is-wide');
         els.phaseInput.style.opacity = '0';
