@@ -600,7 +600,7 @@ button, input, textarea { font-family: var(--font-stack); }
 
 /* --- 新しいモーダルレイアウト (PC表示) --- */
 .new-modal-layout {
-    display: flex; /* ブロック要素だと崩れるため修正 */
+    display: flex;
     flex-direction: column;
     width: 100%;
     text-align: left;
@@ -756,7 +756,7 @@ button, input, textarea { font-family: var(--font-stack); }
 [data-theme="dark"] .btn-solid { background: #fff; color: #000; }
 [data-theme="dark"] .modal-grey-box { background: rgba(255,255,255,0.1); }
 
-/* --- スマホ表示時のモーダル（Wix画像以前のレイアウトに復元） --- */
+/* --- スマホ表示時のモーダル（Wix画像以前のレイアウトに復元しつつグレーボックス適用） --- */
 @media (max-width: 768px) {
     .modal-sheet.is-wide {
         padding: 0 !important;
@@ -802,20 +802,24 @@ button, input, textarea { font-family: var(--font-stack); }
         white-space: normal; 
     }
     .modal-grey-box {
-        background: transparent !important;
-        border: none !important;
-        padding: 0 !important;
+        background: rgba(128,128,128,0.05) !important; /* スマホでもグレーボックスにする */
+        border: 1px solid rgba(128,128,128,0.1) !important;
+        padding: 16px !important;
         margin-bottom: 24px;
+        border-radius: 12px;
         flex: none;
+    }
+    [data-theme="dark"] .modal-grey-box {
+        background: rgba(255,255,255,0.05) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
     }
     .modal-box-text.is-warning {
         font-size: 13px;
         font-weight: 500;
         color: var(--modal-text-sub);
-        background: rgba(128,128,128,0.05);
-        padding: 16px;
-        border-radius: 12px;
-        border: 1px solid rgba(128,128,128,0.1);
+        background: transparent; /* 背景とパディングは親ボックスに任せる */
+        padding: 0;
+        border: none;
         opacity: 1;
     }
     .modal-box-time {
@@ -1438,7 +1442,7 @@ const TRANSLATIONS={
   msg_empty_lib: "콘텐츠가 없습니다. ",
   msg_logging_in: "로그인 중", msg_signing_up: "계정 생성 중",
   label_store_cat: "상점", label_available: "사용 가능",
-  btn_redeem_code: "코드 교환", 정_hero_download: "다운로드",
+  btn_redeem_code: "코드 교환", btn_hero_download: "다운로드",
   status_owned: "소유함", status_locked: "미소유"
  },
  ru:{ 
@@ -1727,7 +1731,6 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       // User Corrected: Auto auth restored
        performAuth(els.code.value); 
      }
    }, 800);
@@ -2013,7 +2016,6 @@ async function performAuth(code, mode = 'check') {
            }
         }
       } else {
-        // UI更新時の安全性を高めるためtry-catchで囲む
         try {
             if(typeof lucide !== 'undefined') lucide.createIcons();
             
@@ -2026,7 +2028,6 @@ async function performAuth(code, mode = 'check') {
             let showInfoBox = true;
             
             const msg = d.message || "";
-            // GASからのエラー内容に柔軟に対応する判定
             if (d.isAlreadyOwned || msg === "Already owned" || msg.includes("所有") || msg.includes("済") || msg.includes("owned")) {
                 if (window.innerWidth <= 768) {
                     errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
@@ -2157,7 +2158,7 @@ async function performAuthAction() {
               openAuthModal(); 
               const codeToUse = formatCodeInput(pendingActivationCode);
               els.code.value = codeToUse;
-              // User Corrected: Stopped automatic authentication.
+              performAuth(codeToUse); 
               pendingActivationCode = null;
           }, 500);
       } else if (pendingAction === 'open_activation') {
