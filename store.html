@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>_.k__yu.10//Store</title>
+<link rel="icon" href="https://static.wixstatic.com/media/2f0694_eb4d3063598a4cc5b6bd6b8e31cba915~mv2.png/v1/crop/x_248,y_0,w_1065,h_950/fill/w_816,h_728,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/1767545356653.png">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* --- THEME VARIABLES --- */
+:root {
+  --primary: #007DFF;
+  --bg-color: #F1F3F5;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --card-border: rgba(255, 255, 255, 0.6);
+  --modal-text-main: #000000;
+  --modal-text-sub: #666666;
+  --success-text-green: #04CF22;
+  --btn-close-border: #000000;
+  --radius-xl: 24px;
+  --radius-l: 16px;
+  --spring-ease: cubic-bezier(0.33, 1, 0.68, 1);
+  --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+   
+  /* Account System */
+  --dropdown-bg: rgba(255, 255, 255, 0.95);
+  --modal-bg-standard: #FFFFFF;
+
+  /* RGL Layout Variables */
+  --sidebar-bg: #E0E0E0;
+  --sidebar-text: #000;
+  --sidebar-width: 280px;
+  --nav-text: #000;
+  --sidebar-item-hover: rgba(0,0,0,0.05);
+
+  --font-stack: 'Noto Sans JP', sans-serif;
+}
+
+:root:lang(ko) { --font-stack: 'Noto Sans KR', sans-serif; }
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --card-bg: rgba(40, 40, 40, 0.5);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --modal-text-main: #FFFFFF;
+  --modal-text-sub: #A0A0A0;
+  --btn-close-border: #FFFFFF;
+  --shadow-soft: 0 15px 40px rgba(0,0,0,0.4);
+   
+  /* Account System */
+  --dropdown-bg: rgba(20, 20, 20, 0.98);
+  --modal-bg-standard: #1A1A1A;
+
+  /* RGL Layout Variables Dark */
+  --sidebar-bg: #000000;
+  --sidebar-text: #fff;
+  --nav-text: #fff;
+  --sidebar-item-hover: rgba(255,255,255,0.1);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.2); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(128, 128, 128, 0.4); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
+
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0; padding: 0;
+  background-color: var(--bg-color);
+  color: var(--modal-text-main);
+  font-family: var(--font-stack);
+  height: 100vh; 
+  overflow: hidden; 
+  display: flex; 
+  transition: background-color 0.5s ease;
+}
+
+button, input, textarea { font-family: var(--font-stack); }
+
+#particleCanvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  z-index: 0; opacity: 0.4; pointer-events: none;
+  filter: blur(80px);
+}
+
+.loading-dots::after {
+  content: ''; animation: dots-loop 1.5s infinite steps(1);
+  display: inline-block; width: 1em; text-align: left;
+}
+@keyframes dots-loop { 0% { content: '.'; } 33% { content: '..'; } 66% { content: '...'; } 100% { content: ''; } }
+@keyframes spin { to{transform: rotate(360deg);} }
+
+/* --- RGL LAYOUT STRUCTURE --- */
+.rgl-wrapper { display: flex; width: 100%; height: 100%; z-index: 5; position: relative; }
+
+/* SIDEBAR */
+.rgl-sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); display: flex; flex-direction: column; padding: 0; flex-shrink: 0; border-right: 1px solid rgba(128,128,128,0.1); color: var(--sidebar-text); z-index: 100; overflow: hidden; }
+.rgl-brand-area { padding: 30px 24px 20px 24px; flex-shrink: 0; display: flex; align-items: center; }
+.rgl-brand { font-family: var(--font-stack); font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 12px; color: var(--sidebar-text); }
+.rgl-scroll-content { flex: 1; overflow-y: auto; padding: 10px 24px; display: flex; flex-direction: column; }
+.rgl-menu-section { margin-bottom: 30px; flex-shrink: 0; transition: opacity 0.3s ease; }
+.rgl-menu-title { font-size: 14px; font-weight: 700; opacity: 0.6; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Sidebar List Item */
+.rgl-sidebar-list { display: flex; flex-direction: column; gap: 4px; }
+.sidebar-game-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-radius: 50px; cursor: pointer; transition: background 0.2s, transform 0.1s; border: 1px solid transparent; margin-bottom: 8px; }
+.sidebar-game-item:hover { background: var(--sidebar-item-hover); }
+.sidebar-game-info { display: flex; align-items: center; gap: 10px; overflow: hidden; width: 100%; }
+.sidebar-game-thumb { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; background: #888; flex-shrink: 0; }
+.sidebar-game-text { display: flex; flex-direction: column; overflow: hidden; }
+.sidebar-game-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sidebar-text); }
+
+/* Sidebar Bottom Controls */
+.rgl-bottom-controls { margin-top: auto; padding: 20px 24px 30px 24px; flex-shrink: 0; border-top: 1px solid rgba(128,128,128,0.1); }
+
+/* MAIN CONTENT AREA */
+.rgl-main { flex: 1; position: relative; display: flex; flex-direction: column; overflow-y: auto; background-color: var(--bg-color); }
+.rgl-header { position: sticky; top: 0; z-index: 50; padding: 24px 40px; display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+.rgl-tabs { display: flex; gap: 30px; align-items: center; }
+.rgl-tab { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--nav-text); opacity: 0.6; cursor: pointer; transition: opacity 0.3s; text-decoration: none; position: relative; }
+.rgl-tab:hover, .rgl-tab.active { opacity: 1; }
+
+.theme-pill { width: 44px; height: 44px; border-radius: 50%; background: var(--card-bg); border: 1px solid rgba(128,128,128,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.3s; backdrop-filter: blur(10px); color: var(--modal-text-main); }
+.theme-pill:hover { transform: scale(1.1); }
+[data-theme="dark"] .theme-pill { color: #fff; }
+
+/* --- STORE UI --- */
+#storeView { padding: 40px 60px; flex: 1; position: relative; z-index: 2; overflow-y: auto; }
+.store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+.store-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-l); padding: 20px; backdrop-filter: blur(20px); display: flex; flex-direction: column; gap: 16px; transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s; box-shadow: var(--shadow-soft); }
+.store-card:not(.is-owned):hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); border-color: var(--primary); }
+[data-theme="dark"] .store-card:not(.is-owned):hover { box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); border-color: rgba(255,255,255,0.3); }
+.store-card.is-owned { opacity: 0.6; }
+.store-card img { width: 100%; height: 140px; object-fit: cover; border-radius: 12px; background: rgba(128,128,128,0.1); }
+.store-card-title { font-size: 18px; font-weight: 800; color: var(--modal-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.store-card-cost { font-size: 14px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+
+/* MODALS & OTHERS */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-sheet { background: rgba(255, 255, 255, 0.7) !important; backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-radius: 32px; box-shadow: 0 30px 80px rgba(0,0,0,0.15); position: relative; overflow: hidden; width: 90%; max-width: 470px; padding: 40px; transform: translateY(60px) scale(0.85); opacity: 0; transition: transform 0.7s var(--spring-ease), opacity 0.4s ease, max-width 0.5s ease; }
+.modal-overlay.active .modal-sheet { transform: translateY(0) scale(1); opacity: 1; }
+.modal-sheet.is-wide { max-width: 900px; }
+[data-theme="dark"] .modal-sheet { background: rgba(50, 50, 50, 0.7) !important; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+
+.new-modal-layout { display: flex; flex-direction: column; width: 100%; text-align: left; }
+.modal-title-top { font-size: 26px; font-weight: 800; margin: 0 0 24px 0; color: var(--modal-text-main); }
+.modal-body-flex { display: flex; gap: 30px; align-items: stretch; }
+.modal-left-col { width: 380px; flex-shrink: 0; display: flex; flex-direction: column; }
+.modal-left-col img { width: 100%; flex: 1; border-radius: 16px; object-fit: cover; background: rgba(128,128,128,0.2); }
+.modal-thumb-title { margin-top: 24px; height: 48px; line-height: 48px; font-size: 20px; font-weight: 800; color: var(--modal-text-main); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.modal-right-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.modal-label { font-size: 14px; font-weight: 700; color: var(--modal-text-main); margin: 0 0 4px 0; }
+.modal-main-title { font-size: 24px; font-weight: 800; color: var(--modal-text-main); margin: 0 0 20px 0; }
+.modal-grey-box { background: rgba(128,128,128,0.1); border-radius: 16px; padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.modal-box-text { font-size: 13px; font-weight: 700; line-height: 1.5; color: var(--modal-text-main); margin: 0; white-space: pre-wrap; }
+.modal-btn-row { display: flex; gap: 12px; margin-top: 24px; height: 48px; }
+
+.btn-outline { height: 48px; border-radius: 24px; border: 2px solid var(--modal-text-main); background: transparent; color: var(--modal-text-main); font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex: 3; }
+.btn-outline:hover { background: rgba(128,128,128,0.1); }
+.btn-solid { height: 48px; border-radius: 24px; border: none; background: var(--modal-text-main); color: var(--bg-color); font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; flex: 7; }
+.btn-solid:hover:not(:disabled) { opacity: 0.8; }
+.btn-solid:disabled { opacity: 0.5; cursor: not-allowed; }
+
+[data-theme="dark"] .btn-outline { border-color: rgba(255,255,255,0.6); color: #fff; }
+[data-theme="dark"] .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+[data-theme="dark"] .btn-solid { background: #fff; color: #000; }
+[data-theme="dark"] .modal-grey-box { background: rgba(255,255,255,0.1); }
+
+/* Account Dropdown */
+.account-dropdown { position: absolute; top: 80px; right: 40px; width: 320px; background: var(--dropdown-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(128,128,128,0.2); border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); padding: 24px; z-index: 2000; opacity: 0; transform: translateY(-10px) scale(0.98); pointer-events: none; transition: all 0.3s var(--spring-ease); text-align: left; display: flex; flex-direction: column; }
+.account-dropdown.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; visibility: visible; }
+.account-mini-header { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(128,128,128,0.1); width: 100%; }
+.mini-user-id { font-size: 16px; font-weight: 800; color: var(--modal-text-main); word-break: break-all; width: 100%; display: block; }
+.menu-list { display: flex; flex-direction: column; gap: 4px; }
+.menu-btn { background: transparent; border: none; text-align: left; padding: 14px 12px; font-size: 16px; font-weight: 700; color: var(--modal-text-main); cursor: pointer; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; font-family: var(--font-stack); }
+.menu-btn:hover { background: rgba(128,128,128,0.08); }
+
+/* Media Queries & Mobile Nav */
+.mobile-menu-trigger { display: none; }
+.mobile-nav-overlay { display: none; }
+@media (max-width: 768px) {
+  .rgl-wrapper { flex-direction: column; }
+  .rgl-sidebar { width: 100%; height: auto; padding: 0; border-right: none; border-bottom: 1px solid rgba(128,128,128,0.1); z-index: 100; position: relative; }
+  
+  .mobile-menu-trigger { display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--sidebar-text); cursor: pointer; padding: 8px; margin-right: 4px; }
+  .rgl-brand { order: 2; }
+  .mobile-menu-trigger { order: 1; }
+  .mobile-nav-overlay { display: flex; flex-direction: column; position: fixed; inset: 0; background: var(--bg-color); z-index: 10001; padding: 40px; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); visibility: hidden; }
+  .mobile-nav-overlay.active { transform: translateX(0); visibility: visible; }
+  .mobile-menu-close { align-self: flex-end; background: transparent; border: 1px solid var(--btn-close-border); color: var(--modal-text-main); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 40px; }
+  .mobile-nav-content { display: flex; flex-direction: column; gap: 40px; flex: 1; }
+  .mobile-nav-item { font-family: var(--font-stack); font-size: 32px; font-weight: 800; color: var(--modal-text-main); text-decoration: none; text-align: left; }
+  
+  .rgl-brand-area { padding: 16px 12px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%; padding-right: 120px; }
+  .rgl-scroll-content, .rgl-bottom-controls { display: none; }
+  .rgl-header { position: fixed !important; top: 0; right: 0; width: auto; height: 70px; background: transparent !important; padding: 0 16px; z-index: 200; pointer-events: none; }
+  .rgl-header > * { pointer-events: auto; }
+  .rgl-tabs { display: none; }
+  #storeView { padding: 30px 20px; }
+  .account-dropdown { position: fixed; top: 70px; right: 5%; width: 90%; left: auto; transform: translateY(-10px); }
+  
+  .modal-sheet.is-wide { padding: 0 !important; max-width: 92%; border-radius: 24px; height: auto; max-height: 85vh; overflow-y: auto; }
+  .modal-title-top { display: none !important; }
+  .modal-body-flex { flex-direction: column; gap: 0; align-items: stretch;}
+  .modal-left-col { width: 100%; }
+  .modal-left-col img { border-radius: 24px 24px 0 0; height: 220px; flex: none; width: 100%; object-fit: cover;}
+  .modal-thumb-title { display: none !important; }
+  .modal-right-col { padding: 24px; }
+  .modal-main-title { font-size: 20px; white-space: normal; }
+  .modal-grey-box { background: rgba(128,128,128,0.05) !important; padding: 16px !important; margin-bottom: 24px; flex: none; border: 1px solid rgba(128,128,128,0.1); border-radius: 12px;}
+  .modal-btn-row { margin-top: 0; height: 50px; }
+  .btn-outline, .btn-solid { height: 50px; border-radius: 50px; }
+  .mobile-title { display: block; font-size: 22px; font-weight: 800; color: var(--modal-text-main); margin: 0 0 16px 0; }
+}
+@media (min-width: 769px) { .mobile-title { display: none; } }
+</style>
+</head>
+<body>
+
+<canvas id="particleCanvas" width="1125" height="605"></canvas>
+
+<div class="mobile-nav-overlay" id="mobileNav">
+    <button class="mobile-menu-close" id="mobileMenuCloseBtn"><i data-lucide="x"></i></button>
+    <div class="mobile-nav-content">
+        <a href="index.html" class="mobile-nav-item" data-translate="card1_title">ホーム</a>
+        <a href="store.html" class="mobile-nav-item" data-translate="tab_store">ストア</a>
+        <a href="support.html" class="mobile-nav-item" data-translate="card3_title">サポート</a>
+    </div>
+</div>
+
+<div class="rgl-wrapper" id="mainContainer">
+    
+    <aside class="rgl-sidebar">
+        <div class="rgl-brand-area">
+            <button class="mobile-menu-trigger" id="mobileMenuBtn">
+                <i data-lucide="menu"></i>
+            </button>
+            <div class="rgl-brand"><i data-lucide="graduation-cap"></i> <span data-translate="header_brand">kr_開発者版</span></div>
+        </div>
+        
+        <div class="rgl-scroll-content">
+            <div class="rgl-menu-section" id="secLibrary" style="display:none;">
+                <div class="rgl-menu-title" data-translate="label_library">ライブラリ</div>
+                <div id="sidebarLibraryList" class="rgl-sidebar-list"></div>
+            </div>
+        </div>
+
+        <div class="rgl-bottom-controls">
+            <div style="font-size:10px; opacity:0.3; text-align:center;">© 2026 kiryu-sensya</div>
+        </div>
+    </aside>
+
+    <main class="rgl-main">
+        <nav class="rgl-header">
+            <div class="rgl-tabs">
+                <a href="index.html" class="rgl-tab" data-translate="card1_title">ホーム</a>
+                <a href="store.html" class="rgl-tab active" data-translate="tab_store">ストア</a>
+                <a href="support.html" class="rgl-tab" data-translate="card3_title">サポート</a>
+            </div>
+            
+            <div class="theme-pill" id="themeToggle"><i data-lucide="moon" id="themeIcon"></i></div>
+
+            <div style="position:relative;">
+                <div class="theme-pill" id="btnOpenAccount" style="width:40px; height:40px; border:none;">
+                    <i data-lucide="user-round"></i> 
+                </div>
+
+                <div id="accountDropdown" class="account-dropdown">
+                    <div id="loggedInView" style="display: none;">
+                      <div class="account-mini-header" style="width: 100%;">
+                        <span class="mini-user-id" id="displayUserEmail" style="display: block; width: 100%; word-break: break-all;">-</span>
+                        <div id="dropdownPointDisplay" style="display: none; justify-content: flex-end; align-items: center; width: 100%; margin-top: 8px; font-weight: 800; color: var(--primary); font-size: 15px;">
+                            <i data-lucide="coins" style="margin-right: 6px; width: 18px; height: 18px;"></i>
+                            <span id="userPointsText">0</span> pt
+                        </div>
+                      </div>
+                      <div class="menu-list">
+                         <button class="menu-btn" onclick="window.location.href='index.html'">
+                            <span data-translate="btn_redeem_code">コード引き換え</span> <i data-lucide="key-round" size="18"></i>
+                         </button>
+                         <button class="menu-btn" id="btnLogout" style="color:#FF3B30;">
+                           <span data-translate="btn_logout">ログアウト</span> <i data-lucide="log-out" size="18"></i>
+                         </button>
+                      </div>
+                    </div>
+                    
+                    <div id="loggedOutView" style="display: block; text-align:center; padding: 20px 0;">
+                        <p style="font-weight:700; margin-bottom:10px;" data-translate="msg_login_required">ログインが必要です</p>
+                        <button class="btn-solid" onclick="window.location.href='index.html'" style="height:40px; width:100%; font-size:14px;" data-translate="btn_go_login">ログインページへ</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div id="storeView">
+            <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 30px; color: var(--modal-text-main);" data-translate="tab_store">ストア</h2>
+            <div id="storeGrid" class="store-grid">
+                <div style="opacity:0.5; font-size:14px;" data-translate="lib_updating">読み込み中...</div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<div id="purchaseModal" class="modal-overlay">
+  <div class="modal-sheet is-wide" id="modalContainer">
+    <div style="position:absolute; top:20px; right:20px; cursor:pointer; z-index:10;" id="modalCloseBtn"><i data-lucide="x"></i></div>
+    
+    <div id="phase-preview" style="display: none; opacity: 0;" class="new-modal-layout">
+        <h2 class="modal-title-top" data-translate="preview_title">コンテンツ確認</h2>
+        <div class="modal-body-flex">
+            <div class="modal-left-col">
+                <img id="previewImage" src="" alt="Thumbnail">
+                <div id="previewTitleUnderImg" class="modal-thumb-title"></div>
+            </div>
+            <div class="modal-right-col">
+                <h2 class="mobile-title" data-translate="preview_title">コンテンツ確認</h2>
+                <p class="modal-label" data-translate="lbl_consume_points">以下のポイントを消費して交換します:</p>
+                <h3 id="previewTitle" class="modal-main-title"></h3>
+                <div class="modal-grey-box" id="previewWarningBox">
+                    <p class="modal-box-text is-warning" id="previewWarningText" style="font-size:18px; color:var(--primary); font-weight:800;"></p>
+                </div>
+                <div class="modal-btn-row">
+                    <button class="btn-outline" id="btnPreviewClose" data-translate="btn_close">閉じる</button>
+                    <button class="btn-solid" id="btnPreviewRedeem" data-translate="btn_continue">交換する</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="phase-success" style="display: none; opacity: 0;" class="new-modal-layout">
+        <h2 class="modal-title-top" data-translate="success_title_final">Success!!</h2>
+        <div class="modal-body-flex">
+            <div class="modal-left-col">
+                <img id="successImage2" src="" alt="Thumbnail">
+                <div id="successTitleUnderImg" class="modal-thumb-title"></div>
+            </div>
+            <div class="modal-right-col">
+                <h2 class="mobile-title" data-translate="success_title_final">Success!!</h2>
+                <p class="modal-label" data-translate="success_desc">獲得したコンテンツ:</p>
+                <h3 id="successBundleName" class="modal-main-title"></h3>
+                <div class="modal-grey-box">
+                    <p class="modal-box-text" data-translate="msg_store_success">ライブラリに追加されました。</p>
+                </div>
+                <div class="modal-btn-row" id="successBtnRow">
+                    <button class="btn-solid" style="width: 100%; flex: none;" id="btnSuccessClose" data-translate="btn_close">閉じる</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const GAS_API_URL = "api/proxy"; 
+let CURRENT_LANG = localStorage.getItem('user_lang') || 'ja';
+let currentUser = null;
+let storeItemsData = [];
+let pendingPurchaseItem = null;
+
+// すべての言語の翻訳データ
+const TRANSLATIONS = {
+ ja: { header_brand:"kr_開発者版", card1_title:"ホーム", tab_store:"ストア", card3_title:"サポート", label_library:"ライブラリ", btn_exchange:"ポイントで交換", msg_not_enough_points:"ポイントが不足しています", preview_title:"コンテンツ確認", btn_close:"閉じる", btn_continue:"交換する", btn_logout:"ログアウト", btn_redeem_code:"コード引き換え", status_owned:"所有済み", msg_login_required:"ログインが必要です", btn_go_login:"ログインページへ", lib_updating:"読み込み中...", lbl_consume_points:"以下のポイントを消費して交換します:", success_title_final:"交換成功!!", success_desc:"獲得したコンテンツ:", msg_store_success:"ライブラリに追加されました。" },
+ en: { header_brand:"kr_Dev E", card1_title:"Home", tab_store:"Store", card3_title:"Support", label_library:"Library", btn_exchange:"Exchange", msg_not_enough_points:"Not enough points", preview_title:"Confirm Content", btn_close:"Close", btn_continue:"Exchange", btn_logout:"Logout", btn_redeem_code:"Redeem Code", status_owned:"Owned", msg_login_required:"Login is required", btn_go_login:"Go to Login", lib_updating:"Loading...", lbl_consume_points:"Points to consume:", success_title_final:"Success!!", success_desc:"Added to Library:", msg_store_success:"Item successfully added to your library." },
+ zh: { header_brand:"kr_开发者版", card1_title:"首页", tab_store:"商店", card3_title:"支持", label_library:"我的库", btn_exchange:"积分兑换", msg_not_enough_points:"积分不足", preview_title:"确认内容", btn_close:"关闭", btn_continue:"兑换", btn_logout:"登出", btn_redeem_code:"兑换代码", status_owned:"已拥有", msg_login_required:"需要登录", btn_go_login:"前往登录页面", lib_updating:"正在加载...", lbl_consume_points:"将消耗以下积分进行兑换:", success_title_final:"兑换成功!!", success_desc:"获得的内容:", msg_store_success:"已添加到您的库中。" },
+ "zh-TW": { header_brand:"kr_開發者版", card1_title:"首頁", tab_store:"商店", card3_title:"支援", label_library:"我的庫", btn_exchange:"積分兌換", msg_not_enough_points:"積分不足", preview_title:"確認內容", btn_close:"關閉", btn_continue:"兌換", btn_logout:"登出", btn_redeem_code:"兌換代碼", status_owned:"已擁有", msg_login_required:"需要登入", btn_go_login:"前往登入頁面", lib_updating:"載入中...", lbl_consume_points:"將消耗以下積分進行兌換:", success_title_final:"兌換成功!!", success_desc:"獲得的內容:", msg_store_success:"已添加到您的庫中。" },
+ ko: { header_brand:"kr_개발자용", card1_title:"메인 페이지", tab_store:"상점", card3_title:"지원", label_library:"라이브러리", btn_exchange:"포인트 교환", msg_not_enough_points:"포인트가 부족합니다", preview_title:"콘텐츠 확인", btn_close:"닫기", btn_continue:"교환하기", btn_logout:"로그아웃", btn_redeem_code:"코드 교환", status_owned:"소유함", msg_login_required:"로그인이 필요합니다", btn_go_login:"로그인 페이지로", lib_updating:"로딩 중...", lbl_consume_points:"소모할 포인트:", success_title_final:"교환 성공!!", success_desc:"획득한 콘텐츠:", msg_store_success:"라이브러리에 추가되었습니다." },
+ ru: { header_brand:"kr_Разработчик", card1_title:"Главная", tab_store:"Магазин", card3_title:"Поддержка", label_library:"Библиотека", btn_exchange:"Обменять", msg_not_enough_points:"Недостаточно очков", preview_title:"Подтверждение", btn_close:"Закрыть", btn_continue:"Обменять", btn_logout:"Выйти", btn_redeem_code:"Активировать код", status_owned:"В наличии", msg_login_required:"Требуется авторизация", btn_go_login:"Перейти к входу", lib_updating:"Загрузка...", lbl_consume_points:"Очки для обмена:", success_title_final:"Успешно!!", success_desc:"Добавлено в библиотеку:", msg_store_success:"Элемент успешно добавлен в библиотеку." }
+};
+
+const gId = (i) => document.getElementById(i);
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.lang = CURRENT_LANG;
+    try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+    
+    // 翻訳の適用
+    document.querySelectorAll('[data-translate]').forEach(el => { 
+        const k = el.getAttribute('data-translate'); 
+        if(TRANSLATIONS[CURRENT_LANG] && TRANSLATIONS[CURRENT_LANG][k]) el.innerHTML = TRANSLATIONS[CURRENT_LANG][k]; 
+    });
+
+    // セッション読み込み (ポイント対応)
+    const sUser = localStorage.getItem('user_session_identity');
+    if (sUser) {
+        try {
+            const identity = JSON.parse(sUser);
+            currentUser = { userId: identity.userId, email: identity.email, history: [], points: identity.points || 0 };
+            updateAccountUI();
+            fetchUserHistoryAndStore(); 
+        } catch(e) { console.error(e); }
+    } else {
+        updateAccountUI();
+    }
+
+    // イベントリスナー
+    gId('btnOpenAccount').addEventListener('click', (e) => {
+        e.stopPropagation();
+        gId('accountDropdown').classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+        if (!gId('accountDropdown').contains(e.target) && !gId('btnOpenAccount').contains(e.target)) {
+            gId('accountDropdown').classList.remove('open');
+        }
+    });
+    if(gId('btnLogout')) {
+        gId('btnLogout').addEventListener('click', () => {
+            localStorage.removeItem('user_session_identity');
+            window.location.reload();
+        });
+    }
+
+    if(gId('mobileMenuBtn')) gId('mobileMenuBtn').addEventListener('click', () => gId('mobileNav').classList.add('active'));
+    if(gId('mobileMenuCloseBtn')) gId('mobileMenuCloseBtn').addEventListener('click', () => gId('mobileNav').classList.remove('active'));
+
+    // モーダル制御
+    gId('modalCloseBtn').addEventListener('click', closePurchaseModal);
+    gId('btnPreviewClose').addEventListener('click', closePurchaseModal);
+    gId('btnSuccessClose').addEventListener('click', closePurchaseModal);
+    
+    gId('btnPreviewRedeem').addEventListener('click', executePurchase);
+
+    initThemeAndParticles();
+});
+
+function updateAccountUI() {
+    if (currentUser) {
+        gId('loggedOutView').style.display = 'none';
+        gId('loggedInView').style.display = 'block';
+        gId('displayUserEmail').textContent = currentUser.email || '-';
+        
+        const pointDisplay = gId('dropdownPointDisplay');
+        if (pointDisplay) {
+            pointDisplay.style.display = 'flex';
+            gId('userPointsText').textContent = currentUser.points;
+        }
+        
+        gId('secLibrary').style.display = 'block';
+    } else {
+        gId('loggedOutView').style.display = 'block';
+        gId('loggedInView').style.display = 'none';
+        if (gId('dropdownPointDisplay')) gId('dropdownPointDisplay').style.display = 'none';
+        gId('secLibrary').style.display = 'none';
+    }
+}
+
+function updateSidebarLibrary() {
+    const list = gId('sidebarLibraryList');
+    list.innerHTML = "";
+    if (!currentUser || !currentUser.history || currentUser.history.length === 0) {
+        list.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">No content</div>`;
+        return;
+    }
+    currentUser.history.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'sidebar-game-item';
+        const imgUrl = (item.imageUrl && item.imageUrl.startsWith('http')) ? item.imageUrl : 'https://via.placeholder.com/32';
+        div.innerHTML = `
+            <div class="sidebar-game-info">
+            <img src="${imgUrl}" class="sidebar-game-thumb" onerror="this.style.background='#555'">
+            <div class="sidebar-game-text"><div class="sidebar-game-title">${item.title}</div></div>
+            </div>`;
+        list.appendChild(div);
+    });
+}
+
+async function fetchUserHistoryAndStore() {
+    try { 
+        const res = await fetch(`${GAS_API_URL}?type=get_history&userId=${currentUser.userId}&lang=${CURRENT_LANG}&_t=${Date.now()}`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.history)) {
+            currentUser.history = data.history; 
+            updateSidebarLibrary();
+        }
+    } catch (e) { console.error(e); }
+    
+    const grid = gId('storeGrid');
+    try {
+        const res = await fetch(`${GAS_API_URL}?type=get_available&lang=${CURRENT_LANG}`);
+        const d = await res.json();
+        grid.innerHTML = '';
+        
+        if(d.success && d.items && d.items.length > 0) {
+            storeItemsData = d.items;
+            renderStoreItems();
+        } else {
+            grid.innerHTML = `<div style="opacity:0.5; font-size:14px;">アイテムがありません。</div>`;
+        }
+    } catch(e) {
+        grid.innerHTML = `<div style="color:red; font-size:14px;">データの取得に失敗しました。</div>`;
+    }
+}
+
+function renderStoreItems() {
+    const grid = gId('storeGrid');
+    grid.innerHTML = '';
+    
+    const ownedGroups = new Set();
+    const ownedCodes = new Set();
+    if (currentUser && currentUser.history) {
+        currentUser.history.forEach(h => {
+            if (h.groupId) ownedGroups.add(h.groupId); 
+            if (h.code) ownedCodes.add(h.code);
+        });
+    }
+
+    let hasItems = false;
+    storeItemsData.forEach(item => {
+        if (item.active === false) return; 
+
+        // 所有判定
+        const isOwned = (item.groupId && ownedGroups.has(item.groupId)) || (!item.groupId && ownedCodes.has(item.code));
+        hasItems = true;
+        const cost = item.cost || 500; 
+        const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS.ja;
+
+        const div = document.createElement('div');
+        div.className = 'store-card';
+        if (isOwned) div.classList.add('is-owned');
+
+        let buttonHtml = '';
+        if (isOwned) {
+            buttonHtml = `
+                <button class="btn-solid" style="height:40px; font-size:14px; width:100%; opacity:0.5; cursor:not-allowed;" disabled>
+                    ${t.status_owned || "所有済み"}
+                </button>
+            `;
+        } else {
+            buttonHtml = `
+                <button class="btn-solid" style="height:40px; font-size:14px; width:100%;" onclick="openPurchasePreview('${item.code}', ${cost})">
+                    ${t.btn_exchange}
+                </button>
+            `;
+        }
+
+        div.innerHTML = `
+            <img src="${item.imageUrl}" alt="${item.title}">
+            <div class="store-card-title">${item.title}</div>
+            <div class="store-card-cost"><i data-lucide="coins" style="width:16px; height:16px;"></i> ${cost} pt</div>
+            ${buttonHtml}
+        `;
+        grid.appendChild(div);
+    });
+
+    if(!hasItems) {
+        grid.innerHTML = `<div style="opacity:0.5; font-size:14px;">現在表示できるアイテムはありません。</div>`;
+    }
+    try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+}
+
+function openPurchasePreview(code, cost) {
+    if (!currentUser) return;
+    const item = storeItemsData.find(i => i.code === code);
+    if (!item) return;
+
+    if (currentUser.points < cost) {
+        alert(TRANSLATIONS[CURRENT_LANG].msg_not_enough_points || "ポイントが不足しています");
+        return;
+    }
+
+    pendingPurchaseItem = { ...item, cost: cost };
+    
+    gId('previewImage').src = item.imageUrl;
+    gId('previewTitleUnderImg').textContent = item.title;
+    gId('previewTitle').textContent = item.title;
+    
+    // 残高計算の表示
+    const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS.ja;
+    let costLabel = "Cost:";
+    if(CURRENT_LANG === 'ja') costLabel = "消費ポイント:";
+    else if(CURRENT_LANG.startsWith('zh')) costLabel = "消耗积分:";
+    else if(CURRENT_LANG === 'ko') costLabel = "소모 포인트:";
+    
+    let balLabel = "Balance:";
+    if(CURRENT_LANG === 'ja') balLabel = "残高:";
+    else if(CURRENT_LANG.startsWith('zh')) balLabel = "余额:";
+    else if(CURRENT_LANG === 'ko') balLabel = "잔액:";
+    else if(CURRENT_LANG === 'ru') balLabel = "Баланс:";
+
+    gId('previewWarningText').innerHTML = `${costLabel} ${cost} pt <br><span style="font-size:14px; color:var(--modal-text-sub); font-weight:normal;">${balLabel} ${currentUser.points} pt → ${currentUser.points - cost} pt</span>`;
+    
+    gId('purchaseModal').classList.add('active');
+    gId('phase-success').style.display = 'none';
+    gId('phase-preview').style.display = 'flex';
+    setTimeout(() => gId('phase-preview').style.opacity = '1', 50);
+}
+
+function closePurchaseModal() {
+    gId('purchaseModal').classList.remove('active');
+    setTimeout(() => {
+        gId('phase-preview').style.opacity = '0';
+        gId('phase-success').style.opacity = '0';
+        gId('phase-preview').style.display = 'none';
+        gId('phase-success').style.display = 'none';
+    }, 400);
+}
+
+function executePurchase() {
+    if (!pendingPurchaseItem || !currentUser) return;
+    
+    const cost = pendingPurchaseItem.cost;
+    const btn = gId('btnPreviewRedeem');
+    btn.disabled = true;
+    const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS.ja;
+    btn.innerHTML = `<span class="loading-dots">...</span>`;
+
+    setTimeout(() => {
+        // ポイント減算
+        currentUser.points -= cost;
+        localStorage.setItem('user_session_identity', JSON.stringify({ userId: currentUser.userId, email: currentUser.email, points: currentUser.points }));
+        updateAccountUI();
+
+        // 履歴に追加
+        const newItem = {
+            code: pendingPurchaseItem.code, 
+            title: pendingPurchaseItem.title, 
+            url: pendingPurchaseItem.actionUrl, 
+            date: new Date().toLocaleDateString(), 
+            imageUrl: pendingPurchaseItem.imageUrl, 
+            groupId: pendingPurchaseItem.groupId
+        };
+        currentUser.history.unshift(newItem);
+        updateSidebarLibrary();
+        renderStoreItems(); // 再描画して所有済みに更新
+
+        // 成功画面へ
+        gId('successImage2').src = pendingPurchaseItem.imageUrl;
+        gId('successTitleUnderImg').textContent = pendingPurchaseItem.title;
+        gId('successBundleName').textContent = pendingPurchaseItem.title;
+
+        gId('phase-preview').style.opacity = '0';
+        setTimeout(() => {
+            gId('phase-preview').style.display = 'none';
+            gId('phase-success').style.display = 'flex';
+            setTimeout(() => gId('phase-success').style.opacity = '1', 50);
+            btn.disabled = false;
+            btn.innerHTML = t.btn_continue;
+        }, 400);
+
+    }, 800); 
+}
+
+function initThemeAndParticles() {
+  const htmlEl = document.documentElement;
+  const toggleBtn = gId('themeToggle');
+  const icon = gId('themeIcon');
+  let particleHue = 210;
+  function applyTheme(theme) {
+    htmlEl.setAttribute('data-theme', theme);
+    if(icon) icon.setAttribute('data-lucide', theme === 'light' ? 'sun' : 'moon');
+    particleHue = theme === 'light' ? 210 : 220; 
+    try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+  }
+  const saved = localStorage.getItem('user_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(saved);
+  if(toggleBtn) toggleBtn.addEventListener('click', () => {
+    const next = htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next); localStorage.setItem('user_theme', next);
+  });
+
+  const canvas = gId('particleCanvas'); const ctx = canvas.getContext('2d'); canvas.width = innerWidth; canvas.height = innerHeight;
+  class Particle {
+    constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.size=Math.random()*150+50; this.speedX=Math.random()*0.2-0.1; this.speedY=Math.random()*0.2-0.1; this.opacity=Math.random()*0.3+0.1; }
+    update() { this.x+=this.speedX; this.y+=this.speedY; if(this.x<0||this.x>canvas.width)this.speedX*=-1; if(this.y<0||this.y>canvas.height)this.speedY*=-1; }
+    draw() { ctx.fillStyle=`hsla(${particleHue}, 100%, 50%, ${this.opacity*0.2})`; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
+  }
+  let p = []; for(let i=0;i<8;i++) p.push(new Particle());
+  function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); p.forEach(i=>{i.update();i.draw();}); requestAnimationFrame(animate); }
+  window.addEventListener('resize', () => { canvas.width=innerWidth; canvas.height=innerHeight; }); animate();
+}
+</script>
+</body>
+</html>
