@@ -383,6 +383,18 @@ button, input, textarea { font-family: var(--font-stack); }
     box-shadow: 0 15px 30px rgba(0, 125, 255, 0.4);
 }
 
+/* ★ 新規追加: 購入ボタン用スタイル（ライト=白/黒文字, ダーク=黒/白文字） */
+.btn-buy-alt {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+}
+[data-theme="dark"] .btn-buy-alt {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
 
 /* Sidebar Language Selector */
 .lang-trigger-sidebar {
@@ -1071,7 +1083,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                     <div id="loggedInView" style="display: block;">
                       <div class="account-mini-header">
                         <span class="mini-user-id" id="displayUserEmail" style="font-size:16px; font-weight:800; word-break: break-all;">122</span>
-                        <span id="displayUserPoints" style="font-size:14px; font-weight:700; color:var(--success-text-green); margin-top:4px; display:flex; align-items:center; gap:4px;">
+                        <span id="displayUserPoints" style="font-size:14px; font-weight:700; color:var(--modal-text-main); margin-top:4px; display:flex; align-items:center; gap:4px;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path><path d="M7 6h1v4"></path><path d="m16.71 13.88.7.71-2.82 2.82"></path></svg>
                             <span id="ptValue">0</span> pt
                         </span>
@@ -1125,7 +1137,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                     <button id="heroActionBtn" class="rgl-cta-btn">
                         <span data-translate="btn_redeem_code">コード引き換え</span>
                     </button>
-                    <button id="heroBuyBtn" class="rgl-cta-btn" style="display:none; background-color: var(--bright-green); color: #fff;">
+                    <button id="heroBuyBtn" class="rgl-cta-btn btn-buy-alt" style="display:none;">
                         <span id="heroBuyBtnText">購入する</span>
                     </button>
                 </div>
@@ -1357,6 +1369,17 @@ const TRANSLATIONS={
   error_owned_msg: "この %s は所有しているようです。",
   error_owned_sub: "左ライブラリメニューからコンテンツを選択してダウンロードしてください。",
   btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード", btn_buy:"購入する",
+  
+  /* ★ 追加: 購入フロー用のテキスト */
+  preview_buy_title: "購入確認",
+  preview_buy_desc: "以下のコンテンツを %s pt で購入します:",
+  btn_buy_confirm: "購入確定",
+  success_buy_title: "購入完了",
+  success_buy_desc: "以下のコンテンツが正常に処理されました。",
+  error_points_title: "ポイント不足",
+  error_points_msg: "ポイントが不足しています。",
+  error_points_sub: "現在: %1 pt / 必要: %2 pt",
+
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント", lib_updating: "読み込み中",
   label_logged_in: "ユーザーID", label_library: "ライブラリ", label_welcome: "ようこそ", label_sync_desc: "ログインして同期を開始",
@@ -1386,6 +1409,16 @@ const TRANSLATIONS={
   error_owned_msg: "You seem to already own %s.",
   error_owned_sub: "Please select the content from the left library menu to download.",
   btn_close:"Close",btn_continue:"Redeem",btn_download:"Download", btn_buy:"Buy",
+  
+  preview_buy_title: "Confirm Purchase",
+  preview_buy_desc: "You will purchase the following content for %s pt:",
+  btn_buy_confirm: "Confirm",
+  success_buy_title: "Purchase Complete",
+  success_buy_desc: "The following content has been processed successfully.",
+  error_points_title: "Insufficient Points",
+  error_points_msg: "You do not have enough points.",
+  error_points_sub: "Current: %1 pt / Required: %2 pt",
+
   footer_admin:"Enforcement Administrator",
   menu_login: "Login", menu_account: "Account", lib_updating: "Loading",
   label_logged_in: "USER ID", label_library: "Library", label_welcome: "Welcome", label_sync_desc: "Login to sync content.",
@@ -1415,6 +1448,16 @@ const TRANSLATIONS={
   error_owned_msg: "您似乎已经拥有 %s。",
   error_owned_sub: "请从左侧库菜单中选择要下载的内容。",
   btn_close:"关闭",btn_continue:"兑換",btn_download:"下载", btn_buy:"购买", 
+  
+  preview_buy_title: "确认购买",
+  preview_buy_desc: "您将使用 %s pt 购买以下内容:",
+  btn_buy_confirm: "确认购买",
+  success_buy_title: "购买完成",
+  success_buy_desc: "以下内容已成功处理。",
+  error_points_title: "积分不足",
+  error_points_msg: "您的积分不足。",
+  error_points_sub: "当前: %1 pt / 需要: %2 pt",
+
   footer_admin:"系统管理长",
   menu_login: "登录", menu_account: "账户", lib_updating: "正在加载",
   label_logged_in: "用户ID", label_library: "我的库", label_welcome: "欢迎", label_sync_desc: "登录以同步内容",
@@ -1444,6 +1487,16 @@ const TRANSLATIONS={
   error_owned_msg: "您似乎已經擁有 %s。",
   error_owned_sub: "請從左側庫菜單中選擇要下載的內容。",
   btn_close:"關閉",btn_continue:"兌換",btn_download:"下載", btn_buy:"購買", 
+  
+  preview_buy_title: "確認購買",
+  preview_buy_desc: "您將使用 %s pt 購買以下內容:",
+  btn_buy_confirm: "確認購買",
+  success_buy_title: "購買完成",
+  success_buy_desc: "以下內容已成功處理。",
+  error_points_title: "積分不足",
+  error_points_msg: "您的積分不足。",
+  error_points_sub: "當前: %1 pt / 需要: %2 pt",
+
   footer_admin:"系統管理長",
   menu_login: "登入", menu_account: "帳戶", lib_updating: "載入中",
   label_logged_in: "用戶ID", label_library: "我的庫", label_welcome: "歡迎", label_sync_desc: "登入以同步內容",
@@ -1473,6 +1526,16 @@ const TRANSLATIONS={
   error_owned_msg: "이미 %s 콘텐츠를 소유하고 있는 것 같습니다.",
   error_owned_sub: "왼쪽 라이브러리 메뉴에서 다운로드할 콘텐츠를 선택하세요.",
   btn_close:"닫기",btn_continue:"사용",btn_download:"다운로드", btn_buy:"구매", 
+  
+  preview_buy_title: "구매 확인",
+  preview_buy_desc: "다음 콘텐츠를 %s pt로 구매합니다:",
+  btn_buy_confirm: "구매 확정",
+  success_buy_title: "구매 완료",
+  success_buy_desc: "다음 콘텐츠가 정상적으로 처리되었습니다.",
+  error_points_title: "포인트 부족",
+  error_points_msg: "포인트가 부족합니다.",
+  error_points_sub: "현재: %1 pt / 필요: %2 pt",
+
   footer_admin:"시스템 관리자",
   menu_login: "로그인", menu_account: "계정", lib_updating: "로딩 중",
   label_logged_in: "사용자 ID", label_library: "라이브러리", label_welcome: "환영합니다", label_sync_desc: "동기화하려면 로그인",
@@ -1502,6 +1565,16 @@ const TRANSLATIONS={
   error_owned_msg: "Похоже, вы уже владеете %s.",
   error_owned_sub: "Пожалуйста, выберите контент из левого меню библиотеки для загрузки.",
   btn_close:"Закрыть",btn_continue:"Погасить",btn_download:"Скачать", btn_buy:"Купить", 
+  
+  preview_buy_title: "Подтверждение покупки",
+  preview_buy_desc: "Вы приобретете следующий контент за %s pt:",
+  btn_buy_confirm: "Подтвердить",
+  success_buy_title: "Покупка завершена",
+  success_buy_desc: "Следующий контент был успешно обработан.",
+  error_points_title: "Недостаточно очков",
+  error_points_msg: "У вас недостаточно очков.",
+  error_points_sub: "Текущие: %1 pt / Требуется: %2 pt",
+
   footer_admin:"Администратор",
   menu_login: "Вход", menu_account: "Учетная запись", lib_updating: "Загрузка",
   label_logged_in: "ID пользователя", label_library: "Библиотека", label_welcome: "Привет", label_sync_desc: "Войдите для синхронизации",
@@ -1585,20 +1658,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   if (!sLang) {
       const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-      
-      if (browserLang.startsWith('ja')) {
-          sLang = 'ja';
-      } else if (browserLang.includes('zh-tw') || browserLang.includes('zh-hk') || browserLang.includes('zh-hant')) {
-          sLang = 'zh-TW';
-      } else if (browserLang.startsWith('zh')) {
-          sLang = 'zh';
-      } else if (browserLang.startsWith('ko')) {
-          sLang = 'ko';
-      } else if (browserLang.startsWith('ru')) {
-          sLang = 'ru';
-      } else {
-          sLang = 'en'; 
-      }
+      if (browserLang.startsWith('ja')) { sLang = 'ja'; } 
+      else if (browserLang.includes('zh-tw') || browserLang.includes('zh-hk') || browserLang.includes('zh-hant')) { sLang = 'zh-TW'; } 
+      else if (browserLang.startsWith('zh')) { sLang = 'zh'; } 
+      else if (browserLang.startsWith('ko')) { sLang = 'ko'; } 
+      else if (browserLang.startsWith('ru')) { sLang = 'ru'; } 
+      else { sLang = 'en'; }
   }
   
   setInitialLanguage(sLang, true);
@@ -1612,7 +1677,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch(e) { console.error(e); }
   }
   updateAccountUI();
-  if (!currentUser) { /* 未ログイン時処理 */ }
   initThemeAndParticles();
   initCustomDropdown();
   setupEventListeners();
@@ -1716,14 +1780,16 @@ function setupEventListeners() {
               toggleDropdown(true);
               return;
           }
-          const price = selectedHeroItem.price;
-          if (currentUser.points < price) {
-              alert(TRANSLATIONS[CURRENT_LANG].msg_error + ": ポイントが不足しています。");
+          const price = Number(selectedHeroItem.price) || 0;
+          const userPts = Number(currentUser.points) || 0;
+          
+          if (userPts < price) {
+              // エラーモーダルを表示
+              showPurchaseError(userPts, price);
               return;
           }
-          if (confirm(`${price} pt を消費して購入しますか？`)) {
-              buyItemWithPoints(selectedHeroItem.code, price);
-          }
+          // 確認モーダル（プレビュー画面）を表示
+          showPurchasePreview(selectedHeroItem, price);
       });
   }
 
@@ -1760,12 +1826,89 @@ function setupEventListeners() {
   }
 }
 
+// ★ 購入用エラー画面の表示処理
+function showPurchaseError(userPts, price) {
+    const t = TRANSLATIONS[CURRENT_LANG];
+    currentAuthRequestId++; 
+    els.authModal.classList.add('active');
+    els.modalCon.classList.add('is-wide');
+    
+    els.phaseInput.style.display = 'none';
+    els.phasePreview.style.display = 'none';
+    els.phaseSuccess.style.display = 'none';
+    
+    els.errorCodeText.textContent = generateErrorCode();
+    els.errorTime.textContent = getFormattedCurrentTime(CURRENT_LANG);
+    els.errorMessage.textContent = t.error_points_msg || "ポイントが不足しています。";
+    
+    const subStr = t.error_points_sub || `現在: ${userPts} pt / 必要: ${price} pt`;
+    els.errorSubMessage.innerHTML = subStr.replace('%1', userPts).replace('%2', price);
+    els.errorInfoBox.style.display = 'flex';
+    
+    els.btnErrorClose.style.flex = "none";
+    els.btnErrorClose.style.width = "100%";
+    els.btnErrorOpenLibrary.style.display = "none";
+    
+    els.phaseError.style.display = 'flex';
+    setTimeout(() => els.phaseError.style.opacity = '1', 50);
+    
+    try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
+}
+
+// ★ 購入用プレビュー画面の表示処理
+function showPurchasePreview(item, price) {
+    const t = TRANSLATIONS[CURRENT_LANG];
+    currentAuthRequestId++;
+    currentContentData = { ...item }; 
+    currentAuthTime = getFormattedCurrentTime(CURRENT_LANG);
+    
+    els.authModal.classList.add('active');
+    els.modalCon.classList.add('is-wide');
+    
+    els.phaseInput.style.display = 'none';
+    els.phaseSuccess.style.display = 'none';
+    els.phaseError.style.display = 'none';
+    
+    const ptDesc = (t.preview_buy_desc || "以下のコンテンツを %s pt で購入します:").replace('%s', price);
+    
+    const titleTops = els.phasePreview.querySelectorAll('.modal-title-top, .mobile-title');
+    titleTops.forEach(el => el.textContent = t.preview_buy_title || "購入確認");
+    
+    const label = els.phasePreview.querySelector('.modal-label');
+    if(label) label.textContent = ptDesc;
+    
+    els.previewImage.src = item.imageUrl || "https://via.placeholder.com/300";
+    els.previewTitleUnderImg.textContent = item.title;
+    els.previewTitle.textContent = item.title;
+    
+    els.previewWarningText.innerHTML = "";
+    els.previewWarningBox.style.display = 'none';
+    
+    els.btnPreviewRedeem.disabled = false;
+    els.btnPreviewRedeem.innerHTML = t.btn_buy_confirm || "購入確定";
+    
+    const newBtn = els.btnPreviewRedeem.cloneNode(true);
+    els.btnPreviewRedeem.parentNode.replaceChild(newBtn, els.btnPreviewRedeem);
+    els.btnPreviewRedeem = newBtn;
+    
+    els.btnPreviewRedeem.addEventListener('click', (e) => { 
+        e.preventDefault();
+        buyItemWithPoints(item.code, price);
+    });
+    
+    els.phasePreview.style.display = 'flex';
+    setTimeout(() => els.phasePreview.style.opacity = '1', 50);
+}
+
 // ★ ポイントによる購入処理
 async function buyItemWithPoints(code, price) {
-    const btn = els.heroBuyBtn;
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = `<span class="loading-spinner" style="border-top-color:#fff; width:18px; height:18px; border-width:2px; margin:0;"></span>`;
+    const thisRequestId = currentAuthRequestId;
+    const t = TRANSLATIONS[CURRENT_LANG];
+    const spinnerHtml = `<span class="loading-spinner" style="border-top-color:currentColor; width:18px; height:18px; border-width:2px; margin:0;"></span>`;
+    
+    els.btnPreviewRedeem.disabled = true;
+    els.btnPreviewRedeem.innerHTML = spinnerHtml;
+    
     try {
         const res = await fetch(GAS_API_URL, {
             method: 'POST',
@@ -1778,20 +1921,92 @@ async function buyItemWithPoints(code, price) {
             })
         });
         const data = await res.json();
+        if (thisRequestId !== currentAuthRequestId) return;
+        
         if (data.success) {
             currentUser.points = data.remainingPoints;
             updateAccountUI();
-            alert("購入が完了しました！ライブラリに追加されました。");
             await fetchUserHistory(); 
+            
+            // ★ 購入成功画面への切り替え
+            const successTops = els.phaseSuccess.querySelectorAll('.modal-title-top, .mobile-title');
+            successTops.forEach(el => el.textContent = t.success_buy_title || "購入完了");
+            
+            const label = els.phaseSuccess.querySelector('.modal-label');
+            if(label) label.textContent = t.success_buy_desc || "以下のコンテンツが正常に処理されました。";
+            
+            els.successImage.src = currentContentData.imageUrl || "https://via.placeholder.com/300";
+            els.successTitleUnderImg.textContent = currentContentData.title;
+            els.successBundleName.textContent = currentContentData.title;
+            
+            els.successMessageText.innerHTML = t.success_msg_box.replace(/\n/g, '<br>');
+            els.successTime.textContent = currentAuthTime;
+            
+            els.btnSuccessClose.style.flex = "none";
+            els.btnSuccessClose.style.width = "100%";
+            els.btnSuccessDownload.style.display = "none";
+            
+            els.phasePreview.style.opacity = '0';
+            setTimeout(() => {
+              if (thisRequestId !== currentAuthRequestId) return;
+              els.phasePreview.style.display = 'none';
+              els.phaseSuccess.style.display = 'flex';
+              setTimeout(() => els.phaseSuccess.style.opacity = '1', 50);
+            }, 400);
+            
+            try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         } else {
-            alert(TRANSLATIONS[CURRENT_LANG].msg_error + ": " + data.message);
+            // ★ サーバー側でエラーになった場合
+            els.errorCodeText.textContent = generateErrorCode();
+            els.errorTime.textContent = currentAuthTime;
+
+            let errorMainText = t.msg_error;
+            let errorSubText = data.message;
+            let showInfoBox = true;
+            
+            if (data.message === "Already owned") {
+                if (window.innerWidth <= 768) {
+                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
+                    errorSubText = t.msg_already_owned_mobile || "ライブラリからコンテンツを選択してダウンロードしてください。";
+                    els.btnErrorClose.style.flex = "3";
+                    els.btnErrorClose.style.width = "auto";
+                    els.btnErrorOpenLibrary.style.display = "flex";
+                } else {
+                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
+                    errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
+                    els.btnErrorClose.style.flex = "none";
+                    els.btnErrorClose.style.width = "100%";
+                    els.btnErrorOpenLibrary.style.display = "none";
+                }
+            } else {
+                els.btnErrorClose.style.flex = "none";
+                els.btnErrorClose.style.width = "100%";
+                els.btnErrorOpenLibrary.style.display = "none";
+            }
+            
+            els.errorMessage.textContent = errorMainText;
+            if(showInfoBox && errorSubText) {
+                els.errorSubMessage.innerHTML = errorSubText.replace(/\n/g, '<br>');
+                els.errorInfoBox.style.display = 'flex';
+            } else {
+                els.errorSubMessage.innerHTML = "";
+                els.errorInfoBox.style.display = 'none';
+            }
+            
+            els.phasePreview.style.opacity = '0';
+            setTimeout(() => {
+              if (thisRequestId !== currentAuthRequestId) return;
+              els.phasePreview.style.display = 'none';
+              els.phaseError.style.display = 'flex';
+              setTimeout(() => els.phaseError.style.opacity = '1', 50);
+            }, 400);
         }
     } catch(e) {
+        if (thisRequestId !== currentAuthRequestId) return;
+        els.btnPreviewRedeem.disabled = false;
+        els.btnPreviewRedeem.innerHTML = t.btn_buy_confirm || "購入確定";
         alert("Network Error");
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-    }
+    } 
 }
 
 function toggleDropdown(forceState) {
@@ -1823,7 +2038,6 @@ function showMainContent(){
      else { 
        openAuthModal(); 
        els.code.value = formatCodeInput(urlCode); 
-       // URLからの自動認証
        performAuth(els.code.value); 
      }
    }, 800);
@@ -1919,6 +2133,18 @@ function resetAuthModal(){
   els.btnErrorClose.style.flex = "none";
   els.btnErrorClose.style.width = "100%";
   els.btnErrorOpenLibrary.style.display = "none";
+
+  // ★ テキストのリセット（通常のアクティベーション用に文言を戻す）
+  const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS.ja;
+  const titleTops = els.phasePreview.querySelectorAll('.modal-title-top, .mobile-title');
+  titleTops.forEach(el => el.textContent = t.preview_title);
+  const label = els.phasePreview.querySelector('.modal-label');
+  if(label) label.textContent = t.preview_desc;
+  
+  const successTops = els.phaseSuccess.querySelectorAll('.modal-title-top, .mobile-title');
+  successTops.forEach(el => el.textContent = t.success_title_final);
+  const successLabel = els.phaseSuccess.querySelector('.modal-label');
+  if(successLabel) successLabel.textContent = t.success_desc;
   
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
@@ -2338,7 +2564,6 @@ function setHeroButtonState(state, forceUnlock = false) {
         btn.classList.remove('is-download');
         currentHeroContext = 'available';
 
-        // ★ 追加: 未所有で価格が設定されている場合は購入ボタンを表示
         if(selectedHeroItem && selectedHeroItem.price > 0) {
             if(buyBtn) {
                 buyBtn.style.display = 'inline-flex';
