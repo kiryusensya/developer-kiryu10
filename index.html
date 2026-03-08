@@ -383,7 +383,7 @@ button, input, textarea { font-family: var(--font-stack); }
     box-shadow: 0 15px 30px rgba(0, 125, 255, 0.4);
 }
 
-/* ★ 新規追加: 購入ボタン用スタイル（ライト=白/黒文字, ダーク=黒/白文字） */
+/* 購入ボタン用スタイル（ライト=白/黒文字, ダーク=黒/白文字） */
 .btn-buy-alt {
     background-color: #FFFFFF !important;
     color: #000000 !important;
@@ -687,6 +687,8 @@ button, input, textarea { font-family: var(--font-stack); }
     display: flex;
     flex-direction: column;
     justify-content: center;
+    /* ★ 追加: ボタンとグレーボックスの間に常に余白を確保 */
+    margin-bottom: 24px; 
 }
 .modal-box-text {
     font-size: 13px;
@@ -709,7 +711,8 @@ button, input, textarea { font-family: var(--font-stack); }
 .modal-btn-row {
     display: flex;
     gap: 12px;
-    margin-top: 24px; 
+    /* ★ 修正: 写真下のタイトルと高さを揃えるため、自動で最下部に配置 */
+    margin-top: auto; 
     height: 48px; 
 }
 .btn-outline {
@@ -1650,6 +1653,67 @@ const formatCodeInput = (val) => {
  for(let i=0; i<val.length; i++) res += (i>0 && i%sz===0 ? '-' : '') + val[i];
  return res;
 };
+
+// 現在時刻を取得・フォーマット
+function getFormattedCurrentTime(lang) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const h = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+
+    if (['ja', 'zh', 'zh-TW'].includes(lang)) {
+        return `${y}年${m}月${d}日 ${h}:${min}:${s} JST`;
+    } else if (lang === 'ko') {
+        return `${y}년 ${m}월 ${d}일 ${h}:${min}:${s} KST`;
+    } else if (lang === 'ru') {
+        return `${d}.${m}.${y} ${h}:${min}:${s}`;
+    } else if (lang === 'en') {
+        return `${m}/${d}/${y} ${h}:${min}:${s}`;
+    } else {
+        return `${y}/${m}/${d} ${h}:${min}:${s}`;
+    }
+}
+
+// 過去の保存された時間を現在の言語に合わせて再フォーマット
+function formatSavedTime(timeStr, lang) {
+    if (!timeStr) return "";
+    if (timeStr.includes('JST') || timeStr.includes('KST')) return timeStr;
+
+    const d = new Date(timeStr.replace(/-/g, '/'));
+    if (isNaN(d.getTime())) return timeStr;
+
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const h = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    const s = String(d.getSeconds()).padStart(2, '0');
+
+    if (['ja', 'zh', 'zh-TW'].includes(lang)) {
+        return `${y}年${m}月${day}日 ${h}:${min}:${s} JST`;
+    } else if (lang === 'ko') {
+        return `${y}년 ${m}월 ${day}일 ${h}:${min}:${s} KST`;
+    } else if (lang === 'ru') {
+        return `${day}.${m}.${y} ${h}:${min}:${s}`;
+    } else if (lang === 'en') {
+        return `${m}/${day}/${y} ${h}:${min}:${s}`;
+    } else {
+        return `${y}/${m}/${day} ${h}:${min}:${s}`;
+    }
+}
+
+// ランダムなエラーコードの生成
+function generateErrorCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+';
+    let code = '';
+    for(let i=0; i<20; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code + '.' + Math.floor(Math.random()*10) + '.' + Math.floor(Math.random()*10);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
