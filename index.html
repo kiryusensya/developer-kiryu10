@@ -1941,6 +1941,7 @@ function showPurchasePreview(item, price) {
     els.btnPreviewRedeem.disabled = false;
     els.btnPreviewRedeem.innerHTML = t.btn_buy_confirm || "購入確定";
     
+    // ボタンのイベントリスナーをリセット（重複実行の防止）
     const newBtn = els.btnPreviewRedeem.cloneNode(true);
     els.btnPreviewRedeem.parentNode.replaceChild(newBtn, els.btnPreviewRedeem);
     els.btnPreviewRedeem = newBtn;
@@ -2793,7 +2794,11 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
     const mobileList = gId('mobileStoreGrid');
     if (!mobileList) return;
 
-    const isOwned = (item.groupId && ownedGroups.has(item.groupId)) || (!item.groupId && ownedCodes.has(item.code)) || (item.title && ownedTitles.has(item.title));
+    // 実際に所有しているか、または「無料（価格未設定）」の場合は表示上「所有済み」として扱う
+    const isActuallyOwned = (item.groupId && ownedGroups.has(item.groupId)) || (!item.groupId && ownedCodes.has(item.code)) || (item.title && ownedTitles.has(item.title));
+    const isFree = (!item.price || item.price <= 0);
+    const treatAsOwned = isActuallyOwned || isFree;
+
     const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS.ja;
     
     const mDiv = document.createElement('div');
@@ -2801,15 +2806,14 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
     
     let btnHtml = '';
     let checkMarkHtml = '';
-    let priceText = item.price > 0 ? `${item.price} pt` : `無料`;
+    // 「無料」ではなく「所有済み（各言語対応）」のテキストにする
+    let priceText = item.price > 0 ? `${item.price} pt` : (t.status_owned || `所有済み`);
 
-    if (isOwned) {
+    if (treatAsOwned) {
         checkMarkHtml = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px; vertical-align:middle; flex-shrink:0;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         btnHtml = `<button class="mobile-store-btn is-owned-download"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>${t.btn_download || "ダウンロード"}</button>`;
-    } else if (item.price > 0) {
-        btnHtml = `<button class="mobile-store-btn">${item.price} pt</button>`;
     } else {
-        btnHtml = `<button class="mobile-store-btn" style="background:transparent; color:var(--modal-text-main); border:1px solid var(--modal-text-main);"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg></button>`;
+        btnHtml = `<button class="mobile-store-btn">${item.price} pt</button>`;
     }
     
     mDiv.innerHTML = `
@@ -2822,11 +2826,14 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
         ${btnHtml}
     `;
     
-    if (isOwned) {
+    if (treatAsOwned) {
         const dlBtn = mDiv.querySelector('.is-owned-download');
         if (dlBtn) {
             dlBtn.onclick = (e) => {
                 e.stopPropagation();
+                // ログインしていなければアカウント画面を開く
+                if (!currentUser) { toggleDropdown(true); return; }
+                
                 const targetUrl = item.url || item.actionUrl;
                 if (targetUrl) window.open(targetUrl, '_blank');
                 else showMobileItemDetail(item, false);
@@ -2838,18 +2845,13 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
             mBtn.onclick = (e) => {
                 e.stopPropagation();
                 if (!currentUser) { toggleDropdown(true); return; }
-                if (item.price > 0) {
-                    showPurchasePreview(item, item.price);
-                } else {
-                    openAuthModal();
-                    gId('activationCode').value = item.code;
-                }
+                // ポイントアイテムの場合は必ず確認プレビューを開く
+                showPurchasePreview(item, item.price);
             };
         }
     }
     mobileList.appendChild(mDiv);
 }
-
 
 async function fetchAvailableContent() {
     if (!currentUser) return;
