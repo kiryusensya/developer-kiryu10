@@ -1953,14 +1953,15 @@ function showPurchasePreview(item, price) {
     els.btnPreviewRedeem.addEventListener('click', (e) => { 
         e.preventDefault();
         
-        // どんな文字が混ざっていても、必ず数字だけを抽出して比較する
+        // どんな文字が混ざっていても、確実に「数字だけ」を取り出して比較する
         const userPts = parseInt(String(currentUser.points).replace(/[^0-9]/g, ''), 10) || 0;
         const itemPrice = parseInt(String(price).replace(/[^0-9]/g, ''), 10) || 0;
         
         if (userPts < itemPrice) {
+            // ポイントが足りない場合は「エラー」画面を出す
             showPurchaseError(userPts, itemPrice);
         } else {
-            // サーバーに送る際も、確実に「数字」だけを送る
+            // 足りている場合は購入処理へ進む
             buyItemWithPoints(item.code, itemPrice);
         }
     });
