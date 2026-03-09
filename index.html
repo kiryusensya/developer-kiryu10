@@ -238,7 +238,6 @@ button, input, textarea { font-family: var(--font-stack); }
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  overflow-x: hidden;
   background-color: var(--bg-color);
 }
 
@@ -396,7 +395,7 @@ button, input, textarea { font-family: var(--font-stack); }
     border: 1px solid rgba(255,255,255,0.2) !important;
 }
 
-/* ★ PC用の購入ボタン等に追加されたスマホ用クラスを無効化（PC版の完全保護） */
+/* ★ PC用のスマホ専用クラスを無効化（PC版の完全保護） */
 .mobile-store-view { display: none !important; }
 
 /* Sidebar Language Selector */
@@ -793,7 +792,6 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 .label-logged-in { font-size: 10px; font-weight: 700; opacity: 0.6; margin-bottom: 2px; text-transform: uppercase; }
 .mini-user-id { font-size: 16px; font-weight: 800; color: var(--modal-text-main); letter-spacing: -0.5px; word-break: break-all;}
-/* ポイント色：ライト時黒/ダーク時白に追従させるためカラーはvar()で指定 */
 #displayUserPoints { font-size:14px; font-weight:700; color:var(--modal-text-main); margin-top:4px; display:flex; align-items:center; gap:4px; }
 
 /* Menu List inside Dropdown */
@@ -825,7 +823,7 @@ button, input, textarea { font-family: var(--font-stack); }
 @media (max-width: 768px) {
     /* ログイン状態に応じてHero(認証センター)とStore表示を切り替え */
     body.is-logged-in .rgl-hero { display: none !important; }
-    body.is-logged-in .mobile-store-view { display: block !important; }
+    body.is-logged-in .mobile-store-view { display: block !important; padding: 20px; position: relative; z-index: 10; }
     
     body:not(.is-logged-in) .rgl-hero { display: flex !important; }
     body:not(.is-logged-in) .mobile-store-view { display: none !important; }
@@ -852,29 +850,29 @@ button, input, textarea { font-family: var(--font-stack); }
     
     /* 横3列のストアグリッド（★横スクロール防止のための最適化★） */
     .mobile-store-view {
-        padding: 0 16px 40px 16px; /* 横の余白を少し絞る */
+        padding: 0 16px 40px 16px;
         width: 100%;
-        box-sizing: border-box; /* paddingを含めて100%に収める */
+        box-sizing: border-box;
         position: relative;
         z-index: 10;
-        overflow-x: hidden; /* 横スクロールを無効化 */
+        overflow-x: hidden;
     }
     .mobile-store-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr)); /* minmax(0,1fr)で各要素が均等に縮小・拡大するように強制 */
-        gap: 8px; /* gapを少し縮めて安全に */
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
         width: 100%;
     }
     .mobile-store-card {
         background: rgba(30, 30, 30, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
-        padding: 6px; /* 中の余白も少し減らす */
+        padding: 6px;
         display: flex;
         flex-direction: column;
         gap: 6px;
         box-sizing: border-box;
-        overflow: hidden; /* カードからのはみ出しも防ぐ */
+        overflow: hidden;
     }
     [data-theme="light"] .mobile-store-card {
         background: rgba(255, 255, 255, 0.8);
@@ -1208,7 +1206,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         <div id="mobileStoreView" class="mobile-store-view">
             <div class="mobile-store-header">
                 <h2 style="font-size: 24px; font-weight: 800; color: var(--modal-text-main); margin: 0;" data-translate="tab_store">ストア</h2>
-                <button class="mobile-store-redeem-btn" onclick="openAuthModal()">コードをお持ちですか</button>
+                <button class="mobile-store-redeem-btn" onclick="openAuthModal()" data-translate="btn_redeem_code">コード引き換え</button>
             </div>
             <div id="mobileStoreGrid" class="mobile-store-grid"></div>
         </div>
@@ -1347,12 +1345,22 @@ let modalDownloadTimer = null;
 const gId = (i) => document.getElementById(i);
 const setListener = (el, ev, fn) => { if(el) el.addEventListener(ev, fn); };
 
-// ★ 修正: アクティベーションコードのフォーマット（25文字以上・自動判定で5文字区切りに）
+// ★ 修正: アクティベーションコードのフォーマット（25文字以上なら5文字区切り、それ未満なら4文字区切り）
+const formatDisplayCode = (code) => {
+  if (!code) return "";
+  const clean = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const sz = clean.length >= 25 ? 5 : 4;
+  let res = '';
+  for(let i=0; i<clean.length; i++) {
+    res += (i > 0 && i % sz === 0 ? '-' : '') + clean[i];
+  }
+  return res;
+};
+
 const formatCodeInput = (val) => {
   if (!val) return "";
   const clean = val.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  const isFiveFormat = /^[A-Z0-9]{5}-/.test(val.toUpperCase()) || clean.length > 16;
-  const sz = isFiveFormat ? 5 : 4;
+  const sz = clean.length >= 25 ? 5 : 4;
   let res = '';
   for(let i=0; i<clean.length; i++) {
     res += (i > 0 && i % sz === 0 ? '-' : '') + clean[i];
@@ -1642,56 +1650,6 @@ const TRANSLATIONS={
  }
 };
 
-const els={
- overlay: gId('langSelectionOverlay'), main: gId('mainContainer'), 
- authModal: gId('authModal'), modalCon: gId('modalContainer'), openAuth: null, closeAuth: gId('modalCloseBtn'), 
- code: gId('activationCode'), confirm: gId('btnConfirm'), status: gId('statusContainer'),
- langWrapper: gId('customLangWrapper'), langTrigger: gId('langTrigger'), langMenu: gId('langMenu'), currentLangLabel: gId('currentLangLabel'),
- accountDropdown: gId('accountDropdown'), openAccount: gId('btnOpenAccount'),
- loggedInView: gId('loggedInView'), loggedOutView: gId('loggedOutView'), displayUserId: gId('displayUserId'), displayUserEmail: gId('displayUserEmail'),
- btnLogout: gId('btnLogout'), btnMenuRedeem: gId('btnMenuRedeem'), btnShowLibrary: gId('btnShowLibrary'),
- libraryListSidebar: gId('sidebarLibraryList'),
- availableListSidebar: gId('sidebarAvailableList'),
- secAvailable: gId('secAvailable'), secLibrary: gId('secLibrary'),
- tabs: document.querySelectorAll('.auth-tab'), email: gId('inputEmail'), pass: gId('inputPass'), btnAuthAction: gId('btnAuthAction'), authStatus: gId('authStatus'),
- adminModal: gId('adminModal'), adminCloseBtn: gId('adminCloseBtn'),
- targetUserEmail: gId('targetUserEmail'), btnAdminSearch: gId('btnAdminSearch'), adminResultArea: gId('adminResultArea'),
- heroActionBtn: gId('heroActionBtn'), heroBuyBtn: gId('heroBuyBtn'), heroTitle: gId('heroTitle'), heroDesc: gId('heroDesc'), heroBgImage: gId('heroBgImage'),
- libraryModal: gId('libraryModal'), libCloseBtn: gId('libCloseBtn'), libraryList: gId('libraryList'),
- 
- mobileMenuBtn: gId('mobileMenuBtn'),
- mobileNav: gId('mobileNav'),
- mobileMenuCloseBtn: gId('mobileMenuCloseBtn'),
- mobileLangTrigger: gId('mobileLangTrigger'),
- mobileCurrentLangLabel: gId('mobileCurrentLangLabel'),
-
- phaseInput: gId('phase-input'),
- phasePreview: gId('phase-preview'),
- phaseSuccess: gId('phase-success'),
- phaseError: gId('phase-error'),
- previewImage: gId('previewImage'),
- previewTitleUnderImg: gId('previewTitleUnderImg'),
- previewTitle: gId('previewTitle'),
- previewWarningBox: gId('previewWarningBox'),
- previewWarningText: gId('previewWarningText'),
- btnPreviewClose: gId('btnPreviewClose'),
- btnPreviewRedeem: gId('btnPreviewRedeem'),
- successImage: gId('successImage2'),
- successTitleUnderImg: gId('successTitleUnderImg'),
- successBundleName: gId('successBundleName'),
- successMessageText: gId('successMessageText'),
- successTime: gId('successTime'),
- btnSuccessClose: gId('btnSuccessClose'),
- btnSuccessDownload: gId('btnSuccessDownload'),
- errorCodeText: gId('errorCodeText'),
- errorMessage: gId('errorMessage'),
- errorSubMessage: gId('errorSubMessage'),
- errorInfoBox: gId('errorInfoBox'),
- errorTime: gId('errorTime'),
- btnErrorClose: gId('btnErrorClose'),
- btnErrorOpenLibrary: gId('btnErrorOpenLibrary')
-};
-
 document.addEventListener('DOMContentLoaded', () => {
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
   
@@ -1812,13 +1770,21 @@ function setupEventListeners() {
      }
   });
 
+  // ★ 購入ボタンのイベント（PC版）
   if (els.heroBuyBtn) {
       setListener(els.heroBuyBtn, 'click', (e) => {
           e.stopPropagation();
-          if (!currentUser) { toggleDropdown(true); return; }
+          if (!currentUser) {
+              toggleDropdown(true);
+              return;
+          }
           const price = Number(selectedHeroItem.price) || 0;
           const userPts = Number(currentUser.points) || 0;
-          if (userPts < price) { showPurchaseError(userPts, price); return; }
+          
+          if (userPts < price) {
+              showPurchaseError(userPts, price);
+              return;
+          }
           showPurchasePreview(selectedHeroItem, price);
       });
   }
@@ -1838,19 +1804,25 @@ function setupEventListeners() {
   setListener(els.btnAuthAction, 'click', performAuthAction);
   
   if (els.mobileMenuBtn) {
-      els.mobileMenuBtn.addEventListener('click', () => { els.mobileNav.classList.add('active'); });
+      els.mobileMenuBtn.addEventListener('click', () => {
+          els.mobileNav.classList.add('active');
+      });
   }
   if (els.mobileMenuCloseBtn) {
-      els.mobileMenuCloseBtn.addEventListener('click', () => { els.mobileNav.classList.remove('active'); });
+      els.mobileMenuCloseBtn.addEventListener('click', () => {
+          els.mobileNav.classList.remove('active');
+      });
   }
   if (els.mobileLangTrigger) {
       els.mobileLangTrigger.addEventListener('click', (e) => {
           e.stopPropagation();
-          gId('mobileLangMenu').classList.toggle('open');
+          const list = gId('mobileLangMenu');
+          list.classList.toggle('open');
       });
   }
 }
 
+// ★ 購入用エラー画面の表示処理
 function showPurchaseError(userPts, price) {
     const t = TRANSLATIONS[CURRENT_LANG];
     currentAuthRequestId++; 
@@ -1879,6 +1851,7 @@ function showPurchaseError(userPts, price) {
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
+// ★ 購入用プレビュー画面の表示処理
 function showPurchasePreview(item, price) {
     const t = TRANSLATIONS[CURRENT_LANG];
     currentAuthRequestId++;
@@ -1923,6 +1896,7 @@ function showPurchasePreview(item, price) {
     setTimeout(() => els.phasePreview.style.opacity = '1', 50);
 }
 
+// ★ ポイントによる購入処理
 async function buyItemWithPoints(code, price) {
     const thisRequestId = currentAuthRequestId;
     const t = TRANSLATIONS[CURRENT_LANG];
@@ -1950,6 +1924,7 @@ async function buyItemWithPoints(code, price) {
             updateAccountUI();
             await fetchUserHistory(); 
             
+            // ★ 購入成功画面への切り替え
             const successTops = els.phaseSuccess.querySelectorAll('.modal-title-top, .mobile-title');
             successTops.forEach(el => el.textContent = t.success_buy_title || "購入完了");
             
@@ -1977,6 +1952,7 @@ async function buyItemWithPoints(code, price) {
             
             try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         } else {
+            // ★ サーバー側でエラーになった場合
             els.errorCodeText.textContent = generateErrorCode();
             els.errorTime.textContent = currentAuthTime;
 
@@ -2115,6 +2091,7 @@ function resetAuthModal(){
   els.btnErrorClose.style.width = "100%";
   els.btnErrorOpenLibrary.style.display = "none";
 
+  // ★ テキストのリセット
   const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS.ja;
   const titleTops = els.phasePreview.querySelectorAll('.modal-title-top, .mobile-title');
   titleTops.forEach(el => el.textContent = t.preview_title);
@@ -2206,7 +2183,13 @@ async function performAuth(code, mode = 'check') {
     const res = await fetch(GAS_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ key: safeCode, lang: CURRENT_LANG, mode: mode, userId: uId, _t: Date.now() })
+      body: new URLSearchParams({
+        key: safeCode,
+        lang: CURRENT_LANG,
+        mode: mode,
+        userId: uId,
+        _t: Date.now()
+      })
     });
     let d = await res.json();
     if (thisRequestId !== currentAuthRequestId) return;
@@ -2258,6 +2241,7 @@ async function performAuth(code, mode = 'check') {
     } else if (mode === 'redeem') {
       if (d.success) { 
         
+        // ★ ポイントコードの処理分岐
         if (d.isPointMode) {
             if(currentUser) {
                 currentUser.points = (currentUser.points || 0) + d.addedPoints;
@@ -2283,6 +2267,7 @@ async function performAuth(code, mode = 'check') {
             return;
         }
 
+        // 通常コンテンツの処理
         await saveUnlockedItemLocal(d, safeCode);
         if(window.innerWidth <= 768) {
            const item = { title: d.bundleLabel || d.message, imageUrl: d.imageUrl, url: d.actionUrl, releaseDateIso: d.releaseDateIso, buttonLabel: d.Button_Label, icon: d.btnIcon };
@@ -2319,32 +2304,22 @@ async function performAuth(code, mode = 'check') {
             const msg = d.message || "";
             if (d.isAlreadyOwned || msg === "Already owned" || msg.includes("所有") || msg.includes("済") || msg.includes("owned")) {
                 if (window.innerWidth <= 768) {
-                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
+                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
                     errorSubText = t.msg_already_owned_mobile || "ライブラリからコンテンツを選択してダウンロードしてください。";
                     els.btnErrorClose.style.flex = "3";
                     els.btnErrorClose.style.width = "auto";
                     els.btnErrorOpenLibrary.style.display = "flex";
                 } else {
-                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
+                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
                     errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
                     els.btnErrorClose.style.flex = "none";
                     els.btnErrorClose.style.width = "100%";
                     els.btnErrorOpenLibrary.style.display = "none";
                 }
-            } else if (msg === "This code has already been used." || msg.includes("使用済") || msg.includes("used")) {
-                errorMainText = t.error_used_msg || t.msg_used;
-                errorSubText = "";
-                els.btnErrorClose.style.flex = "none";
-                els.btnErrorClose.style.width = "100%";
-                els.btnErrorOpenLibrary.style.display = "none";
-                showInfoBox = false;
             } else {
-                errorMainText = t.msg_error;
-                errorSubText = msg;
                 els.btnErrorClose.style.flex = "none";
                 els.btnErrorClose.style.width = "100%";
                 els.btnErrorOpenLibrary.style.display = "none";
-                showInfoBox = errorSubText ? true : false;
             }
             
             els.errorMessage.textContent = errorMainText;
@@ -2430,6 +2405,7 @@ async function performAuthAction() {
       currentUser = { userId: data.userId, email: email, history: data.history || [], points: data.points || 0 };
       localStorage.setItem('user_session_identity', JSON.stringify({ userId: data.userId, email: email }));
       
+      // ★ ここで is-logged-in クラスを付与してスマホ用ストアを表示
       document.body.classList.add('is-logged-in');
       updateAccountUI(); 
       fetchUserHistory(); 
@@ -2489,6 +2465,7 @@ function setHeroButtonState(state, forceUnlock = false) {
         btn.classList.remove('is-download');
         currentHeroContext = 'available';
 
+        // ★ 購入ボタンの表示
         if(selectedHeroItem && selectedHeroItem.price > 0) {
             if(buyBtn) {
                 buyBtn.style.display = 'inline-flex';
@@ -2562,6 +2539,7 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
     let checkMarkHtml = '';
     let priceText = item.price > 0 ? `${item.price} pt` : `無料`;
 
+    // ★ 所有済みの場合はチェックマークとダウンロードボタンを表示
     if (isOwned) {
         checkMarkHtml = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px; vertical-align:middle; flex-shrink:0;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         btnHtml = `<button class="mobile-store-btn is-owned-download"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>${t.btn_download || "ダウンロード"}</button>`;
@@ -2581,6 +2559,7 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
         ${btnHtml}
     `;
     
+    // ★ 所有済みの場合はダウンロードアクション、未所有は購入/引き換えアクション
     if (isOwned) {
         const dlBtn = mDiv.querySelector('.is-owned-download');
         if (dlBtn) {
@@ -2640,11 +2619,11 @@ async function fetchAvailableContent() {
             d.items.forEach((item, index) => {
                 if (item.active === false) return; 
                 
-                // スマホ用メイン画面(横3列)への追加
+                // --- スマホ用 メイン画面 (横3列) への追加 ---
                 renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles);
                 hasMobileItems = true;
 
-                // PC用サイドバーへの追加
+                // --- 以下のPC用ロジックは一切変更しない ---
                 if (item.groupId && ownedGroups.has(item.groupId)) return; 
                 if (!item.groupId && ownedCodes.has(item.code)) return; 
                 if (item.title && ownedTitles.has(item.title)) return;
