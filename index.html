@@ -2650,7 +2650,12 @@ function startHeroCountdown(targetDate) {
 
 function updateHeroView(item, isOwned) {
     if (window.innerWidth <= 768) return; 
-    selectedHeroItem = item; els.heroTitle.textContent = item.title;
+    selectedHeroItem = item; 
+    
+    // ★追加: アイテムが選択されたらHeroの中身を表示する
+    document.querySelector('.rgl-hero-content').style.display = 'block';
+    
+    els.heroTitle.textContent = item.title;
     if(heroTimer) { clearInterval(heroTimer); heroTimer = null; }
     els.heroDesc.style.display = 'none';
     if (item.imageUrl && item.imageUrl.startsWith('http')) els.heroBgImage.style.backgroundImage = `url('${item.imageUrl}')`;
@@ -2661,6 +2666,11 @@ function updateAccountUI() {
   const t = TRANSLATIONS[CURRENT_LANG];
   if (currentUser) {
     document.body.classList.add('is-logged-in');
+    
+    // ★追加: ログイン中で、何も選択されていない時はHeroの中身を隠す
+    if (!selectedHeroItem) {
+        document.querySelector('.rgl-hero-content').style.display = 'none';
+    }
     
     els.loggedOutView.style.display = 'none';
     els.loggedInView.style.display = 'block';
@@ -2705,6 +2715,15 @@ function updateAccountUI() {
 
   } else {
     document.body.classList.remove('is-logged-in');
+    
+    // ★追加: ログアウト時はHeroの中身を表示し、初期状態に戻す
+    document.querySelector('.rgl-hero-content').style.display = 'block';
+    selectedHeroItem = null;
+    if(heroTimer) { clearInterval(heroTimer); heroTimer = null; }
+    els.heroTitle.textContent = t.hero_title || "個人認証センター";
+    els.heroBgImage.style.backgroundImage = 'none';
+    setHeroButtonState('available');
+
     els.loggedOutView.style.display = 'block';
     els.loggedInView.style.display = 'none';
     els.secLibrary.style.display = 'none';
