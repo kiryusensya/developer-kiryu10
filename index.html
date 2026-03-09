@@ -1217,7 +1217,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         <div id="mobileStoreView" class="mobile-store-view">
             <div class="mobile-store-header">
                 <h2 style="font-size: 24px; font-weight: 800; color: var(--modal-text-main); margin: 0;" data-translate="tab_store">ストア</h2>
-                <button class="mobile-store-redeem-btn" onclick="openAuthModal()">コードをお持ちですか</button>
+                <button class="mobile-store-redeem-btn" onclick="openAuthModal()" data-translate="btn_have_code">コードをお持ちですか</button>
             </div>
             <div id="mobileStoreGrid" class="mobile-store-grid"></div>
         </div>
@@ -1436,13 +1436,15 @@ const TRANSLATIONS={
   btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード", btn_buy:"購入する",
   
   preview_buy_title: "購入確認",
-  preview_buy_desc: "以下のコンテンツを %s pt で購入します:",
+  preview_buy_desc: "以下のコンテンツを %s  で購入します:",
   btn_buy_confirm: "購入確定",
   success_buy_title: "購入完了",
   success_buy_desc: "以下のコンテンツが正常に処理されました。",
   error_points_title: "ポイント不足",
   error_points_msg: "ポイントが不足しています。",
-  error_points_sub: "現在: %1 pt / 必要: %2 pt",
+  error_points_sub: "現在: %1  / 必要: %2 ",
+  success_pt_title: "ポイントチャージ完了",
+  success_pt_msg: "%s  追加されました。",
 
   footer_admin:"システム管理者",
   menu_login: "ログイン", menu_account: "アカウント", lib_updating: "読み込み中",
@@ -1453,7 +1455,8 @@ const TRANSLATIONS={
   msg_logging_in: "ログイン中", msg_signing_up: "新規作成中",
   label_store_cat: "ストア", label_available: "利用可能",
   btn_redeem_code: "コード引き換え", btn_hero_download: "ダウンロード",
-  status_owned: "所有済み", status_locked: "未所有"
+  status_owned: "所有済み", status_locked: "未所有",
+  btn_have_code: "コードをお持ちですか"
  },
  en:{
   header_brand:"_.k__yu.10", hero_title:"Personal Activation Center", hero_sub:"Manage your access and resources. Redeem your product code to unlock exclusive content.",
@@ -1481,7 +1484,9 @@ const TRANSLATIONS={
   success_buy_desc: "The following content has been processed successfully.",
   error_points_title: "Insufficient Points",
   error_points_msg: "You do not have enough points.",
-  error_points_sub: "Current: %1 pt / Required: %2 pt",
+  error_points_sub: "Current: %1  / Required: %2 ",
+success_pt_title: "Point Charge Complete",
+  success_pt_msg: "%s  has been added.",
 
   footer_admin:"Enforcement Administrator",
   menu_login: "Login", menu_account: "Account", lib_updating: "Loading",
@@ -1492,7 +1497,8 @@ const TRANSLATIONS={
   msg_logging_in: "Logging in", msg_signing_up: "Creating account",
   label_store_cat: "Store", label_available: "Available",
   btn_redeem_code: "REDEEM CODE", btn_hero_download: "DOWNLOAD",
-  status_owned: "Owned", status_locked: "Not Owned"
+  status_owned: "Owned", status_locked: "Not Owned",
+  btn_have_code: "Have a code?"
  },
  zh:{ 
   header_brand:"_.k__yu.10", hero_title:"个人代码检查中心", hero_sub:"管理您的访问权限和资源。兑換产品代码以解锁独家内容。", 
@@ -1520,7 +1526,9 @@ const TRANSLATIONS={
   success_buy_desc: "以下内容已成功处理。",
   error_points_title: "积分不足",
   error_points_msg: "您的积分不足。",
-  error_points_sub: "当前: %1 pt / 需要: %2 pt",
+  error_points_sub: "当前: %1  / 需要: %2 ",
+  success_pt_title: "积分充值完成",
+  success_pt_msg: "已添加 %s 。",
 
   footer_admin:"系统管理长",
   menu_login: "登录", menu_account: "账户", lib_updating: "正在加载",
@@ -1531,7 +1539,8 @@ const TRANSLATIONS={
   msg_logging_in: "正在登录", msg_signing_up: "正在注册",
   label_store_cat: "商店", label_available: "可用",
   btn_redeem_code: "兑換代码", btn_hero_download: "下载",
-  status_owned: "已拥有", status_locked: "未拥有"
+  status_owned: "已拥有", status_locked: "未拥有",
+  btn_have_code: "有兑换码吗？"
  },
  "zh-TW":{ 
   header_brand:"_.k__yu.10", hero_title:"個人代碼檢查中心", hero_sub:"管理您的存取權限與資源。兌換產品代碼以解鎖獨家內容。", 
@@ -1559,7 +1568,9 @@ const TRANSLATIONS={
   success_buy_desc: "以下內容已成功處理。",
   error_points_title: "積分不足",
   error_points_msg: "您的積分不足。",
-  error_points_sub: "當前: %1 pt / 需要: %2 pt",
+  error_points_sub: "當前: %1  / 需要: %2 ",
+  success_pt_title: "積分儲值完成",
+  success_pt_msg: "已新增 %s 。",
 
   footer_admin:"系統管理長",
   menu_login: "登入", menu_account: "帳戶", lib_updating: "載入中",
@@ -1570,7 +1581,8 @@ const TRANSLATIONS={
   msg_logging_in: "正在登入中...", msg_signing_up: "正在註冊中",
   label_store_cat: "商店", label_available: "可用",
   btn_redeem_code: "兌換代碼", btn_hero_download: "下載",
-  status_owned: "已擁有", status_locked: "未擁有"
+  status_owned: "已擁有", status_locked: "未擁有",
+  btn_have_code: "有兌換碼嗎？"
  },
  ko:{ 
   header_brand:"_.k__yu.10", hero_title:"개인 코드 검사 센터", hero_sub:"액세스 권한 및 리소스 관리. 제품 코드를 사용하여 콘텐츠 잠금을 해제하세요.", 
@@ -1598,7 +1610,9 @@ const TRANSLATIONS={
   success_buy_desc: "다음 콘텐츠가 정상적으로 처리되었습니다.",
   error_points_title: "포인트 부족",
   error_points_msg: "포인트가 부족합니다.",
-  error_points_sub: "현재: %1 pt / 필요: %2 pt",
+  error_points_sub: "현재: %1  / 필요: %2 ",
+  success_pt_title: "포인트 충전 완료",
+  success_pt_msg: "%s 가 추가되었습니다.",
 
   footer_admin:"시스템 관리자",
   menu_login: "로그인", menu_account: "계정", lib_updating: "로딩 중",
@@ -1609,7 +1623,8 @@ const TRANSLATIONS={
   msg_logging_in: "로그인 중", msg_signing_up: "계정 생성 중",
   label_store_cat: "상점", label_available: "사용 가능",
   btn_redeem_code: "코드 교환", btn_hero_download: "다운로드",
-  status_owned: "소유함", status_locked: "미소유"
+  status_owned: "소유함", status_locked: "미소유",
+  btn_have_code: "코드가 있으신가요?"
  },
  ru:{ 
   header_brand:"_.k__yu.10", hero_title:"Центр личной активации", hero_sub:"Управление доступом и ресурсами. Активируйте код продукта для разблокировки.", 
@@ -1637,7 +1652,9 @@ const TRANSLATIONS={
   success_buy_desc: "Следующий контент был успешно обработан.",
   error_points_title: "Недостаточно очков",
   error_points_msg: "У вас недостаточно очков.",
-  error_points_sub: "Текущие: %1 pt / Требуется: %2 pt",
+  error_points_sub: "Текущие: %1  / Требуется: %2 ",
+  success_pt_title: "Пополнение завершено",
+  success_pt_msg: "Добавлено %s .",
 
   footer_admin:"Администратор",
   menu_login: "Вход", menu_account: "Учетная запись", lib_updating: "Загрузка",
@@ -1648,7 +1665,8 @@ const TRANSLATIONS={
   msg_logging_in: "Вход", msg_signing_up: "Создание",
   label_store_cat: "Магазин", label_available: "Доступно",
   btn_redeem_code: "Активировать код", btn_hero_download: "Скачать",
-  status_owned: "В наличии", status_locked: "Не в наличии"
+  status_owned: "В наличии", status_locked: "Не в наличии",
+  btn_have_code: "Есть код?"
  }
 };
 
@@ -1829,11 +1847,6 @@ function setupEventListeners() {
          return;
      }
      if (selectedHeroItem && selectedHeroItem.price > 0) {
-         const userPts = Number(currentUser.points) || 0;
-         if (userPts < selectedHeroItem.price) {
-             showPurchaseError(userPts, selectedHeroItem.price);
-             return;
-         }
          showPurchasePreview(selectedHeroItem, selectedHeroItem.price);
      }
   });
@@ -1873,13 +1886,7 @@ function setupEventListeners() {
 
 function showPurchaseError(userPts, price) {
     const t = TRANSLATIONS[CURRENT_LANG];
-    currentAuthRequestId++; 
-    els.authModal.classList.add('active');
-    els.modalCon.classList.add('is-wide');
-    
-    els.phaseInput.style.display = 'none';
-    els.phasePreview.style.display = 'none';
-    els.phaseSuccess.style.display = 'none';
+    const thisRequestId = ++currentAuthRequestId; 
     
     els.errorCodeText.textContent = generateErrorCode();
     els.errorTime.textContent = getFormattedCurrentTime(CURRENT_LANG);
@@ -1892,12 +1899,17 @@ function showPurchaseError(userPts, price) {
     els.btnErrorClose.style.flex = "none";
     els.btnErrorClose.style.width = "100%";
     
-    els.phaseError.style.display = 'flex';
-    setTimeout(() => els.phaseError.style.opacity = '1', 50);
+    // Preview画面からのスムーズなフェードアウト＆フェードイン
+    els.phasePreview.style.opacity = '0';
+    setTimeout(() => {
+        if (thisRequestId !== currentAuthRequestId) return;
+        els.phasePreview.style.display = 'none';
+        els.phaseError.style.display = 'flex';
+        setTimeout(() => els.phaseError.style.opacity = '1', 50);
+    }, 400);
     
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
-
 function showPurchasePreview(item, price) {
     const t = TRANSLATIONS[CURRENT_LANG];
     currentAuthRequestId++;
@@ -1935,7 +1947,12 @@ function showPurchasePreview(item, price) {
     
     els.btnPreviewRedeem.addEventListener('click', (e) => { 
         e.preventDefault();
-        buyItemWithPoints(item.code, price);
+        const userPts = Number(currentUser.points) || 0;
+        if (userPts < price) {
+            showPurchaseError(userPts, price);
+        } else {
+            buyItemWithPoints(item.code, price);
+        }
     });
     
     els.phasePreview.style.display = 'flex';
@@ -2340,10 +2357,17 @@ async function performAuth(code, mode = 'check') {
                 currentUser.points = (currentUser.points || 0) + d.addedPoints;
                 updateAccountUI();
             }
+            
+            // TRANSLATIONS から各言語のテキストを取得（見つからない場合の保険として日本語を残す）
+            const ptTitle = t.success_pt_title || "ポイントチャージ完了";
+            const ptMsg = (t.success_pt_msg || "%s pt 追加されました。").replace('%s', d.addedPoints || d.message);
+
             els.successImage.src = currentContentData.imageUrl || "https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png";
-            els.successTitleUnderImg.textContent = d.title || "ポイントチャージ";
-            els.successBundleName.textContent = d.title || "ポイントチャージ完了";
-            els.successMessageText.innerHTML = (d.message + " 追加されました。").replace(/\n/g, '<br>');
+            
+            // d.title を使わず、必ず翻訳データ(ptTitle)を使うように変更
+            els.successTitleUnderImg.textContent = ptTitle;
+            els.successBundleName.textContent = ptTitle;
+            els.successMessageText.innerHTML = ptMsg.replace(/\n/g, '<br>');
             els.successTime.textContent = currentAuthTime;
             
             els.btnSuccessClose.style.flex = "none";
@@ -2569,8 +2593,7 @@ function setHeroButtonState(state, forceUnlock = false) {
         if(selectedHeroItem && selectedHeroItem.price > 0) {
             if(buyBtn) {
                 buyBtn.style.display = 'inline-flex';
-                const buyText = t.btn_buy || "購入する";
-                gId('heroBuyBtnText').textContent = `${selectedHeroItem.price} pt で${buyText}`;
+                gId('heroBuyBtnText').textContent = `${selectedHeroItem.price}`;
             }
         } else {
             if(buyBtn) buyBtn.style.display = 'none';
@@ -2787,8 +2810,6 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
                 e.stopPropagation();
                 if (!currentUser) { toggleDropdown(true); return; }
                 if (item.price > 0) {
-                    const userPts = Number(currentUser.points) || 0;
-                    if (userPts < item.price) { showPurchaseError(userPts, item.price); return; }
                     showPurchasePreview(item, item.price);
                 } else {
                     openAuthModal();
