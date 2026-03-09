@@ -875,11 +875,10 @@ button, input, textarea { font-family: var(--font-stack); }
         font-family: var(--font-stack);
     }
     
-    /* 横3列のストアグリッド */
     .mobile-store-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
     }
     .mobile-store-card {
         background: rgba(30, 30, 30, 0.6);
