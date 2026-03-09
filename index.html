@@ -395,11 +395,6 @@ button, input, textarea { font-family: var(--font-stack); }
     border: 1px solid rgba(255,255,255,0.2) !important;
 }
 
-/* ★ PC用には一切影響させないためのスマホ専用購入ボタン（PC時は非表示） */
-.mobile-item-buy-btn {
-    display: none;
-}
-
 
 /* Sidebar Language Selector */
 .lang-trigger-sidebar {
@@ -731,6 +726,7 @@ button, input, textarea { font-family: var(--font-stack); }
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 3;
 }
 .btn-outline:hover {
     background: rgba(128,128,128,0.1);
@@ -749,8 +745,9 @@ button, input, textarea { font-family: var(--font-stack); }
     align-items: center;
     justify-content: center;
     gap: 8px;
+    flex: 7;
 }
-.btn-solid:hover {
+.btn-solid:hover:not(:disabled) {
     opacity: 0.8;
 }
 
@@ -774,8 +771,101 @@ button, input, textarea { font-family: var(--font-stack); }
 [data-theme="dark"] .btn-solid { background: #fff; color: #000; }
 [data-theme="dark"] .modal-grey-box { background: rgba(255,255,255,0.1); }
 
-/* --- スマホ表示時のモーダル（Wix画像以前のレイアウトに復元しつつグレーボックス適用） --- */
+/* PC用モバイル専用表示クラスの非表示 */
+.mobile-store-view { display: none; }
+
+/* --- スマホ表示時のレイアウト --- */
 @media (max-width: 768px) {
+    .mobile-menu-trigger { display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--sidebar-text); cursor: pointer; padding: 8px; margin-right: 4px; }
+    .rgl-brand { order: 2; }
+    .mobile-menu-trigger { order: 1; }
+    .mobile-nav-overlay { display: flex; flex-direction: column; position: fixed; inset: 0; background: var(--bg-color); z-index: 10001; padding: 40px; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); visibility: hidden; }
+    .mobile-nav-overlay.active { transform: translateX(0); visibility: visible; }
+    .mobile-menu-close { align-self: flex-end; background: transparent; border: 1px solid var(--btn-close-border); color: var(--modal-text-main); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 40px; }
+    .mobile-nav-content { display: flex; flex-direction: column; gap: 40px; flex: 1; }
+    .mobile-nav-item { font-family: var(--font-stack); font-size: 32px; font-weight: 800; color: var(--modal-text-main); text-decoration: none; text-align: left; opacity: 0; transform: translateX(-20px); transition: opacity 0.3s ease, transform 0.3s ease; }
+    .mobile-nav-overlay.active .mobile-nav-item { opacity: 1; transform: translateX(0); }
+    .mobile-nav-overlay.active .mobile-nav-item:nth-child(1) { transition-delay: 0.1s; }
+    .mobile-nav-overlay.active .mobile-nav-item:nth-child(2) { transition-delay: 0.2s; }
+    .mobile-menu-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.1); opacity: 0; transform: translateY(20px); transition: all 0.3s ease 0.3s; position: relative; }
+    .mobile-nav-overlay.active .mobile-menu-footer { opacity: 1; transform: translateY(0); }
+    .mobile-menu-footer .lang-list { position: absolute; bottom: 60px; left: 0; width: 100%; display: none; }
+    .mobile-menu-footer .lang-list.open { display: block; animation: fadeInUp 0.3s ease; }
+    
+    .rgl-wrapper { flex-direction: column; }
+    .rgl-sidebar { width: 100%; height: auto; padding: 0; border-right: none; border-bottom: 1px solid rgba(128,128,128,0.1); overflow: visible; position: relative; z-index: 100; background-color: var(--sidebar-bg); }
+    .rgl-brand-area { padding: 16px 12px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%; padding-right: 120px; }
+    
+    /* サイドバー内のメニュー非表示 */
+    .rgl-scroll-content, .rgl-bottom-controls { display: none !important; } 
+
+    .rgl-header { position: fixed !important; top: 0; right: 0; width: auto; height: 70px; background: transparent !important; padding: 0 16px; z-index: 200; display: flex !important; align-items: center; justify-content: flex-end; gap: 10px; pointer-events: none; }
+    .rgl-header > * { pointer-events: auto; }
+    .rgl-tabs { display: none !important; }
+    
+    /* Heroを少し狭くする */
+    .rgl-hero { padding: 30px 20px; min-height: 30vh; }
+    .rgl-logo-text { font-size: 32px; }
+    .account-dropdown { position: fixed; top: 70px; right: 5%; width: 90%; left: auto; transform: translateY(-10px); }
+    .account-dropdown.open { transform: translateY(0); }
+
+    /* ★ スマホ用：メイン画面のストア表示（横3列） */
+    .mobile-store-view {
+        display: block !important;
+        padding: 0 20px 40px 20px;
+        width: 100%;
+        position: relative;
+        z-index: 2;
+    }
+    .mobile-store-title {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        color: var(--modal-text-main);
+        font-family: var(--font-stack);
+    }
+    .mobile-store-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    .mobile-store-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .mobile-store-thumb {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border-radius: 12px;
+        background: rgba(128,128,128,0.2);
+    }
+    .mobile-item-buy-btn {
+        width: 100%;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        background-color: #FFFFFF;
+        color: #000000;
+        border: 1px solid rgba(0,0,0,0.1);
+        font-family: var(--font-stack);
+        transition: 0.2s;
+    }
+    [data-theme="dark"] .mobile-item-buy-btn {
+        background-color: #000000;
+        color: #FFFFFF;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .mobile-item-buy-btn:active { transform: scale(0.95); }
+    .mobile-item-buy-btn.is-owned { opacity: 0.5; cursor: default; }
+
+    /* モーダル用 */
     .modal-sheet.is-wide {
         padding: 0 !important;
         max-width: 92%;
@@ -784,9 +874,7 @@ button, input, textarea { font-family: var(--font-stack); }
         max-height: 85vh;
         overflow-y: auto;
     }
-    .modal-title-top {
-        display: none !important; 
-    }
+    .modal-title-top { display: none !important; }
     .mobile-title {
         display: block; 
         font-size: 22px;
@@ -794,14 +882,8 @@ button, input, textarea { font-family: var(--font-stack); }
         color: var(--modal-text-main);
         margin: 0 0 16px 0;
     }
-    .modal-body-flex {
-        flex-direction: column;
-        gap: 0;
-        align-items: stretch;
-    }
-    .modal-left-col {
-        width: 100%;
-    }
+    .modal-body-flex { flex-direction: column; gap: 0; align-items: stretch; }
+    .modal-left-col { width: 100%; }
     .modal-left-col img {
         border-radius: 24px 24px 0 0;
         height: 220px;
@@ -809,16 +891,9 @@ button, input, textarea { font-family: var(--font-stack); }
         flex: none;
         width: 100%;
     }
-    .modal-thumb-title {
-        display: none !important; 
-    }
-    .modal-right-col {
-        padding: 24px;
-    }
-    .modal-main-title {
-        font-size: 20px;
-        white-space: normal; 
-    }
+    .modal-thumb-title { display: none !important; }
+    .modal-right-col { padding: 24px; }
+    .modal-main-title { font-size: 20px; white-space: normal; }
     .modal-grey-box {
         background: rgba(128,128,128,0.05) !important; 
         border: 1px solid rgba(128,128,128,0.1) !important;
@@ -840,26 +915,16 @@ button, input, textarea { font-family: var(--font-stack); }
         border: none;
         opacity: 1;
     }
-    .modal-box-time {
-        margin: 10px 0 0 0;
-    }
-    .modal-btn-row {
-        margin-top: 0;
-        height: 50px;
-    }
-    .btn-outline, .btn-solid {
-        height: 50px;
-        border-radius: 50px;
-    }
+    .modal-box-time { margin: 10px 0 0 0; }
+    .modal-btn-row { margin-top: 0; height: 50px; }
+    .btn-outline, .btn-solid { height: 50px; border-radius: 50px; }
     #phase-error .modal-title-top {
         display: block !important;
         padding: 24px 24px 0 24px;
         margin: 0;
         font-size: 20px;
     }
-    #phase-error .modal-body-error {
-        padding: 24px;
-    }
+    #phase-error .modal-body-error { padding: 24px; }
 }
 
 /* --- ACCOUNT DROPDOWN STYLES --- */
@@ -939,134 +1004,8 @@ button, input, textarea { font-family: var(--font-stack); }
   .lib-card-meta { font-size: 8px; white-space: nowrap; letter-spacing: -0.5px; }
 }
 
-/* --- スマホ用全画面メニューCSS --- */
-.mobile-menu-trigger { display: none; }
-.mobile-nav-overlay { display: none; }
-
-/* ★ スマホ画面（max-width: 768px）専用スタイル ★ */
-@media (max-width: 768px) {
-    .mobile-menu-trigger { display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--sidebar-text); cursor: pointer; padding: 8px; margin-right: 4px; }
-    .rgl-brand { order: 2; }
-    .mobile-menu-trigger { order: 1; }
-    .mobile-nav-overlay { display: flex; flex-direction: column; position: fixed; inset: 0; background: var(--bg-color); z-index: 10001; padding: 40px; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); visibility: hidden; }
-    .mobile-nav-overlay.active { transform: translateX(0); visibility: visible; }
-    .mobile-menu-close { align-self: flex-end; background: transparent; border: 1px solid var(--btn-close-border); color: var(--modal-text-main); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 40px; }
-    .mobile-nav-content { display: flex; flex-direction: column; gap: 40px; flex: 1; }
-    .mobile-nav-item { font-family: var(--font-stack); font-size: 32px; font-weight: 800; color: var(--modal-text-main); text-decoration: none; text-align: left; opacity: 0; transform: translateX(-20px); transition: opacity 0.3s ease, transform 0.3s ease; }
-    .mobile-nav-overlay.active .mobile-nav-item { opacity: 1; transform: translateX(0); }
-    .mobile-nav-overlay.active .mobile-nav-item:nth-child(1) { transition-delay: 0.1s; }
-    .mobile-nav-overlay.active .mobile-nav-item:nth-child(2) { transition-delay: 0.2s; }
-    .mobile-menu-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.1); opacity: 0; transform: translateY(20px); transition: all 0.3s ease 0.3s; position: relative; }
-    .mobile-nav-overlay.active .mobile-menu-footer { opacity: 1; transform: translateY(0); }
-    .mobile-menu-footer .lang-list { position: absolute; bottom: 60px; left: 0; width: 100%; display: none; }
-    .mobile-menu-footer .lang-list.open { display: block; animation: fadeInUp 0.3s ease; }
-    
-    .rgl-wrapper { flex-direction: column; }
-    .rgl-sidebar { width: 100%; height: auto; padding: 0; border-right: none; border-bottom: 1px solid rgba(128,128,128,0.1); overflow: visible; position: relative; z-index: 100; background-color: var(--sidebar-bg); }
-    .rgl-brand-area { padding: 16px 12px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%; padding-right: 120px; }
-    
-    /* ★ 修正：スマホ表示時は #secAvailable と .rgl-scroll-content を表示する */
-    .rgl-scroll-content { 
-        display: flex !important; 
-        padding: 0 16px 20px 16px !important;
-        overflow: visible !important;
-    }
-    .rgl-menu-section#secAvailable { 
-        display: block !important; 
-    }
-    .rgl-menu-section#secLibrary { 
-        display: none !important; /* ライブラリはメニューから開くため非表示のまま */
-    }
-    
-    /* ★ 追加：スマホ表示時は利用可能リストを横3列のグリッドにする */
-    #sidebarAvailableList {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 12px !important;
-        flex-direction: row;
-    }
-    
-    #sidebarAvailableList .sidebar-game-item {
-        padding: 0 !important;
-        border-radius: 12px !important;
-        background: transparent !important;
-        border: none !important;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 0 !important;
-        cursor: default;
-    }
-    
-    #sidebarAvailableList .sidebar-game-item:hover,
-    #sidebarAvailableList .sidebar-game-item.active {
-        background: transparent !important;
-    }
-
-    #sidebarAvailableList .sidebar-game-info {
-        flex-direction: column;
-        gap: 0;
-        width: 100%;
-    }
-
-    #sidebarAvailableList .sidebar-game-thumb {
-        width: 100% !important;
-        height: auto !important;
-        aspect-ratio: 16 / 9;
-        border-radius: 12px !important;
-        margin-bottom: 8px;
-    }
-
-    /* ★ 追加：スマホではテキスト（タイトル）を非表示にして画像とボタンのみにする */
-    #sidebarAvailableList .sidebar-game-text {
-        display: none !important; 
-    }
-
-    /* ★ 追加：スマホ専用の購入ボタンを表示 */
-    .mobile-item-buy-btn {
-        display: flex !important;
-        width: 100%;
-        height: 32px;
-        border-radius: 8px;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 700;
-        cursor: pointer;
-        /* ライトモード：白背景/黒文字 */
-        background-color: #FFFFFF;
-        color: #000000;
-        border: 1px solid rgba(0,0,0,0.1);
-        font-family: var(--font-stack);
-        transition: 0.2s;
-    }
-    /* ダークモード時のスマホ専用ボタン */
-    [data-theme="dark"] .mobile-item-buy-btn {
-        background-color: #000000;
-        color: #FFFFFF;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-    .mobile-item-buy-btn:active {
-        transform: scale(0.95);
-    }
-    
-    .rgl-bottom-controls { display: none; } 
-    .rgl-header { position: fixed !important; top: 0; right: 0; width: auto; height: 70px; background: transparent !important; padding: 0 16px; z-index: 200; display: flex !important; align-items: center; justify-content: flex-end; gap: 10px; pointer-events: none; }
-    .rgl-header > * { pointer-events: auto; }
-    .rgl-tabs { display: none !important; }
-    
-    /* Heroを少し狭くする（コード引き換えボタン用） */
-    .rgl-hero { padding: 30px 20px; min-height: 30vh; }
-    .rgl-logo-text { font-size: 32px; }
-    .account-dropdown { position: fixed; top: 70px; right: 5%; width: 90%; left: auto; transform: translateY(-10px); }
-    .account-dropdown.open { transform: translateY(0); }
-}
-
 footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font-size: 12px; }
 [data-theme="dark"] footer { color: #888; }
-
-.loading-spinner { display: inline-block; vertical-align: middle; width: 24px; height: 24px; border: 3px solid rgba(128,128,128,0.2); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; }
-@keyframes spin { to{transform: rotate(360deg);} }
-
 </style>
 </head>
 <body>
@@ -1237,6 +1176,11 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
             </div>
         </div>
 
+        <div id="mobileStoreView" class="mobile-store-view">
+            <h2 class="mobile-store-title" data-translate="label_available">利用可能</h2>
+            <div id="mobileAvailableList" class="mobile-store-grid"></div>
+        </div>
+
     </main>
 
 </div>
@@ -1371,7 +1315,6 @@ let modalDownloadTimer = null;
 const gId = (i) => document.getElementById(i);
 const setListener = (el, ev, fn) => { if(el) el.addEventListener(ev, fn); };
 
-// ライブラリ表示用にコードにハイフンを入れる関数
 const formatDisplayCode = (code) => {
   if (!code) return "";
   const clean = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -1383,7 +1326,6 @@ const formatDisplayCode = (code) => {
   return res;
 };
 
-// 現在時刻を取得・フォーマット
 function getFormattedCurrentTime(lang) {
     const now = new Date();
     const y = now.getFullYear();
@@ -1393,19 +1335,12 @@ function getFormattedCurrentTime(lang) {
     const min = String(now.getMinutes()).padStart(2, '0');
     const s = String(now.getSeconds()).padStart(2, '0');
 
-    if (['ja', 'zh', 'zh-TW'].includes(lang)) {
-        return `${y}年${m}月${d}日 ${h}:${min}:${s} JST`;
-    } else if (lang === 'ko') {
-        return `${y}년 ${m}월 ${d}일 ${h}:${min}:${s} KST`;
-    } else if (lang === 'ru') {
-        return `${d}.${m}.${y} ${h}:${min}:${s}`;
-    } else if (lang === 'en') {
-        return `${m}/${d}/${y} ${h}:${min}:${s}`;
-    } else {
-        return `${y}/${m}/${d} ${h}:${min}:${s}`;
-    }
+    if (['ja', 'zh', 'zh-TW'].includes(lang)) return `${y}年${m}月${d}日 ${h}:${min}:${s} JST`;
+    else if (lang === 'ko') return `${y}년 ${m}월 ${d}일 ${h}:${min}:${s} KST`;
+    else if (lang === 'ru') return `${d}.${m}.${y} ${h}:${min}:${s}`;
+    else return `${m}/${d}/${y} ${h}:${min}:${s}`;
 }
-// 過去の保存された時間を現在の言語に合わせて再フォーマット
+
 function formatSavedTime(timeStr, lang) {
     if (!timeStr) return "";
     if (timeStr.includes('JST') || timeStr.includes('KST')) return timeStr;
@@ -1420,26 +1355,16 @@ function formatSavedTime(timeStr, lang) {
     const min = String(d.getMinutes()).padStart(2, '0');
     const s = String(d.getSeconds()).padStart(2, '0');
 
-    if (['ja', 'zh', 'zh-TW'].includes(lang)) {
-        return `${y}年${m}月${day}日 ${h}:${min}:${s} JST`;
-    } else if (lang === 'ko') {
-        return `${y}년 ${m}월 ${day}일 ${h}:${min}:${s} KST`;
-    } else if (lang === 'ru') {
-        return `${day}.${m}.${y} ${h}:${min}:${s}`;
-    } else if (lang === 'en') {
-        return `${m}/${day}/${y} ${h}:${min}:${s}`;
-    } else {
-        return `${y}/${m}/${day} ${h}:${min}:${s}`;
-    }
+    if (['ja', 'zh', 'zh-TW'].includes(lang)) return `${y}年${m}月${day}日 ${h}:${min}:${s} JST`;
+    else if (lang === 'ko') return `${y}년 ${m}월 ${day}일 ${h}:${min}:${s} KST`;
+    else if (lang === 'ru') return `${day}.${m}.${y} ${h}:${min}:${s}`;
+    else return `${m}/${day}/${y} ${h}:${min}:${s}`;
 }
 
-// ランダムなエラーコードの生成
 function generateErrorCode() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+';
     let code = '';
-    for(let i=0; i<20; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+    for(let i=0; i<20; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
     return code + '.' + Math.floor(Math.random()*10) + '.' + Math.floor(Math.random()*10);
 }
 
@@ -1463,7 +1388,6 @@ const TRANSLATIONS={
   error_owned_sub: "左ライブラリメニューからコンテンツを選択してダウンロードしてください。",
   btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード", btn_buy:"購入する",
   
-  /* ★ 追加: 購入フロー用のテキスト */
   preview_buy_title: "購入確認",
   preview_buy_desc: "以下のコンテンツを %s pt で購入します:",
   btn_buy_confirm: "購入確定",
@@ -1736,80 +1660,10 @@ const els={
  btnErrorOpenLibrary: gId('btnErrorOpenLibrary')
 };
 
-const formatCodeInput = (val) => {
- if(!val) return "";
- val = val.toUpperCase().replace(/[^A-Z0-9]/g, '');
- let sz = val.length >= 25 ? 5 : 4, res = '';
- for(let i=0; i<val.length; i++) res += (i>0 && i%sz===0 ? '-' : '') + val[i];
- return res;
-};
-
-// 現在時刻を取得・フォーマット
-function getFormattedCurrentTime(lang) {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, '0');
-    const d = String(now.getDate()).padStart(2, '0');
-    const h = String(now.getHours()).padStart(2, '0');
-    const min = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
-
-    if (['ja', 'zh', 'zh-TW'].includes(lang)) {
-        return `${y}年${m}月${d}日 ${h}:${min}:${s} JST`;
-    } else if (lang === 'ko') {
-        return `${y}년 ${m}월 ${d}일 ${h}:${min}:${s} KST`;
-    } else if (lang === 'ru') {
-        return `${d}.${m}.${y} ${h}:${min}:${s}`;
-    } else if (lang === 'en') {
-        return `${m}/${d}/${y} ${h}:${min}:${s}`;
-    } else {
-        return `${y}/${m}/${d} ${h}:${min}:${s}`;
-    }
-}
-
-// 過去の保存された時間を現在の言語に合わせて再フォーマット
-function formatSavedTime(timeStr, lang) {
-    if (!timeStr) return "";
-    if (timeStr.includes('JST') || timeStr.includes('KST')) return timeStr;
-
-    const d = new Date(timeStr.replace(/-/g, '/'));
-    if (isNaN(d.getTime())) return timeStr;
-
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const h = String(d.getHours()).padStart(2, '0');
-    const min = String(d.getMinutes()).padStart(2, '0');
-    const s = String(d.getSeconds()).padStart(2, '0');
-
-    if (['ja', 'zh', 'zh-TW'].includes(lang)) {
-        return `${y}年${m}月${day}日 ${h}:${min}:${s} JST`;
-    } else if (lang === 'ko') {
-        return `${y}년 ${m}월 ${day}일 ${h}:${min}:${s} KST`;
-    } else if (lang === 'ru') {
-        return `${day}.${m}.${y} ${h}:${min}:${s}`;
-    } else if (lang === 'en') {
-        return `${m}/${day}/${y} ${h}:${min}:${s}`;
-    } else {
-        return `${y}/${m}/${day} ${h}:${min}:${s}`;
-    }
-}
-
-// ランダムなエラーコードの生成
-function generateErrorCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+';
-    let code = '';
-    for(let i=0; i<20; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code + '.' + Math.floor(Math.random()*10) + '.' + Math.floor(Math.random()*10);
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
   
   let sLang = localStorage.getItem('user_lang');
-  
   if (!sLang) {
       const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
       if (browserLang.startsWith('ja')) { sLang = 'ja'; } 
@@ -1903,19 +1757,13 @@ function setupEventListeners() {
 
   setListener(els.heroActionBtn, 'click', (e) => {
      e.stopPropagation(); 
-     
      if(window.innerWidth > 768 && currentHeroContext === 'owned' && selectedHeroItem) {
         if (selectedHeroItem.releaseDateIso) {
             const releaseDate = new Date(selectedHeroItem.releaseDateIso);
-            if (releaseDate > new Date()) {
-                return; 
-            }
+            if (releaseDate > new Date()) return; 
         }
-        
         const targetUrl = selectedHeroItem.url || selectedHeroItem.actionUrl;
-        if(targetUrl) {
-            window.open(targetUrl, '_blank');
-        }
+        if(targetUrl) window.open(targetUrl, '_blank');
      } else {
         if (!currentUser) {
             toggleDropdown(true);
@@ -1926,23 +1774,14 @@ function setupEventListeners() {
      }
   });
 
-  // ★ 購入ボタンのイベント
+  // ★ 購入ボタンのイベント（PC版）
   if (els.heroBuyBtn) {
       setListener(els.heroBuyBtn, 'click', (e) => {
           e.stopPropagation();
-          if (!currentUser) {
-              toggleDropdown(true);
-              return;
-          }
+          if (!currentUser) { toggleDropdown(true); return; }
           const price = Number(selectedHeroItem.price) || 0;
           const userPts = Number(currentUser.points) || 0;
-          
-          if (userPts < price) {
-              // エラーモーダルを表示
-              showPurchaseError(userPts, price);
-              return;
-          }
-          // 確認モーダル（プレビュー画面）を表示
+          if (userPts < price) { showPurchaseError(userPts, price); return; }
           showPurchasePreview(selectedHeroItem, price);
       });
   }
@@ -1962,20 +1801,15 @@ function setupEventListeners() {
   setListener(els.btnAuthAction, 'click', performAuthAction);
   
   if (els.mobileMenuBtn) {
-      els.mobileMenuBtn.addEventListener('click', () => {
-          els.mobileNav.classList.add('active');
-      });
+      els.mobileMenuBtn.addEventListener('click', () => { els.mobileNav.classList.add('active'); });
   }
   if (els.mobileMenuCloseBtn) {
-      els.mobileMenuCloseBtn.addEventListener('click', () => {
-          els.mobileNav.classList.remove('active');
-      });
+      els.mobileMenuCloseBtn.addEventListener('click', () => { els.mobileNav.classList.remove('active'); });
   }
   if (els.mobileLangTrigger) {
       els.mobileLangTrigger.addEventListener('click', (e) => {
           e.stopPropagation();
-          const list = gId('mobileLangMenu');
-          list.classList.toggle('open');
+          gId('mobileLangMenu').classList.toggle('open');
       });
   }
 }
@@ -2164,13 +1998,9 @@ async function buyItemWithPoints(code, price) {
 }
 
 function toggleDropdown(forceState) {
-    if (forceState === undefined) {
-        els.accountDropdown.classList.toggle('open');
-    } else if (forceState) {
-        els.accountDropdown.classList.add('open');
-    } else {
-        els.accountDropdown.classList.remove('open');
-    }
+    if (forceState === undefined) { els.accountDropdown.classList.toggle('open'); } 
+    else if (forceState) { els.accountDropdown.classList.add('open'); } 
+    else { els.accountDropdown.classList.remove('open'); }
 }
 
 function setInitialLanguage(lang, immediate = false){
@@ -2185,75 +2015,41 @@ function showMainContent(){
  const urlCode = new URLSearchParams(window.location.search).get('code');
  if(urlCode) {
    setTimeout(()=>{ 
-     if(!currentUser) { 
-       pendingActivationCode = urlCode;
-       toggleDropdown(true); 
-     }
-     else { 
-       openAuthModal(); 
-       els.code.value = formatCodeInput(urlCode); 
-       performAuth(els.code.value); 
-     }
+     if(!currentUser) { pendingActivationCode = urlCode; toggleDropdown(true); }
+     else { openAuthModal(); els.code.value = formatCodeInput(urlCode); performAuth(els.code.value); }
    }, 800);
  }
 }
 
 function initCustomDropdown() {
-    els.langTrigger.addEventListener('click', (e) => { 
-        e.stopPropagation(); 
-        els.langMenu.classList.toggle('open'); 
-    });
+    els.langTrigger.addEventListener('click', (e) => { e.stopPropagation(); els.langMenu.classList.toggle('open'); });
     document.querySelectorAll('.lang-option').forEach(opt => {
         opt.addEventListener('click', () => {
             const val = opt.getAttribute('data-value');
-            
-            localStorage.setItem('user_lang', val);
-            updateLanguage(val);
-            
-            if (currentUser) {
-                fetchAvailableContent();
-                fetchUserHistory();
-            }
-
+            localStorage.setItem('user_lang', val); updateLanguage(val);
+            if (currentUser) { fetchAvailableContent(); fetchUserHistory(); }
             if (opt.closest('#mobileLangMenu')) {
-                gId('mobileLangMenu').classList.remove('open');
-                els.mobileNav.classList.remove('active');
+                gId('mobileLangMenu').classList.remove('open'); els.mobileNav.classList.remove('active');
             } else {
                 const overlay = gId('langSwitchingOverlay');
                 if(overlay) overlay.style.display = 'flex';
                 els.langMenu.classList.remove('open');
-                setTimeout(() => {
-                    setTimeout(() => { if(overlay) overlay.style.display = 'none'; }, 600);
-                }, 300);
+                setTimeout(() => { setTimeout(() => { if(overlay) overlay.style.display = 'none'; }, 600); }, 300);
             }
         });
     });
     document.addEventListener('click', (e) => { 
         if (!els.langTrigger.contains(e.target)) els.langMenu.classList.remove('open'); 
-        if (!els.accountDropdown.contains(e.target) && !els.openAccount.contains(e.target)) {
-            toggleDropdown(false);
-        }
-        if(els.mobileLangTrigger && !els.mobileLangTrigger.contains(e.target)) {
-            gId('mobileLangMenu').classList.remove('open');
-        }
+        if (!els.accountDropdown.contains(e.target) && !els.openAccount.contains(e.target)) toggleDropdown(false);
+        if(els.mobileLangTrigger && !els.mobileLangTrigger.contains(e.target)) gId('mobileLangMenu').classList.remove('open');
     });
 }
 
-function logout() {
-  localStorage.removeItem('user_session_identity');
-  currentUser = null;
-  window.location.reload(); 
-}
+function logout() { localStorage.removeItem('user_session_identity'); currentUser = null; window.location.reload(); }
 
 function updateLanguage(lang){
-  CURRENT_LANG = lang; 
-  document.documentElement.lang = lang; 
-  const t = TRANSLATIONS[lang]; 
-  if(!t) return;
-  document.querySelectorAll('[data-translate]').forEach(el => { 
-    const k = el.getAttribute('data-translate'); 
-    if(k !== 'news_content' && t[k]) el.innerHTML = t[k]; 
-  });
+  CURRENT_LANG = lang; document.documentElement.lang = lang; const t = TRANSLATIONS[lang]; if(!t) return;
+  document.querySelectorAll('[data-translate]').forEach(el => { const k = el.getAttribute('data-translate'); if(k !== 'news_content' && t[k]) el.innerHTML = t[k]; });
   const langMap = { ja: '日本語', en: 'English', zh: '简体中文', 'zh-TW': '繁體中文', ko: '한국어', ru: 'Русский' };
   if(els.currentLangLabel) els.currentLangLabel.textContent = langMap[lang] || 'Language';
   if(els.mobileCurrentLangLabel) els.mobileCurrentLangLabel.textContent = langMap[lang] || 'Language'; 
@@ -2263,10 +2059,6 @@ function updateLanguage(lang){
 
 function openAuthModal(){ els.authModal.classList.add('active'); resetAuthModal(); els.code.focus(); }
 function closeAuthModal(){ els.authModal.classList.remove('active'); setTimeout(()=>els.modalCon.classList.remove('is-wide'), 500); }
-
-let currentAuthRequestId = 0;
-let currentContentData = {};
-let currentAuthTime = "";
 
 function resetAuthModal(){
   currentAuthRequestId++; 
@@ -2288,7 +2080,7 @@ function resetAuthModal(){
   els.btnErrorClose.style.width = "100%";
   els.btnErrorOpenLibrary.style.display = "none";
 
-  // ★ テキストのリセット（通常のアクティベーション用に文言を戻す）
+  // ★ テキストのリセット
   const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS.ja;
   const titleTops = els.phasePreview.querySelectorAll('.modal-title-top, .mobile-title');
   titleTops.forEach(el => el.textContent = t.preview_title);
@@ -2317,22 +2109,14 @@ function showMobileItemDetail(item, isNewRedeem = false) {
     els.modalCon.classList.add('is-wide');
     
     const t = TRANSLATIONS[CURRENT_LANG];
-    
     els.successBundleName.textContent = item.title;
     els.successTitleUnderImg.textContent = item.title;
     
-    if (isNewRedeem) {
-        els.successTime.textContent = currentAuthTime;
-    } else {
-        let savedTime = item.authTime || item.date || "";
-        els.successTime.textContent = formatSavedTime(savedTime, CURRENT_LANG);
-    }
+    if (isNewRedeem) els.successTime.textContent = currentAuthTime;
+    else els.successTime.textContent = formatSavedTime(item.authTime || item.date || "", CURRENT_LANG);
 
-    if(item.imageUrl && item.imageUrl.startsWith("http")){ 
-        els.successImage.src=item.imageUrl; 
-    } else { 
-        els.successImage.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; 
-    }
+    if(item.imageUrl && item.imageUrl.startsWith("http")) els.successImage.src=item.imageUrl; 
+    else els.successImage.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; 
 
     els.btnSuccessClose.style.flex = "3";
     els.btnSuccessClose.style.width = "auto";
@@ -2341,47 +2125,28 @@ function showMobileItemDetail(item, isNewRedeem = false) {
     const startModalTimer = () => {
         const now = new Date();
         const releaseDate = item.releaseDateIso ? new Date(item.releaseDateIso) : null;
-        
         if (releaseDate && releaseDate > now) {
-            const diff = releaseDate - now;
-            const oneDay = 24 * 60 * 60 * 1000;
-            
-            els.btnSuccessDownload.style.pointerEvents = 'none';
-            els.btnSuccessDownload.style.opacity = '0.6';
-            els.btnSuccessDownload.removeAttribute('href'); 
-            els.btnSuccessDownload.onclick = (e) => { e.preventDefault(); };
+            const diff = releaseDate - now; const oneDay = 24 * 60 * 60 * 1000;
+            els.btnSuccessDownload.style.pointerEvents = 'none'; els.btnSuccessDownload.style.opacity = '0.6';
+            els.btnSuccessDownload.removeAttribute('href'); els.btnSuccessDownload.onclick = (e) => { e.preventDefault(); };
 
             if (diff > oneDay) {
-               const y = releaseDate.getFullYear();
-               const m = releaseDate.getMonth() + 1;
-               const d = releaseDate.getDate();
+               const y = releaseDate.getFullYear(); const m = releaseDate.getMonth() + 1; const d = releaseDate.getDate();
                els.btnSuccessDownload.innerHTML = `<span>${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}</span>`;
             } else {
-               const h = Math.floor(diff / (1000 * 60 * 60));
-               const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-               const s = Math.floor((diff % (1000 * 60)) / 1000);
-               const hh = String(h).padStart(2, '0');
-               const mm = String(m).padStart(2, '0');
-               const ss = String(s).padStart(2, '0');
-               els.btnSuccessDownload.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
+               const h = Math.floor(diff / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); const s = Math.floor((diff % (1000 * 60)) / 1000);
+               els.btnSuccessDownload.innerHTML = `<span>${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}</span>`;
             }
         } else {
             if(modalDownloadTimer) clearInterval(modalDownloadTimer);
-            els.btnSuccessDownload.style.pointerEvents = 'auto';
-            els.btnSuccessDownload.style.opacity = '1';
-            els.btnSuccessDownload.href = item.url;
-            els.btnSuccessDownload.onclick = null; 
-            els.btnSuccessDownload.target = "_blank";
-            const btnLabel = item.buttonLabel || t.btn_download || "ダウンロード";
-            const btnIcon = item.icon || "download";
+            els.btnSuccessDownload.style.pointerEvents = 'auto'; els.btnSuccessDownload.style.opacity = '1';
+            els.btnSuccessDownload.href = item.url; els.btnSuccessDownload.onclick = null; els.btnSuccessDownload.target = "_blank";
+            const btnLabel = item.buttonLabel || t.btn_download || "ダウンロード"; const btnIcon = item.icon || "download";
             els.btnSuccessDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${btnIcon}" aria-hidden="true" size="18" class="lucide lucide-${btnIcon}"></svg>`;
             try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         }
     };
-
-    startModalTimer();
-    modalDownloadTimer = setInterval(startModalTimer, 1000);
-    
+    startModalTimer(); modalDownloadTimer = setInterval(startModalTimer, 1000);
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
@@ -2494,14 +2259,7 @@ async function performAuth(code, mode = 'check') {
         // 通常コンテンツの処理
         await saveUnlockedItemLocal(d, safeCode);
         if(window.innerWidth <= 768) {
-           const item = {
-             title: d.bundleLabel || d.message,
-             imageUrl: d.imageUrl,
-             url: d.actionUrl,
-             releaseDateIso: d.releaseDateIso,
-             buttonLabel: d.Button_Label,
-             icon: d.btnIcon
-           };
+           const item = { title: d.bundleLabel || d.message, imageUrl: d.imageUrl, url: d.actionUrl, releaseDateIso: d.releaseDateIso, buttonLabel: d.Button_Label, icon: d.btnIcon };
            showMobileItemDetail(item, true); 
         } else {
            els.successImage.src = currentContentData.imageUrl;
@@ -2518,9 +2276,7 @@ async function performAuth(code, mode = 'check') {
              setTimeout(() => els.phaseSuccess.style.opacity = '1', 50);
            }, 400);
 
-           if (currentUser.history.length > 0) {
-              updateHeroView(currentUser.history[0], true); 
-           }
+           if (currentUser.history.length > 0) { updateHeroView(currentUser.history[0], true); }
         }
       } else {
         try {
@@ -2539,14 +2295,12 @@ async function performAuth(code, mode = 'check') {
                 if (window.innerWidth <= 768) {
                     errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
                     errorSubText = t.msg_already_owned_mobile || "ライブラリからコンテンツを選択してダウンロードしてください。";
-                    
                     els.btnErrorClose.style.flex = "3";
                     els.btnErrorClose.style.width = "auto";
                     els.btnErrorOpenLibrary.style.display = "flex";
                 } else {
                     errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
                     errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
-                    
                     els.btnErrorClose.style.flex = "none";
                     els.btnErrorClose.style.width = "100%";
                     els.btnErrorOpenLibrary.style.display = "none";
@@ -2634,19 +2388,14 @@ async function performAuthAction() {
     const res = await fetch(GAS_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        type: actionType,
-        email: email,
-        password: pass
-      })
+      body: new URLSearchParams({ type: actionType, email: email, password: pass })
     });
     const data = await res.json();
     if (data.success) {
       if (data.isAdmin) {
         toggleDropdown(false);
         els.email.value = ""; els.pass.value = "";
-        tempAdminCreds.user = email;
-        tempAdminCreds.pass = pass;
+        tempAdminCreds.user = email; tempAdminCreds.pass = pass;
         els.adminModal.classList.add('active');
         els.btnAuthAction.disabled = false;
         els.btnAuthAction.textContent = mode==='login'?TRANSLATIONS[CURRENT_LANG].btn_login_action:TRANSLATIONS[CURRENT_LANG].btn_signup_action;
@@ -2656,7 +2405,7 @@ async function performAuthAction() {
       localStorage.setItem('user_session_identity', JSON.stringify({ userId: data.userId, email: email }));
       
       updateAccountUI(); 
-      fetchUserHistory(); 
+      fetchUserHistoryAndStore(); 
       
       els.email.value = ""; els.pass.value = "";
       if (pendingActivationCode) {
@@ -2690,10 +2439,7 @@ function setHeroButtonState(state, forceUnlock = false) {
     const buyBtn = els.heroBuyBtn;
     const t = TRANSLATIONS[CURRENT_LANG];
     
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.style.cursor = 'pointer';
-    btn.classList.remove('is-download'); 
+    btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; btn.classList.remove('is-download'); 
 
     if (state === 'owned') {
         if(buyBtn) buyBtn.style.display = 'none';
@@ -2706,10 +2452,8 @@ function setHeroButtonState(state, forceUnlock = false) {
         } else {
             let iconName = selectedHeroItem.icon || 'download';
             const displayLabel = selectedHeroItem.buttonLabel || t.btn_hero_download;
-
             btn.innerHTML = `<span>${displayLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${iconName}" aria-hidden="true" size="20" class="lucide lucide-${iconName}"></svg>`;
             btn.classList.add('is-download');
-            
             currentHeroContext = 'owned';
             try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         }
@@ -2718,6 +2462,7 @@ function setHeroButtonState(state, forceUnlock = false) {
         btn.classList.remove('is-download');
         currentHeroContext = 'available';
 
+        // ★ 購入ボタンの表示
         if(selectedHeroItem && selectedHeroItem.price > 0) {
             if(buyBtn) {
                 buyBtn.style.display = 'inline-flex';
@@ -2732,10 +2477,7 @@ function setHeroButtonState(state, forceUnlock = false) {
 
 function startHeroCountdown(targetDate) {
     const btn = els.heroActionBtn;
-    btn.classList.add('is-download'); 
-    btn.style.opacity = '0.7';
-    btn.style.cursor = 'default';
-    
+    btn.classList.add('is-download'); btn.style.opacity = '0.7'; btn.style.cursor = 'default';
     const enMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const ruMonths = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
 
@@ -2750,13 +2492,9 @@ function startHeroCountdown(targetDate) {
         }
 
         const oneDay = 24 * 60 * 60 * 1000;
-
         if (diff > oneDay) {
-            const y = targetDate.getFullYear();
-            const m = targetDate.getMonth(); 
-            const d = targetDate.getDate();
-            const mm = String(m + 1).padStart(2, '0');
-            const dd = String(d).padStart(2, '0');
+            const y = targetDate.getFullYear(); const m = targetDate.getMonth(); const d = targetDate.getDate();
+            const mm = String(m + 1).padStart(2, '0'); const dd = String(d).padStart(2, '0');
             let dateString = "";
             switch (CURRENT_LANG) {
                 case 'ja': case 'zh': case 'zh-TW': dateString = `${y}年${mm}月${dd}日`; break;
@@ -2766,170 +2504,33 @@ function startHeroCountdown(targetDate) {
             }
             btn.innerHTML = `<span>${dateString}</span>`;
         } else {
-            const h = Math.floor(diff / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-            const hh = String(h).padStart(2, '0');
-            const mm = String(m).padStart(2, '0');
-            const ss = String(s).padStart(2, '0');
+            const h = Math.floor(diff / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); const s = Math.floor((diff % (1000 * 60)) / 1000);
+            const hh = String(h).padStart(2, '0'); const mm = String(m).padStart(2, '0'); const ss = String(s).padStart(2, '0');
             btn.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
         }
     };
-    update(); 
-    heroTimer = setInterval(update, 1000);
+    update(); heroTimer = setInterval(update, 1000);
 }
 
 function updateHeroView(item, isOwned) {
-    if (window.innerWidth <= 768) {
-        return; 
-    }
-    selectedHeroItem = item;
-    els.heroTitle.textContent = item.title;
+    if (window.innerWidth <= 768) return; 
+    selectedHeroItem = item; els.heroTitle.textContent = item.title;
     if(heroTimer) { clearInterval(heroTimer); heroTimer = null; }
     els.heroDesc.style.display = 'none';
-    if (item.imageUrl && item.imageUrl.startsWith('http')) {
-        els.heroBgImage.style.backgroundImage = `url('${item.imageUrl}')`;
-    }
+    if (item.imageUrl && item.imageUrl.startsWith('http')) els.heroBgImage.style.backgroundImage = `url('${item.imageUrl}')`;
     setHeroButtonState(isOwned ? 'owned' : 'available');
-}
-
-function updateAccountUI() {
-  const t = TRANSLATIONS[CURRENT_LANG];
-  if (currentUser) {
-    els.loggedOutView.style.display = 'none';
-    els.loggedInView.style.display = 'block';
-    if(els.displayUserEmail) els.displayUserEmail.textContent = currentUser.email || '-';
-    // ★ ポイント表示の更新
-    if(gId('ptValue')) gId('ptValue').textContent = currentUser.points || 0;
-    
-    const hasHistory = (currentUser.history && currentUser.history.length > 0);
-    if (hasHistory) {
-      els.secLibrary.style.display = 'block';
-      els.libraryListSidebar.innerHTML = "";
-      currentUser.history.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'sidebar-game-item';
-            div.onclick = () => {
-                document.querySelectorAll('.sidebar-game-item').forEach(el => el.classList.remove('active'));
-                div.classList.add('active');
-                updateHeroView(item, true); 
-            };
-            const imgUrl = (item.imageUrl && item.imageUrl.startsWith('http')) ? item.imageUrl : 'https://via.placeholder.com/32';
-            div.innerHTML = `
-              <div class="sidebar-game-info">
-                <img src="${imgUrl}" class="sidebar-game-thumb" onerror="this.style.background='#555'">
-                <div class="sidebar-game-text">
-                   <div class="sidebar-game-title">${item.title}</div>
-                </div>
-              </div>
-            `;
-            els.libraryListSidebar.appendChild(div);
-      });
-    } else {
-      els.secLibrary.style.display = 'none';
-    }
-    els.secAvailable.style.display = 'block';
-
-    if(libraryTimerId) { clearInterval(libraryTimerId); libraryTimerId = null; }
-    els.libraryList.innerHTML = "";
-    
-    if (!currentUser.history || currentUser.history.length === 0) {
-      els.libraryList.innerHTML = `<li style='text-align:center; opacity:0.5; padding:20px; font-size:13px;'>${t.msg_empty_lib}</li>`;
-    } else {
-      const now = Date.now();
-      let hasLockedItems = false;
-      currentUser.history.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'lib-item-card';
-        const displayCode = formatDisplayCode(item.code); 
-        const img = item.imageUrl && item.imageUrl.startsWith('http') 
-          ? `<img src="${item.imageUrl}" class="lib-card-thumb">` 
-          : `<div class="lib-card-thumb" style="display:flex;align-items:center;justify-content:center;color:#999;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="image" aria-hidden="true" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg></div>`;
-        
-        li.onclick = () => {
-             els.libraryModal.classList.remove('active');
-             showMobileItemDetail(item, false);
-        };
-        li.innerHTML = `<div class="lib-card-left">${img}<div class="lib-card-info"><div class="lib-card-meta">${item.date} • ${displayCode}</div><div class="lib-card-title">${item.title}</div></div></div>`;
-        els.libraryList.appendChild(li);
-        const releaseTime = item.releaseDateIso ? new Date(item.releaseDateIso).getTime() : 0;
-        if (releaseTime > now) hasLockedItems = true;
-      });
-      try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
-      if (hasLockedItems) startLibraryTimer();
-    }
-
-  } else {
-    els.loggedOutView.style.display = 'block';
-    els.loggedInView.style.display = 'none';
-    els.secLibrary.style.display = 'none';
-    els.secAvailable.style.display = 'none';
-  }
-}
-
-function startLibraryTimer() {
-    if (libraryTimerId) clearInterval(libraryTimerId);
-    libraryTimerId = setInterval(() => {
-        const now = Date.now();
-        if (window.innerWidth > 768 && selectedHeroItem && selectedHeroItem.releaseDateIso) {
-             const releaseTime = new Date(selectedHeroItem.releaseDateIso).getTime();
-             if (releaseTime <= now && currentHeroContext === 'owned' && !els.heroActionBtn.classList.contains('is-download')) {
-                  setHeroButtonState('owned', true);
-             }
-        }
-    }, 1000);
-}
-
-async function saveUnlockedItemLocal(data, code) {
-  if (!currentUser) {
-      currentUser = { userId: "GUEST", email: "Guest", history: [], points: 0 };
-  }
-  const newItem = {
-    code: code, 
-    title: data.bundleLabel || data.message || "Unknown Content", 
-    message: data.message,
-    url: data.actionUrl, 
-    date: new Date().toLocaleDateString(), 
-    authTime: currentAuthTime, 
-    icon: data.btnIcon || 'download', 
-    lang: CURRENT_LANG,
-    imageUrl: data.imageUrl, 
-    releaseDateIso: data.releaseDateIso || null,
-    groupId: data.groupId,
-    buttonLabel: data.Button_Label || null 
-  };
-  
-  const idx = currentUser.history.findIndex(h => h.code === code);
-  if (idx > -1) currentUser.history.splice(idx, 1);
-  currentUser.history.unshift(newItem);
-  updateAccountUI();
-  const items = els.availableListSidebar.querySelectorAll('.sidebar-game-item');
-  items.forEach(el => {
-      const c = el.getAttribute('data-code');
-      const g = el.getAttribute('data-group-id');
-      const tAttr = el.getAttribute('data-title');
-      const isCodeMatch = (c === code);
-      const isGroupMatch = (newItem.groupId && g == newItem.groupId);
-      const isTitleMatch = (tAttr && newItem.title && tAttr.trim() === newItem.title.trim());
-
-      if (isCodeMatch || isGroupMatch || isTitleMatch) {
-          el.remove();
-      }
-  });
-  if (els.availableListSidebar.children.length === 0) {
-      const t = TRANSLATIONS[CURRENT_LANG];
-      els.availableListSidebar.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">${t.msg_empty_lib || "No content"}</div>`;
-  }
 }
 
 async function fetchAvailableContent() {
     if (!currentUser) return;
     const list = els.availableListSidebar;
+    const mobileList = gId('mobileAvailableList'); // スマホ用メインコンテナ
     const t = TRANSLATIONS[CURRENT_LANG];
+    
     list.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">Loading...</div>`;
-    const ownedGroups = new Set();
-    const ownedCodes = new Set();
-    const ownedTitles = new Set();
+    if(mobileList) mobileList.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px; grid-column: 1 / -1; text-align:center;">Loading...</div>`;
+    
+    const ownedGroups = new Set(); const ownedCodes = new Set(); const ownedTitles = new Set();
     if (currentUser && currentUser.history) {
         currentUser.history.forEach(h => {
             if (h.groupId) ownedGroups.add(h.groupId); 
@@ -2941,7 +2542,9 @@ async function fetchAvailableContent() {
         const res = await fetch(`${GAS_API_URL}?type=get_available&lang=${CURRENT_LANG}`);
         const d = await res.json();
         list.innerHTML = '';
+        if(mobileList) mobileList.innerHTML = '';
         let hasItems = false; 
+        
         if(d.success && d.items && d.items.length > 0) {
             d.items.forEach((item, index) => {
                 if (item.active === false) return; 
@@ -2949,6 +2552,8 @@ async function fetchAvailableContent() {
                 if (!item.groupId && ownedCodes.has(item.code)) return; 
                 if (item.title && ownedTitles.has(item.title)) return;
                 hasItems = true;
+                
+                // --- PC用 サイドバー ---
                 const div = document.createElement('div');
                 div.className = 'sidebar-game-item';
                 div.setAttribute('data-code', item.code);
@@ -2960,71 +2565,58 @@ async function fetchAvailableContent() {
                     div.classList.add('active');
                     updateHeroView(item, false); 
                 };
-                
                 div.innerHTML = `<div class="sidebar-game-info"><img src="${item.imageUrl}" class="sidebar-game-thumb"><div class="sidebar-game-text"><div class="sidebar-game-title">${item.title}</div></div></div>`;
-                
-                // ★ スマホ用の購入ボタンをDOMに追加
-                const buyBtn = document.createElement('button');
-                buyBtn.className = 'mobile-item-buy-btn';
-                buyBtn.innerHTML = item.price > 0 ? `${item.price} pt` : `無料`;
-                buyBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if (!currentUser) {
-                        toggleDropdown(true);
-                        return;
-                    }
-                    const userPts = Number(currentUser.points) || 0;
-                    if (userPts < item.price) {
-                        showPurchaseError(userPts, item.price);
-                        return;
-                    }
-                    showPurchasePreview(item, item.price);
-                };
-                div.appendChild(buyBtn);
-                
                 list.appendChild(div);
                 
                 if (!selectedHeroItem && !document.querySelector('.sidebar-game-item.active') && (!currentUser || !currentUser.history.length)) {
                     updateHeroView(item, false);
                     div.classList.add('active');
                 }
+
+                // --- スマホ用 メイン画面 (横3列) ---
+                if (mobileList) {
+                    const mDiv = document.createElement('div');
+                    mDiv.className = 'mobile-store-item';
+                    
+                    let btnHtml = '';
+                    if (item.price > 0) {
+                        btnHtml = `<button class="mobile-item-buy-btn">${item.price} pt</button>`;
+                    } else {
+                        // 無料の場合はダウンロードアイコンボタン
+                        btnHtml = `<button class="mobile-item-buy-btn" style="background:transparent; color:var(--modal-text-main); border:1px solid var(--modal-text-main);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg></button>`;
+                    }
+                    
+                    mDiv.innerHTML = `<img src="${item.imageUrl}" class="mobile-store-thumb">${btnHtml}`;
+                    
+                    const mBtn = mDiv.querySelector('.mobile-item-buy-btn');
+                    if (mBtn) {
+                        mBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            if (!currentUser) { toggleDropdown(true); return; }
+                            
+                            if (item.price > 0) {
+                                const userPts = Number(currentUser.points) || 0;
+                                if (userPts < item.price) { showPurchaseError(userPts, item.price); return; }
+                                showPurchasePreview(item, item.price);
+                            } else {
+                                // 無料の場合は自動で引き換えモーダルを開いてコード入力
+                                openAuthModal();
+                                gId('activationCode').value = item.code;
+                            }
+                        };
+                    }
+                    mobileList.appendChild(mDiv);
+                }
             });
         } 
         if (!hasItems) {
              list.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">${t.msg_empty_lib || "No content"}</div>`;
+             if(mobileList) mobileList.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px; grid-column: 1 / -1; text-align:center;">${t.msg_empty_lib || "No content"}</div>`;
         }
     } catch(e) {
         list.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">-</div>`;
+        if(mobileList) mobileList.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px; grid-column: 1 / -1; text-align:center;">-</div>`;
     }
-}
-
-async function fetchUserHistory() {
-  if (!currentUser) return;
-  els.libraryListSidebar.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">Loading...</div>`;
-  try { 
-    const res = await fetch(`${GAS_API_URL}?type=get_history&userId=${currentUser.userId}&lang=${CURRENT_LANG}&_t=${Date.now()}`);
-    const data = await res.json();
-    
-    if (data.success && Array.isArray(data.history)) {
-      currentUser.history = data.history; 
-      // ★ ポイント情報更新
-      currentUser.points = data.points || 0;
-      updateAccountUI();
-      if (currentUser.history.length > 0) {
-            updateHeroView(currentUser.history[0], true);
-      }
-    } else if (data.message === "User not found") {
-      console.warn("User session invalid. Logging out...");
-      localStorage.removeItem('user_session_identity');
-      currentUser = null;
-      window.location.reload(); 
-      return;
-    }
-  } catch (e) { 
-      updateAccountUI(); 
-  } finally {
-      fetchAvailableContent();
-  }
 }
 
 async function performAdminSearch() {
@@ -3035,13 +2627,7 @@ async function performAdminSearch() {
     const res = await fetch(GAS_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        type: 'admin_search',
-        adminUser: tempAdminCreds.user,
-        adminPass: tempAdminCreds.pass,
-        targetEmail: target,
-        _t: Date.now()
-      })
+      body: new URLSearchParams({ type: 'admin_search', adminUser: tempAdminCreds.user, adminPass: tempAdminCreds.pass, targetEmail: target, _t: Date.now() })
     });
     const d = await res.json();
     if(d.success) {
