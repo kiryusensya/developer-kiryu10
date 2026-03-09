@@ -1888,11 +1888,16 @@ function showPurchaseError(userPts, price) {
     const t = TRANSLATIONS[CURRENT_LANG];
     const thisRequestId = ++currentAuthRequestId; 
     
-    els.errorCodeText.textContent = generateErrorCode();
+    // タイトルを「⚠ エラー」から「⚠ ポイント不足」等に変更する
+    const titlePrefix = els.phaseError.querySelector('[data-translate="error_title_prefix"]');
+    if (titlePrefix) titlePrefix.textContent = t.error_points_title || "ポイント不足";
+    
+    els.errorCodeText.textContent = ""; // ポイント不足時はランダムエラーコードを非表示
     els.errorTime.textContent = getFormattedCurrentTime(CURRENT_LANG);
     els.errorMessage.textContent = t.error_points_msg || "ポイントが不足しています。";
     
-    const subStr = t.error_points_sub || `現在: ${userPts} pt / 必要: ${price} pt`;
+    // 翻訳データ側にptを入れていない場合は、ここで直接表示を整える
+    const subStr = t.error_points_sub || `現在: ${userPts} / 必要: ${price}`;
     els.errorSubMessage.innerHTML = subStr.replace('%1', userPts).replace('%2', price);
     els.errorInfoBox.style.display = 'flex';
     
@@ -1947,11 +1952,16 @@ function showPurchasePreview(item, price) {
     
     els.btnPreviewRedeem.addEventListener('click', (e) => { 
         e.preventDefault();
-        const userPts = Number(currentUser.points) || 0;
-        if (userPts < price) {
-            showPurchaseError(userPts, price);
+        
+        // どんな文字が混ざっていても、必ず数字だけを抽出して比較する
+        const userPts = parseInt(String(currentUser.points).replace(/[^0-9]/g, ''), 10) || 0;
+        const itemPrice = parseInt(String(price).replace(/[^0-9]/g, ''), 10) || 0;
+        
+        if (userPts < itemPrice) {
+            showPurchaseError(userPts, itemPrice);
         } else {
-            buyItemWithPoints(item.code, price);
+            // サーバーに送る際も、確実に「数字」だけを送る
+            buyItemWithPoints(item.code, itemPrice);
         }
     });
     
@@ -2016,7 +2026,11 @@ async function buyItemWithPoints(code, price) {
             els.errorCodeText.textContent = generateErrorCode();
             els.errorTime.textContent = currentAuthTime;
 
-            let errorMainText = t.msg_error;
+            // ★追加: 本物のエラーの時はタイトルを「エラー」に戻す
+            const titlePrefix = els.phaseError.querySelector('[data-translate="error_title_prefix"]');
+            if (titlePrefix) titlePrefix.textContent = t.error_title_prefix || "エラー";
+
+            let errorMainText = "";
             let errorSubText = data.message;
             let showInfoBox = true;
             
