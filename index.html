@@ -2104,8 +2104,8 @@ function initCustomDropdown() {
             updateLanguage(val);
             
             if (currentUser) {
-                fetchAvailableContent();
                 fetchUserHistory();
+                fetchAvailableContent();
             }
 
             if (opt.closest('#mobileLangMenu')) {
@@ -2821,36 +2821,41 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
     mobileList.appendChild(mDiv);
 }
 
+
 async function fetchAvailableContent() {
     if (!currentUser) return;
     const list = els.availableListSidebar;
     const t = TRANSLATIONS[CURRENT_LANG];
     
     list.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">Loading...</div>`;
-    
     const mobileList = gId('mobileStoreGrid');
-    if (mobileList) mobileList.innerHTML = '';
-    
-    const ownedGroups = new Set(); const ownedCodes = new Set(); const ownedTitles = new Set();
-    let hasMobileItems = false;
-    
-    if (currentUser && currentUser.history) {
-        currentUser.history.forEach(h => {
-            if (h.groupId) ownedGroups.add(h.groupId); 
-            if (h.code) ownedCodes.add(h.code);
-            if (h.title) ownedTitles.add(h.title);         
-            
-            renderMobileStoreItem(h, ownedGroups, ownedCodes, ownedTitles);
-            hasMobileItems = true;
-        });
-    }
 
     try {
+        // 1. まず通信してサーバーから最新データを取得する（待機）
         const res = await fetch(`${GAS_API_URL}?type=get_available&lang=${CURRENT_LANG}`);
         const d = await res.json();
+        
+        // 2. データが届いたら、ここで初めて画面をリセットする！
         list.innerHTML = '';
+        if (mobileList) mobileList.innerHTML = '';
+        
+        const ownedGroups = new Set(); const ownedCodes = new Set(); const ownedTitles = new Set();
+        let hasMobileItems = false;
         let hasItems = false; 
         
+        // 3. 所有済みの履歴アイテムを描画
+        if (currentUser && currentUser.history) {
+            currentUser.history.forEach(h => {
+                if (h.groupId) ownedGroups.add(h.groupId); 
+                if (h.code) ownedCodes.add(h.code);
+                if (h.title) ownedTitles.add(h.title);         
+                
+                renderMobileStoreItem(h, ownedGroups, ownedCodes, ownedTitles);
+                hasMobileItems = true;
+            });
+        }
+
+        // 4. ストアの未所有アイテムを描画
         if(d.success && d.items && d.items.length > 0) {
             d.items.forEach((item, index) => {
                 if (item.active === false) return; 
@@ -2894,7 +2899,7 @@ async function fetchAvailableContent() {
         }
     } catch(e) {
         list.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">-</div>`;
-        if (mobileList && !hasMobileItems) mobileList.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px; grid-column: 1 / -1; text-align:center;">-</div>`;
+        if (mobileList) mobileList.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px; grid-column: 1 / -1; text-align:center;">-</div>`;
     }
 }
 
