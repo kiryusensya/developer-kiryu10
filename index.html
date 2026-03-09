@@ -1885,19 +1885,14 @@ function setupEventListeners() {
 }
 
 function showPurchaseError(userPts, price) {
-    const t = TRANSLATIONS[CURRENT_LANG];
-    const thisRequestId = ++currentAuthRequestId; 
-    
-    // タイトルを「⚠ エラー」から「⚠ ポイント不足」等に変更する
-    const titlePrefix = els.phaseError.querySelector('[data-translate="error_title_prefix"]');
-    if (titlePrefix) titlePrefix.textContent = t.error_points_title || "ポイント不足";
-    
-    els.errorCodeText.textContent = ""; // ポイント不足時はランダムエラーコードを非表示
-    els.errorTime.textContent = getFormattedCurrentTime(CURRENT_LANG);
-    els.errorMessage.textContent = t.error_points_msg || "ポイントが不足しています。";
-    
-    // 翻訳データ側にptを入れていない場合は、ここで直接表示を整える
-    const subStr = t.error_points_sub || `現在: ${userPts} / 必要: ${price}`;
+    const t = TRANSLATIONS[CURRENT_LANG];
+    const thisRequestId = ++currentAuthRequestId; 
+    
+    els.errorCodeText.textContent = generateErrorCode();
+    els.errorTime.textContent = getFormattedCurrentTime(CURRENT_LANG);
+    els.errorMessage.textContent = t.error_points_msg || "ポイントが不足しています。";
+    
+    const subStr = t.error_points_sub || `現在: ${userPts} pt / 必要: ${price} pt`;
     els.errorSubMessage.innerHTML = subStr.replace('%1', userPts).replace('%2', price);
     els.errorInfoBox.style.display = 'flex';
     
