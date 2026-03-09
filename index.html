@@ -383,19 +383,42 @@ button, input, textarea { font-family: var(--font-stack); }
     box-shadow: 0 15px 30px rgba(0, 125, 255, 0.4);
 }
 
-/* 購入ボタン用スタイル（ライト=白/黒文字, ダーク=黒/白文字） */
-.btn-buy-alt {
-    background-color: #FFFFFF !important;
-    color: #000000 !important;
-    border: 1px solid rgba(0,0,0,0.1) !important;
+/* --- 購入用ボタン (PC用) --- */
+.rgl-buy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 56px;
+    min-width: 200px;
+    padding: 0 40px;
+    
+    /* ライトモード時: ボタン白 / 文字黒 */
+    background-color: #FFFFFF;
+    color: #000000;
+    
+    font-weight: 800;
+    font-size: 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    text-transform: none !important;
+    
+    transition: all 0.2s;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    font-family: var(--font-stack);
 }
-[data-theme="dark"] .btn-buy-alt {
-    background-color: #000000 !important;
-    color: #FFFFFF !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
+.rgl-buy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+/* ダークモード時: ボタン黒 / 文字白 */
+[data-theme="dark"] .rgl-buy-btn { 
+    background-color: #000000; 
+    color: #FFFFFF; 
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ★ PC用のスマホ専用クラスを無効化（PC版の完全保護） */
+/* ★ PC用の購入ボタン等に追加されたスマホ用クラスを無効化（PC版の完全保護） */
 .mobile-store-view { display: none !important; }
 
 /* Sidebar Language Selector */
@@ -792,6 +815,7 @@ button, input, textarea { font-family: var(--font-stack); }
 }
 .label-logged-in { font-size: 10px; font-weight: 700; opacity: 0.6; margin-bottom: 2px; text-transform: uppercase; }
 .mini-user-id { font-size: 16px; font-weight: 800; color: var(--modal-text-main); letter-spacing: -0.5px; word-break: break-all;}
+/* ポイント色：ライト時黒/ダーク時白に追従させるためカラーはvar()で指定 */
 #displayUserPoints { font-size:14px; font-weight:700; color:var(--modal-text-main); margin-top:4px; display:flex; align-items:center; gap:4px; }
 
 /* Menu List inside Dropdown */
@@ -827,6 +851,9 @@ button, input, textarea { font-family: var(--font-stack); }
     
     body:not(.is-logged-in) .rgl-hero { display: flex !important; }
     body:not(.is-logged-in) .mobile-store-view { display: none !important; }
+    
+    /* PC用購入ボタンをスマホ画面では非表示 */
+    .rgl-buy-btn { display: none !important; }
 
     /* ストア用ヘッダーとコード引き換えボタン */
     .mobile-store-header {
@@ -848,31 +875,20 @@ button, input, textarea { font-family: var(--font-stack); }
         font-family: var(--font-stack);
     }
     
-    /* 横3列のストアグリッド（★横スクロール防止のための最適化★） */
-    .mobile-store-view {
-        padding: 0 16px 40px 16px;
-        width: 100%;
-        box-sizing: border-box;
-        position: relative;
-        z-index: 10;
-        overflow-x: hidden;
-    }
+    /* 横3列のストアグリッド */
     .mobile-store-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-        width: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
     }
     .mobile-store-card {
         background: rgba(30, 30, 30, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
-        padding: 6px;
+        padding: 8px;
         display: flex;
         flex-direction: column;
         gap: 6px;
-        box-sizing: border-box;
-        overflow: hidden;
     }
     [data-theme="light"] .mobile-store-card {
         background: rgba(255, 255, 255, 0.8);
@@ -1151,10 +1167,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                          <button class="menu-btn" id="btnMenuRedeem">
                             <span data-translate="btn_redeem_code">コード引き換え</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="key-round" aria-hidden="true" size="18" class="lucide lucide-key-round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></svg>
                          </button>
-                         
-                         <button class="menu-btn" id="btnShowLibrary" style="display:flex;">
-                            <span data-translate="label_library">ライブラリ</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="package-open" aria-hidden="true" size="18" class="lucide lucide-package-open"><path d="M12 22v-9"></path><path d="m2.9 14.4 8.1 4.5 8.1-4.5"></path><path d="m19 5.3-7 4-7-4"></path><path d="m12 9.3 8.1 4.6"></path><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
-                         </button>
 
                          <button class="menu-btn" id="btnLogout" style="color:#FF3B30;">
                            <span data-translate="btn_logout">ログアウト</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="log-out" aria-hidden="true" size="18" class="lucide lucide-log-out"><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path></svg>
@@ -1196,7 +1208,7 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
                     <button id="heroActionBtn" class="rgl-cta-btn">
                         <span data-translate="btn_redeem_code">コード引き換え</span>
                     </button>
-                    <button id="heroBuyBtn" class="rgl-cta-btn btn-buy-alt" style="display:none;">
+                    <button id="heroBuyBtn" class="rgl-buy-btn" style="display:none;">
                         <span id="heroBuyBtnText">購入する</span>
                     </button>
                 </div>
@@ -1206,26 +1218,13 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
         <div id="mobileStoreView" class="mobile-store-view">
             <div class="mobile-store-header">
                 <h2 style="font-size: 24px; font-weight: 800; color: var(--modal-text-main); margin: 0;" data-translate="tab_store">ストア</h2>
-                <button class="mobile-store-redeem-btn" onclick="openAuthModal()" data-translate="btn_redeem_code">コード引き換え</button>
+                <button class="mobile-store-redeem-btn" onclick="openAuthModal()">コードをお持ちですか</button>
             </div>
             <div id="mobileStoreGrid" class="mobile-store-grid"></div>
         </div>
 
     </main>
 
-</div>
-
-<div id="libraryModal" class="modal-overlay">
-  <div class="modal-sheet">
-    <div style="position:absolute; top:24px; right:24px; cursor:pointer; opacity:0.6;" id="libCloseBtn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" size="24" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
-    <div class="lib-modal-header">
-      <div class="lib-header-left">
-        <div class="lib-header-icon"><i data-lucide="package-open" size="28"></i></div>
-        <div class="lib-header-title" data-translate="label_library">Library</div>
-      </div>
-    </div>
-    <ul id="libraryList" class="lib-list-scroll"></ul>
-  </div>
 </div>
 
 <div id="adminModal" class="modal-overlay">
@@ -1320,7 +1319,6 @@ footer { padding: 40px 0; text-align: center; color: var(--modal-text-sub); font
             </div>
             <div class="modal-btn-row" id="errorBtnRow">
                 <button class="btn-outline" style="width: 100%; flex: none;" id="btnErrorClose" data-translate="btn_close">閉じる</button>
-                <button class="btn-solid" style="flex: 7; display: none; align-items:center; justify-content:center;" id="btnErrorOpenLibrary" data-translate="btn_open_library">ライブラリを開く</button>
             </div>
         </div>
     </div>
@@ -1341,11 +1339,15 @@ let selectedHeroItem = null;
 let currentHeroContext = 'default';
 let modalDownloadTimer = null; 
 
+let els = {};
+let currentAuthRequestId = 0;
+let currentContentData = {};
+let currentAuthTime = "";
+
 // Helper
 const gId = (i) => document.getElementById(i);
 const setListener = (el, ev, fn) => { if(el) el.addEventListener(ev, fn); };
 
-// ★ 修正: アクティベーションコードのフォーマット（25文字以上なら5文字区切り、それ未満なら4文字区切り）
 const formatDisplayCode = (code) => {
   if (!code) return "";
   const clean = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -1358,14 +1360,16 @@ const formatDisplayCode = (code) => {
 };
 
 const formatCodeInput = (val) => {
-  if (!val) return "";
-  const clean = val.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  const sz = clean.length >= 25 ? 5 : 4;
-  let res = '';
-  for(let i=0; i<clean.length; i++) {
-    res += (i > 0 && i % sz === 0 ? '-' : '') + clean[i];
-  }
-  return res;
+    if (!val) return "";
+    let clean = val.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    // 25文字以上なら5文字区切り、それ未満なら4文字区切りにする
+    let sz = clean.length >= 25 ? 5 : 4; 
+    let res = '';
+    for(let i=0; i<clean.length; i++) {
+        if(i > 0 && i % sz === 0) res += '-';
+        res += clean[i];
+    }
+    return res;
 };
 
 // 現在時刻を取得・フォーマット
@@ -1419,7 +1423,7 @@ const TRANSLATIONS={
   modal_title:"アクティベーション",modal_sub:"アクティベーションコードを使用すると、コンテンツにアクセスできます。アクティベーションコードを利用するには、以下の入力欄に入力してください。",modal_placeholder:"アクティベーションコード",modal_btn_auth:"確認",
   msg_verifying:"確認中",msg_success_btn:"成功",
   msg_invalid:"このコードは無効です",msg_used:"このコードは使用済みです",msg_error:"エラーが発生しました", 
-  msg_already_owned: "このコンテンツは既に所有しています。", msg_already_owned_mobile: "ライブラリからコンテンツを選択してダウンロードしてください。", btn_open_library: "ライブラリを開く",
+  msg_already_owned: "このコンテンツは既に所有しています。", msg_already_owned_mobile: "ストアからコンテンツを選択してダウンロードしてください。", btn_open_library: "ライブラリを開く",
   success_badge:"コードが認証されました。",
   preview_title: "コンテンツ確認",
   preview_desc: "続行すると以下のコンテンツを受け取ります:",
@@ -1432,7 +1436,6 @@ const TRANSLATIONS={
   error_owned_sub: "左ライブラリメニューからコンテンツを選択してダウンロードしてください。",
   btn_close:"閉じる",btn_continue:"認証する",btn_download:"ダウンロード", btn_buy:"購入する",
   
-  /* ★ 購入フロー用のテキスト */
   preview_buy_title: "購入確認",
   preview_buy_desc: "以下のコンテンツを %s pt で購入します:",
   btn_buy_confirm: "購入確定",
@@ -1459,7 +1462,7 @@ const TRANSLATIONS={
   modal_title:"Activation",modal_sub:"Redeem the activation code to download the content. To use the activation code, please enter it in the field below.",modal_placeholder:"Activation Code",modal_btn_auth:"CHECK",
   msg_verifying:"Checking",msg_success_btn:"Success",
   msg_invalid:"This code is invalid.",msg_used:"This code has already been used.",msg_error:"Error occurred", 
-  msg_already_owned: "You already own this content.", msg_already_owned_mobile: "Please select the content from the library to download.", btn_open_library: "Open Library",
+  msg_already_owned: "You already own this content.", msg_already_owned_mobile: "Please select the content from the store to download.", btn_open_library: "Open Library",
   success_badge:"Code Verified",
   preview_title: "Confirm Content",
   preview_desc: "You will receive the following contents by continuing:",
@@ -1498,7 +1501,7 @@ const TRANSLATIONS={
   modal_title:"激活",modal_sub:"请兑換激活码以下载内容。使用激活码时请将其输入下方字段",modal_placeholder:"激活码",modal_btn_auth:"检查", 
   msg_verifying:"正在检查",msg_success_btn:"成功", 
   msg_invalid:"该代码无效。",msg_used:"该代码已被使用。",msg_error:"错误", 
-  msg_already_owned: "您已经拥有此内容。", msg_already_owned_mobile: "请从库中选择内容进行下载。", btn_open_library: "打开库",
+  msg_already_owned: "您已经拥有此内容。", msg_already_owned_mobile: "请从商店中选择内容进行下载。", btn_open_library: "打开库",
   success_badge:"代码已检查",
   preview_title: "确认内容",
   preview_desc: "继续操作您将收到以下内容：",
@@ -1537,7 +1540,7 @@ const TRANSLATIONS={
   modal_title:"激活",modal_sub:"請兌換啟用碼以下載內容。使用啟用碼時請於下方欄位輸入",modal_placeholder:"啟動碼",modal_btn_auth:"檢查", 
   msg_verifying:"正在檢查",msg_success_btn:"成功", 
   msg_invalid:"該代碼無效",msg_used:"該代碼已被使用",msg_error:"錯誤", 
-  msg_already_owned: "您已經擁有此內容。", msg_already_owned_mobile: "請從庫中選擇內容進行下載。", btn_open_library: "打開庫",
+  msg_already_owned: "您已經擁有此內容。", msg_already_owned_mobile: "請從商店中選擇內容進行下載。", btn_open_library: "打開庫",
   success_badge:"代碼已檢查",
   preview_title: "確認內容",
   preview_desc: "繼續操作您將收到以下內容：",
@@ -1576,7 +1579,7 @@ const TRANSLATIONS={
   modal_title:"활성화",modal_sub:"활성화 코드를 사용해 콘텐츠를 다운로드하세요. 활성화 코드를 사용하려면 아래 필드에 입력해 주세요.",modal_placeholder:"활성화 코드",modal_btn_auth:"확인", 
   msg_verifying:"확인 중",msg_success_btn:"성공", 
   msg_invalid:"유효하지 않은 코드입니다.",msg_used:"이미 사용된 코드입니다.",msg_error:"오류", 
-  msg_already_owned: "이미 이 콘텐츠를 소유하고 있습니다.", msg_already_owned_mobile: "라이브러리에서 콘텐츠를 선택하여 다운로드하세요.", btn_open_library: "라이브러리 열기",
+  msg_already_owned: "이미 이 콘텐츠를 소유하고 있습니다.", msg_already_owned_mobile: "상점에서 콘텐츠를 선택하여 다운로드하세요.", btn_open_library: "라이브러리 열기",
   success_badge:"코드 인증됨",
   preview_title: "콘텐츠 확인",
   preview_desc: "계속 진행하면 다음 콘텐츠를 받게 됩니다:",
@@ -1615,7 +1618,7 @@ const TRANSLATIONS={
   modal_title:"Проверка",modal_sub:"Погасите код активации, чтобы загрузить контент. Чтобы использовать код активации, введите его в поле ниже.",modal_placeholder:"Код активации",modal_btn_auth:"Подтверждение", 
   msg_verifying:"Подтверждение",msg_success_btn:"Успех", 
   msg_invalid:"Неверный код",msg_used:"Этот код уже был использован.",msg_error:"Ошибка", 
-  msg_already_owned: "Вы уже владеете этим контентом.", msg_already_owned_mobile: "Пожалуйста, выберите контент из библиотеки для скачивания.", btn_open_library: "Открыть библиотеку",
+  msg_already_owned: "Вы уже владеете этим контентом.", msg_already_owned_mobile: "Пожалуйста, выберите контент из магазина для скачивания.", btn_open_library: "Открыть библиотеку",
   success_badge:"Подтверждено", 
   preview_title: "Подтверждение",
   preview_desc: "Вы получите следующее содержимое:",
@@ -1651,6 +1654,74 @@ const TRANSLATIONS={
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  els = {
+    openAccount: gId('btnOpenAccount'),
+    accountDropdown: gId('accountDropdown'),
+    btnMenuRedeem: gId('btnMenuRedeem'),
+    btnLogout: gId('btnLogout'),
+    closeAuth: gId('modalCloseBtn'),
+    btnPreviewClose: gId('btnPreviewClose'),
+    btnSuccessClose: gId('btnSuccessClose'),
+    btnErrorClose: gId('btnErrorClose'),
+    authModal: gId('authModal'),
+    adminModal: gId('adminModal'),
+    adminCloseBtn: gId('adminCloseBtn'),
+    btnAdminSearch: gId('btnAdminSearch'),
+    confirm: gId('btnConfirm'),
+    code: gId('activationCode'),
+    heroActionBtn: gId('heroActionBtn'),
+    heroBuyBtn: gId('heroBuyBtn'), // ★ 追加
+    tabs: document.querySelectorAll('.auth-tab'),
+    btnAuthAction: gId('btnAuthAction'),
+    mobileMenuBtn: gId('mobileMenuBtn'),
+    mobileNav: gId('mobileNav'),
+    mobileMenuCloseBtn: gId('mobileMenuCloseBtn'),
+    mobileLangTrigger: gId('mobileLangTrigger'),
+    langTrigger: gId('langTrigger'),
+    langMenu: gId('langMenu'),
+    overlay: gId('langSelectionOverlay'),
+    currentLangLabel: gId('currentLangLabel'),
+    mobileCurrentLangLabel: gId('mobileCurrentLangLabel'),
+    modalCon: gId('modalContainer'),
+    phaseInput: gId('phase-input'),
+    phasePreview: gId('phase-preview'),
+    phaseSuccess: gId('phase-success'),
+    phaseError: gId('phase-error'),
+    errorCodeText: gId('errorCodeText'),
+    errorTime: gId('errorTime'),
+    errorMessage: gId('errorMessage'),
+    errorSubMessage: gId('errorSubMessage'),
+    errorInfoBox: gId('errorInfoBox'),
+    previewImage: gId('previewImage'),
+    previewTitleUnderImg: gId('previewTitleUnderImg'),
+    previewTitle: gId('previewTitle'),
+    previewWarningText: gId('previewWarningText'),
+    previewWarningBox: gId('previewWarningBox'),
+    btnPreviewRedeem: gId('btnPreviewRedeem'),
+    successImage: gId('successImage2'),
+    successTitleUnderImg: gId('successTitleUnderImg'),
+    successBundleName: gId('successBundleName'),
+    successMessageText: gId('successMessageText'),
+    successTime: gId('successTime'),
+    btnSuccessDownload: gId('btnSuccessDownload'),
+    status: gId('statusContainer'),
+    email: gId('inputEmail'),
+    pass: gId('inputPass'),
+    authStatus: gId('authStatus'),
+    loggedOutView: gId('loggedOutView'),
+    loggedInView: gId('loggedInView'),
+    displayUserEmail: gId('displayUserEmail'),
+    secLibrary: gId('secLibrary'),
+    libraryListSidebar: gId('sidebarLibraryList'),
+    secAvailable: gId('secAvailable'),
+    availableListSidebar: gId('sidebarAvailableList'),
+    heroTitle: gId('heroTitle'),
+    heroDesc: gId('heroDesc'),
+    heroBgImage: gId('heroBgImage'),
+    targetUserEmail: gId('targetUserEmail'),
+    adminResultArea: gId('adminResultArea')
+  };
+
   try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
   
   let sLang = localStorage.getItem('user_lang');
@@ -1701,17 +1772,6 @@ function setupEventListeners() {
       });
   }
 
-  if (els.btnShowLibrary) {
-      els.btnShowLibrary.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleDropdown(false);
-          els.libraryModal.classList.add('active');
-      });
-  }
-
-  setListener(els.libCloseBtn, 'click', () => els.libraryModal.classList.remove('active'));
-  setListener(els.libraryModal, 'click', (e) => { if(e.target === els.libraryModal) els.libraryModal.classList.remove('active'); });
-
   if (els.btnLogout) {
       els.btnLogout.addEventListener('click', (e) => {
         if(e) e.preventDefault();
@@ -1724,14 +1784,6 @@ function setupEventListeners() {
   setListener(els.btnPreviewClose, 'click', closeAuthModal);
   setListener(els.btnSuccessClose, 'click', closeAuthModal);
   setListener(els.btnErrorClose, 'click', closeAuthModal);
-
-  if (els.btnErrorOpenLibrary) {
-      els.btnErrorOpenLibrary.addEventListener('click', (e) => {
-          e.preventDefault();
-          closeAuthModal();
-          els.libraryModal.classList.add('active');
-      });
-  }
 
   if(els.authModal) setListener(els.authModal, 'click', (e) => { if(e.target === els.authModal) closeAuthModal(); });
 
@@ -1770,24 +1822,22 @@ function setupEventListeners() {
      }
   });
 
-  // ★ 購入ボタンのイベント（PC版）
-  if (els.heroBuyBtn) {
-      setListener(els.heroBuyBtn, 'click', (e) => {
-          e.stopPropagation();
-          if (!currentUser) {
-              toggleDropdown(true);
-              return;
-          }
-          const price = Number(selectedHeroItem.price) || 0;
-          const userPts = Number(currentUser.points) || 0;
-          
-          if (userPts < price) {
-              showPurchaseError(userPts, price);
-              return;
-          }
-          showPurchasePreview(selectedHeroItem, price);
-      });
-  }
+  // ★ 追加: PC用の購入ボタンクリックイベント
+  setListener(els.heroBuyBtn, 'click', (e) => {
+     e.stopPropagation(); 
+     if (!currentUser) {
+         toggleDropdown(true);
+         return;
+     }
+     if (selectedHeroItem && selectedHeroItem.price > 0) {
+         const userPts = Number(currentUser.points) || 0;
+         if (userPts < selectedHeroItem.price) {
+             showPurchaseError(userPts, selectedHeroItem.price);
+             return;
+         }
+         showPurchasePreview(selectedHeroItem, selectedHeroItem.price);
+     }
+  });
 
   if (els.tabs) {
       els.tabs.forEach(tab => {
@@ -1822,7 +1872,6 @@ function setupEventListeners() {
   }
 }
 
-// ★ 購入用エラー画面の表示処理
 function showPurchaseError(userPts, price) {
     const t = TRANSLATIONS[CURRENT_LANG];
     currentAuthRequestId++; 
@@ -1843,7 +1892,6 @@ function showPurchaseError(userPts, price) {
     
     els.btnErrorClose.style.flex = "none";
     els.btnErrorClose.style.width = "100%";
-    els.btnErrorOpenLibrary.style.display = "none";
     
     els.phaseError.style.display = 'flex';
     setTimeout(() => els.phaseError.style.opacity = '1', 50);
@@ -1851,7 +1899,6 @@ function showPurchaseError(userPts, price) {
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
-// ★ 購入用プレビュー画面の表示処理
 function showPurchasePreview(item, price) {
     const t = TRANSLATIONS[CURRENT_LANG];
     currentAuthRequestId++;
@@ -1896,7 +1943,6 @@ function showPurchasePreview(item, price) {
     setTimeout(() => els.phasePreview.style.opacity = '1', 50);
 }
 
-// ★ ポイントによる購入処理
 async function buyItemWithPoints(code, price) {
     const thisRequestId = currentAuthRequestId;
     const t = TRANSLATIONS[CURRENT_LANG];
@@ -1924,7 +1970,6 @@ async function buyItemWithPoints(code, price) {
             updateAccountUI();
             await fetchUserHistory(); 
             
-            // ★ 購入成功画面への切り替え
             const successTops = els.phaseSuccess.querySelectorAll('.modal-title-top, .mobile-title');
             successTops.forEach(el => el.textContent = t.success_buy_title || "購入完了");
             
@@ -1952,7 +1997,6 @@ async function buyItemWithPoints(code, price) {
             
             try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         } else {
-            // ★ サーバー側でエラーになった場合
             els.errorCodeText.textContent = generateErrorCode();
             els.errorTime.textContent = currentAuthTime;
 
@@ -1961,23 +2005,14 @@ async function buyItemWithPoints(code, price) {
             let showInfoBox = true;
             
             if (data.message === "Already owned") {
-                if (window.innerWidth <= 768) {
-                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
-                    errorSubText = t.msg_already_owned_mobile || "ライブラリからコンテンツを選択してダウンロードしてください。";
-                    els.btnErrorClose.style.flex = "3";
-                    els.btnErrorClose.style.width = "auto";
-                    els.btnErrorOpenLibrary.style.display = "flex";
-                } else {
-                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
-                    errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
-                    els.btnErrorClose.style.flex = "none";
-                    els.btnErrorClose.style.width = "100%";
-                    els.btnErrorOpenLibrary.style.display = "none";
-                }
+                errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
+                errorSubText = window.innerWidth <= 768 ? (t.msg_already_owned_mobile || "ストアからコンテンツを選択してダウンロードしてください。") : (t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。");
+                
+                els.btnErrorClose.style.flex = "none";
+                els.btnErrorClose.style.width = "100%";
             } else {
                 els.btnErrorClose.style.flex = "none";
                 els.btnErrorClose.style.width = "100%";
-                els.btnErrorOpenLibrary.style.display = "none";
             }
             
             els.errorMessage.textContent = errorMainText;
@@ -2006,9 +2041,13 @@ async function buyItemWithPoints(code, price) {
 }
 
 function toggleDropdown(forceState) {
-    if (forceState === undefined) { els.accountDropdown.classList.toggle('open'); } 
-    else if (forceState) { els.accountDropdown.classList.add('open'); } 
-    else { els.accountDropdown.classList.remove('open'); }
+    if (forceState === undefined) {
+        els.accountDropdown.classList.toggle('open');
+    } else if (forceState) {
+        els.accountDropdown.classList.add('open');
+    } else {
+        els.accountDropdown.classList.remove('open');
+    }
 }
 
 function setInitialLanguage(lang, immediate = false){
@@ -2023,8 +2062,15 @@ function showMainContent(){
  const urlCode = new URLSearchParams(window.location.search).get('code');
  if(urlCode) {
    setTimeout(()=>{ 
-     if(!currentUser) { pendingActivationCode = urlCode; toggleDropdown(true); }
-     else { openAuthModal(); els.code.value = formatCodeInput(urlCode); performAuth(els.code.value); }
+     if(!currentUser) { 
+       pendingActivationCode = urlCode;
+       toggleDropdown(true); 
+     }
+     else { 
+       openAuthModal(); 
+       els.code.value = formatCodeInput(urlCode); 
+       performAuth(els.code.value); 
+     }
    }, 800);
  }
 }
@@ -2037,30 +2083,54 @@ function initCustomDropdown() {
     document.querySelectorAll('.lang-option').forEach(opt => {
         opt.addEventListener('click', () => {
             const val = opt.getAttribute('data-value');
-            localStorage.setItem('user_lang', val); updateLanguage(val);
-            if (currentUser) { fetchAvailableContent(); fetchUserHistory(); }
+            
+            localStorage.setItem('user_lang', val);
+            updateLanguage(val);
+            
+            if (currentUser) {
+                fetchAvailableContent();
+                fetchUserHistory();
+            }
+
             if (opt.closest('#mobileLangMenu')) {
-                gId('mobileLangMenu').classList.remove('open'); els.mobileNav.classList.remove('active');
+                gId('mobileLangMenu').classList.remove('open');
+                els.mobileNav.classList.remove('active');
             } else {
                 const overlay = gId('langSwitchingOverlay');
                 if(overlay) overlay.style.display = 'flex';
                 els.langMenu.classList.remove('open');
-                setTimeout(() => { setTimeout(() => { if(overlay) overlay.style.display = 'none'; }, 600); }, 300);
+                setTimeout(() => {
+                    setTimeout(() => { if(overlay) overlay.style.display = 'none'; }, 600);
+                }, 300);
             }
         });
     });
     document.addEventListener('click', (e) => { 
         if (!els.langTrigger.contains(e.target)) els.langMenu.classList.remove('open'); 
-        if (!els.accountDropdown.contains(e.target) && !els.openAccount.contains(e.target)) toggleDropdown(false);
-        if(els.mobileLangTrigger && !els.mobileLangTrigger.contains(e.target)) gId('mobileLangMenu').classList.remove('open');
+        if (!els.accountDropdown.contains(e.target) && !els.openAccount.contains(e.target)) {
+            toggleDropdown(false);
+        }
+        if(els.mobileLangTrigger && !els.mobileLangTrigger.contains(e.target)) {
+            gId('mobileLangMenu').classList.remove('open');
+        }
     });
 }
 
-function logout() { localStorage.removeItem('user_session_identity'); currentUser = null; window.location.reload(); }
+function logout() {
+  localStorage.removeItem('user_session_identity');
+  currentUser = null;
+  window.location.reload(); 
+}
 
 function updateLanguage(lang){
-  CURRENT_LANG = lang; document.documentElement.lang = lang; const t = TRANSLATIONS[lang]; if(!t) return;
-  document.querySelectorAll('[data-translate]').forEach(el => { const k = el.getAttribute('data-translate'); if(k !== 'news_content' && t[k]) el.innerHTML = t[k]; });
+  CURRENT_LANG = lang; 
+  document.documentElement.lang = lang; 
+  const t = TRANSLATIONS[lang]; 
+  if(!t) return;
+  document.querySelectorAll('[data-translate]').forEach(el => { 
+    const k = el.getAttribute('data-translate'); 
+    if(k !== 'news_content' && t[k]) el.innerHTML = t[k]; 
+  });
   const langMap = { ja: '日本語', en: 'English', zh: '简体中文', 'zh-TW': '繁體中文', ko: '한국어', ru: 'Русский' };
   if(els.currentLangLabel) els.currentLangLabel.textContent = langMap[lang] || 'Language';
   if(els.mobileCurrentLangLabel) els.mobileCurrentLangLabel.textContent = langMap[lang] || 'Language'; 
@@ -2089,9 +2159,7 @@ function resetAuthModal(){
   
   els.btnErrorClose.style.flex = "none";
   els.btnErrorClose.style.width = "100%";
-  els.btnErrorOpenLibrary.style.display = "none";
 
-  // ★ テキストのリセット
   const t = TRANSLATIONS[CURRENT_LANG] || TRANSLATIONS.ja;
   const titleTops = els.phasePreview.querySelectorAll('.modal-title-top, .mobile-title');
   titleTops.forEach(el => el.textContent = t.preview_title);
@@ -2120,14 +2188,22 @@ function showMobileItemDetail(item, isNewRedeem = false) {
     els.modalCon.classList.add('is-wide');
     
     const t = TRANSLATIONS[CURRENT_LANG];
+    
     els.successBundleName.textContent = item.title;
     els.successTitleUnderImg.textContent = item.title;
     
-    if (isNewRedeem) els.successTime.textContent = currentAuthTime;
-    else els.successTime.textContent = formatSavedTime(item.authTime || item.date || "", CURRENT_LANG);
+    if (isNewRedeem) {
+        els.successTime.textContent = currentAuthTime;
+    } else {
+        let savedTime = item.authTime || item.date || "";
+        els.successTime.textContent = formatSavedTime(savedTime, CURRENT_LANG);
+    }
 
-    if(item.imageUrl && item.imageUrl.startsWith("http")) els.successImage.src=item.imageUrl; 
-    else els.successImage.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; 
+    if(item.imageUrl && item.imageUrl.startsWith("http")){ 
+        els.successImage.src=item.imageUrl; 
+    } else { 
+        els.successImage.src="https://static.wixstatic.com/media/2f0694_a82787a4837b40a9be0c361cfe71ff95~mv2.png/v1/fill/w_1200,h_1200,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Polish_20260125_100959885.png"; 
+    }
 
     els.btnSuccessClose.style.flex = "3";
     els.btnSuccessClose.style.width = "auto";
@@ -2136,28 +2212,47 @@ function showMobileItemDetail(item, isNewRedeem = false) {
     const startModalTimer = () => {
         const now = new Date();
         const releaseDate = item.releaseDateIso ? new Date(item.releaseDateIso) : null;
+        
         if (releaseDate && releaseDate > now) {
-            const diff = releaseDate - now; const oneDay = 24 * 60 * 60 * 1000;
-            els.btnSuccessDownload.style.pointerEvents = 'none'; els.btnSuccessDownload.style.opacity = '0.6';
-            els.btnSuccessDownload.removeAttribute('href'); els.btnSuccessDownload.onclick = (e) => { e.preventDefault(); };
+            const diff = releaseDate - now;
+            const oneDay = 24 * 60 * 60 * 1000;
+            
+            els.btnSuccessDownload.style.pointerEvents = 'none';
+            els.btnSuccessDownload.style.opacity = '0.6';
+            els.btnSuccessDownload.removeAttribute('href'); 
+            els.btnSuccessDownload.onclick = (e) => { e.preventDefault(); };
 
             if (diff > oneDay) {
-               const y = releaseDate.getFullYear(); const m = releaseDate.getMonth() + 1; const d = releaseDate.getDate();
+               const y = releaseDate.getFullYear();
+               const m = releaseDate.getMonth() + 1;
+               const d = releaseDate.getDate();
                els.btnSuccessDownload.innerHTML = `<span>${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}</span>`;
             } else {
-               const h = Math.floor(diff / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); const s = Math.floor((diff % (1000 * 60)) / 1000);
-               els.btnSuccessDownload.innerHTML = `<span>${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}</span>`;
+               const h = Math.floor(diff / (1000 * 60 * 60));
+               const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+               const s = Math.floor((diff % (1000 * 60)) / 1000);
+               const hh = String(h).padStart(2, '0');
+               const mm = String(m).padStart(2, '0');
+               const ss = String(s).padStart(2, '0');
+               els.btnSuccessDownload.innerHTML = `<span>${hh}:${mm}:${ss}</span>`;
             }
         } else {
             if(modalDownloadTimer) clearInterval(modalDownloadTimer);
-            els.btnSuccessDownload.style.pointerEvents = 'auto'; els.btnSuccessDownload.style.opacity = '1';
-            els.btnSuccessDownload.href = item.url; els.btnSuccessDownload.onclick = null; els.btnSuccessDownload.target = "_blank";
-            const btnLabel = item.buttonLabel || t.btn_download || "ダウンロード"; const btnIcon = item.icon || "download";
+            els.btnSuccessDownload.style.pointerEvents = 'auto';
+            els.btnSuccessDownload.style.opacity = '1';
+            els.btnSuccessDownload.href = item.url;
+            els.btnSuccessDownload.onclick = null; 
+            els.btnSuccessDownload.target = "_blank";
+            const btnLabel = item.buttonLabel || t.btn_download || "ダウンロード";
+            const btnIcon = item.icon || "download";
             els.btnSuccessDownload.innerHTML = `<span>${btnLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${btnIcon}" aria-hidden="true" size="18" class="lucide lucide-${btnIcon}"></svg>`;
             try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         }
     };
-    startModalTimer(); modalDownloadTimer = setInterval(startModalTimer, 1000);
+
+    startModalTimer();
+    modalDownloadTimer = setInterval(startModalTimer, 1000);
+    
     try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
 }
 
@@ -2241,7 +2336,6 @@ async function performAuth(code, mode = 'check') {
     } else if (mode === 'redeem') {
       if (d.success) { 
         
-        // ★ ポイントコードの処理分岐
         if (d.isPointMode) {
             if(currentUser) {
                 currentUser.points = (currentUser.points || 0) + d.addedPoints;
@@ -2267,10 +2361,16 @@ async function performAuth(code, mode = 'check') {
             return;
         }
 
-        // 通常コンテンツの処理
         await saveUnlockedItemLocal(d, safeCode);
         if(window.innerWidth <= 768) {
-           const item = { title: d.bundleLabel || d.message, imageUrl: d.imageUrl, url: d.actionUrl, releaseDateIso: d.releaseDateIso, buttonLabel: d.Button_Label, icon: d.btnIcon };
+           const item = {
+             title: d.bundleLabel || d.message,
+             imageUrl: d.imageUrl,
+             url: d.actionUrl,
+             releaseDateIso: d.releaseDateIso,
+             buttonLabel: d.Button_Label,
+             icon: d.btnIcon
+           };
            showMobileItemDetail(item, true); 
         } else {
            els.successImage.src = currentContentData.imageUrl;
@@ -2287,7 +2387,9 @@ async function performAuth(code, mode = 'check') {
              setTimeout(() => els.phaseSuccess.style.opacity = '1', 50);
            }, 400);
 
-           if (currentUser.history.length > 0) { updateHeroView(currentUser.history[0], true); }
+           if (currentUser.history.length > 0) {
+              updateHeroView(currentUser.history[0], true); 
+           }
         }
       } else {
         try {
@@ -2303,23 +2405,23 @@ async function performAuth(code, mode = 'check') {
             
             const msg = d.message || "";
             if (d.isAlreadyOwned || msg === "Already owned" || msg.includes("所有") || msg.includes("済") || msg.includes("owned")) {
-                if (window.innerWidth <= 768) {
-                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
-                    errorSubText = t.msg_already_owned_mobile || "ライブラリからコンテンツを選択してダウンロードしてください。";
-                    els.btnErrorClose.style.flex = "3";
-                    els.btnErrorClose.style.width = "auto";
-                    els.btnErrorOpenLibrary.style.display = "flex";
-                } else {
-                    errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.title || "コンテンツ");
-                    errorSubText = t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。";
-                    els.btnErrorClose.style.flex = "none";
-                    els.btnErrorClose.style.width = "100%";
-                    els.btnErrorOpenLibrary.style.display = "none";
-                }
-            } else {
+                errorMainText = (t.error_owned_msg || "この %s は所有しているようです。").replace('%s', currentContentData.bundleLabel || "コンテンツ");
+                errorSubText = window.innerWidth <= 768 ? (t.msg_already_owned_mobile || "ストアからコンテンツを選択してダウンロードしてください。") : (t.error_owned_sub || "左ライブラリメニューからコンテンツを選択してダウンロードしてください。");
+                
                 els.btnErrorClose.style.flex = "none";
                 els.btnErrorClose.style.width = "100%";
-                els.btnErrorOpenLibrary.style.display = "none";
+            } else if (msg === "This code has already been used." || msg.includes("使用済") || msg.includes("used")) {
+                errorMainText = t.error_used_msg || t.msg_used;
+                errorSubText = "";
+                els.btnErrorClose.style.flex = "none";
+                els.btnErrorClose.style.width = "100%";
+                showInfoBox = false;
+            } else {
+                errorMainText = t.msg_error;
+                errorSubText = msg;
+                els.btnErrorClose.style.flex = "none";
+                els.btnErrorClose.style.width = "100%";
+                showInfoBox = errorSubText ? true : false;
             }
             
             els.errorMessage.textContent = errorMainText;
@@ -2364,7 +2466,6 @@ async function performAuth(code, mode = 'check') {
        
        els.btnErrorClose.style.flex = "none";
        els.btnErrorClose.style.width = "100%";
-       els.btnErrorOpenLibrary.style.display = "none";
        
        els.phasePreview.style.opacity = '0';
        setTimeout(() => {
@@ -2405,7 +2506,6 @@ async function performAuthAction() {
       currentUser = { userId: data.userId, email: email, history: data.history || [], points: data.points || 0 };
       localStorage.setItem('user_session_identity', JSON.stringify({ userId: data.userId, email: email }));
       
-      // ★ ここで is-logged-in クラスを付与してスマホ用ストアを表示
       document.body.classList.add('is-logged-in');
       updateAccountUI(); 
       fetchUserHistory(); 
@@ -2455,8 +2555,10 @@ function setHeroButtonState(state, forceUnlock = false) {
         } else {
             let iconName = selectedHeroItem.icon || 'download';
             const displayLabel = selectedHeroItem.buttonLabel || t.btn_hero_download;
+
             btn.innerHTML = `<span>${displayLabel}</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="${iconName}" aria-hidden="true" size="20" class="lucide lucide-${iconName}"></svg>`;
             btn.classList.add('is-download');
+            
             currentHeroContext = 'owned';
             try { if(typeof lucide !== 'undefined') lucide.createIcons(); } catch(e){}
         }
@@ -2465,7 +2567,6 @@ function setHeroButtonState(state, forceUnlock = false) {
         btn.classList.remove('is-download');
         currentHeroContext = 'available';
 
-        // ★ 購入ボタンの表示
         if(selectedHeroItem && selectedHeroItem.price > 0) {
             if(buyBtn) {
                 buyBtn.style.display = 'inline-flex';
@@ -2524,7 +2625,119 @@ function updateHeroView(item, isOwned) {
     setHeroButtonState(isOwned ? 'owned' : 'available');
 }
 
-// スマホ用のストアカードを生成する関数
+function updateAccountUI() {
+  const t = TRANSLATIONS[CURRENT_LANG];
+  if (currentUser) {
+    document.body.classList.add('is-logged-in');
+    
+    els.loggedOutView.style.display = 'none';
+    els.loggedInView.style.display = 'block';
+    if(els.displayUserEmail) els.displayUserEmail.textContent = currentUser.email || '-';
+    if(gId('ptValue')) gId('ptValue').textContent = currentUser.points || 0;
+    
+    const hasHistory = (currentUser.history && currentUser.history.length > 0);
+    if (hasHistory) {
+      els.secLibrary.style.display = 'block';
+      els.libraryListSidebar.innerHTML = "";
+      currentUser.history.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'sidebar-game-item';
+            div.onclick = () => {
+                document.querySelectorAll('.sidebar-game-item').forEach(el => el.classList.remove('active'));
+                div.classList.add('active');
+                updateHeroView(item, true); 
+            };
+            const imgUrl = (item.imageUrl && item.imageUrl.startsWith('http')) ? item.imageUrl : 'https://via.placeholder.com/32';
+            div.innerHTML = `
+              <div class="sidebar-game-info">
+                <img src="${imgUrl}" class="sidebar-game-thumb" onerror="this.style.background='#555'">
+                <div class="sidebar-game-text">
+                   <div class="sidebar-game-title">${item.title}</div>
+                </div>
+              </div>
+            `;
+            els.libraryListSidebar.appendChild(div);
+      });
+      
+      const now = Date.now();
+      let hasLockedItems = currentUser.history.some(item => {
+          return item.releaseDateIso && (new Date(item.releaseDateIso).getTime() > now);
+      });
+      if(hasLockedItems) startLibraryTimer();
+
+    } else {
+      els.secLibrary.style.display = 'none';
+      if(libraryTimerId) { clearInterval(libraryTimerId); libraryTimerId = null; }
+    }
+    els.secAvailable.style.display = 'block';
+
+  } else {
+    document.body.classList.remove('is-logged-in');
+    els.loggedOutView.style.display = 'block';
+    els.loggedInView.style.display = 'none';
+    els.secLibrary.style.display = 'none';
+    els.secAvailable.style.display = 'none';
+  }
+}
+
+function startLibraryTimer() {
+    if (libraryTimerId) clearInterval(libraryTimerId);
+    libraryTimerId = setInterval(() => {
+        const now = Date.now();
+        if (window.innerWidth > 768 && selectedHeroItem && selectedHeroItem.releaseDateIso) {
+             const releaseTime = new Date(selectedHeroItem.releaseDateIso).getTime();
+             if (releaseTime <= now && currentHeroContext === 'owned' && !els.heroActionBtn.classList.contains('is-download')) {
+                  setHeroButtonState('owned', true);
+             }
+        }
+    }, 1000);
+}
+
+async function saveUnlockedItemLocal(data, code) {
+  if (!currentUser) {
+      currentUser = { userId: "GUEST", email: "Guest", history: [], points: 0 };
+  }
+  const newItem = {
+    code: code, 
+    title: data.bundleLabel || data.message || "Unknown Content", 
+    message: data.message,
+    url: data.actionUrl, 
+    date: new Date().toLocaleDateString(), 
+    authTime: currentAuthTime, 
+    icon: data.btnIcon || 'download', 
+    lang: CURRENT_LANG,
+    imageUrl: data.imageUrl, 
+    releaseDateIso: data.releaseDateIso || null,
+    groupId: data.groupId,
+    buttonLabel: data.Button_Label || null 
+  };
+  
+  const idx = currentUser.history.findIndex(h => h.code === code);
+  if (idx > -1) currentUser.history.splice(idx, 1);
+  currentUser.history.unshift(newItem);
+  updateAccountUI();
+  
+  const items = els.availableListSidebar.querySelectorAll('.sidebar-game-item');
+  items.forEach(el => {
+      const c = el.getAttribute('data-code');
+      const g = el.getAttribute('data-group-id');
+      const tAttr = el.getAttribute('data-title');
+      const isCodeMatch = (c === code);
+      const isGroupMatch = (newItem.groupId && g == newItem.groupId);
+      const isTitleMatch = (tAttr && newItem.title && tAttr.trim() === newItem.title.trim());
+
+      if (isCodeMatch || isGroupMatch || isTitleMatch) {
+          el.remove();
+      }
+  });
+  if (els.availableListSidebar.children.length === 0) {
+      const t = TRANSLATIONS[CURRENT_LANG];
+      els.availableListSidebar.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">${t.msg_empty_lib || "No content"}</div>`;
+  }
+  
+  fetchAvailableContent();
+}
+
 function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
     const mobileList = gId('mobileStoreGrid');
     if (!mobileList) return;
@@ -2539,7 +2752,6 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
     let checkMarkHtml = '';
     let priceText = item.price > 0 ? `${item.price} pt` : `無料`;
 
-    // ★ 所有済みの場合はチェックマークとダウンロードボタンを表示
     if (isOwned) {
         checkMarkHtml = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px; vertical-align:middle; flex-shrink:0;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         btnHtml = `<button class="mobile-store-btn is-owned-download"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download" style="margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>${t.btn_download || "ダウンロード"}</button>`;
@@ -2559,7 +2771,6 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
         ${btnHtml}
     `;
     
-    // ★ 所有済みの場合はダウンロードアクション、未所有は購入/引き換えアクション
     if (isOwned) {
         const dlBtn = mDiv.querySelector('.is-owned-download');
         if (dlBtn) {
@@ -2593,40 +2804,45 @@ function renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles) {
 async function fetchAvailableContent() {
     if (!currentUser) return;
     const list = els.availableListSidebar;
-    const mobileList = gId('mobileStoreGrid');
     const t = TRANSLATIONS[CURRENT_LANG];
     
     list.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">Loading...</div>`;
-    if(mobileList) mobileList.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px; grid-column: 1 / -1; text-align:center;">Loading...</div>`;
+    
+    const mobileList = gId('mobileStoreGrid');
+    if (mobileList) mobileList.innerHTML = '';
     
     const ownedGroups = new Set(); const ownedCodes = new Set(); const ownedTitles = new Set();
+    let hasMobileItems = false;
+    
     if (currentUser && currentUser.history) {
         currentUser.history.forEach(h => {
             if (h.groupId) ownedGroups.add(h.groupId); 
             if (h.code) ownedCodes.add(h.code);
             if (h.title) ownedTitles.add(h.title);         
+            
+            renderMobileStoreItem(h, ownedGroups, ownedCodes, ownedTitles);
+            hasMobileItems = true;
         });
     }
+
     try {
         const res = await fetch(`${GAS_API_URL}?type=get_available&lang=${CURRENT_LANG}`);
         const d = await res.json();
         list.innerHTML = '';
-        if(mobileList) mobileList.innerHTML = '';
         let hasItems = false; 
-        let hasMobileItems = false;
         
         if(d.success && d.items && d.items.length > 0) {
             d.items.forEach((item, index) => {
                 if (item.active === false) return; 
                 
-                // --- スマホ用 メイン画面 (横3列) への追加 ---
-                renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles);
-                hasMobileItems = true;
+                const isOwned = (item.groupId && ownedGroups.has(item.groupId)) || (!item.groupId && ownedCodes.has(item.code)) || (item.title && ownedTitles.has(item.title));
+                
+                if (!isOwned) {
+                    renderMobileStoreItem(item, ownedGroups, ownedCodes, ownedTitles);
+                    hasMobileItems = true;
+                }
 
-                // --- 以下のPC用ロジックは一切変更しない ---
-                if (item.groupId && ownedGroups.has(item.groupId)) return; 
-                if (!item.groupId && ownedCodes.has(item.code)) return; 
-                if (item.title && ownedTitles.has(item.title)) return;
+                if (isOwned) return; 
                 
                 hasItems = true;
                 const div = document.createElement('div');
@@ -2658,7 +2874,7 @@ async function fetchAvailableContent() {
         }
     } catch(e) {
         list.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">-</div>`;
-        if (mobileList) mobileList.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px; grid-column: 1 / -1; text-align:center;">-</div>`;
+        if (mobileList && !hasMobileItems) mobileList.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px; grid-column: 1 / -1; text-align:center;">-</div>`;
     }
 }
 
